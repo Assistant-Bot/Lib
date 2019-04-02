@@ -1,0 +1,105 @@
+/*body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    background: rgb(20, 20, 20) url('./Assistant_Logo_new.png')
+}
+main {
+    flex: 1 0 auto;
+}*/
+html {
+    height: 100%;
+    box-sizing: border-box;
+  }
+  
+  *,
+  *:before,
+  *:after {
+    box-sizing: inherit;
+  }
+  
+body {
+    position: relative;
+    margin: 0;
+    padding-bottom: 6rem;
+    min-height: 100%;
+    background: rgb(20, 20, 20) url('./Assistant_Logo_new.png');
+}
+.foot {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+
+
+
+.dark {
+    background-color: #1c1e21;
+}
+.navbar-wrapper {
+    overflow: hidden;
+}
+.avatar {
+    border-radius: 30px;
+    padding: 2px;
+    margin: 10px 0px 0px 10px;
+    width: 50px;
+    border-radius: 30px;
+}
+#links-nav a {
+    color: aqua !important;
+}
+#links-foot ul {
+    list-style-type: none;
+}
+#links-foot li {
+    padding: 5px;
+    float: left;
+}
+.spacer10 {
+    padding: 10px;
+    width: 100%;
+    overflow: hidden;
+}
+.logo-em {
+    display: block;
+    max-width:230px;
+    max-height:60px;
+    width: auto;
+    height: auto;
+    padding: 5px;
+}
+.logo-in {
+    display: block;
+    padding: 2px;
+    float: left;
+    cursor: pointer;
+    font-style: Arial;
+    font-size: 30px;
+}
+.spacer10 {
+    padding: 10px;
+    height: 100px;
+    width: 100%;
+    overflow: hidden;
+}
+.uhoh {
+    padding: 10px;
+    background-color: #333333;
+    border-radius: 10px;
+}/*
+.foot {
+    display: block;
+    bottom:0;
+    width: 100%;
+    overflow: hidden;
+}
+@media only screen and (min-width: 601px){
+    .foot {
+        bottom:0;
+        width: 100%;
+        overflow: hidden;
+    }
+}*/
