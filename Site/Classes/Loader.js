@@ -17,7 +17,7 @@ function resolvable(dir) {
 
 async function run(dir, func) {
     fs.readdir(dir, async (err, files) => {
-        if (err) client.logger.log(err);
+        if (err) console.error(err);
         await files.forEach(async file => {
             let n = file;
             file = require(`${dir}/${file}`);

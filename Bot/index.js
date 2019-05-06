@@ -1,11 +1,14 @@
-const Util = require('./Libraries/DiscordJSPlus/main.js');
+const Util = require('./libraries/Assistant/main.js');
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const config = require('./configuration/config.json');
 const emojis = require('./configuration/emojis.js');
-
-bot.commands = new Map();
-bot.prefix = config.prefix;
+const commandOptions = new Util.commandHandler.commandOptions()
+    .setPrefix(db)
+    .setCooldown(3000)
+    .setClient(bot);
+const commandHandler = new Util.commandHandler(__dirname + '/commands', commandOptions);
+bot.commandHandler = commandHandler;
 
 /* Register permissions */
 bot.permissions = {
@@ -17,7 +20,10 @@ bot.permissions = {
     5: new Util.Permission((msg) => { return config.admins.includes(msg.author.id) }),
     6: new Util.Permission((msg) => { return msg.author.id == '217006264570347520'; })
 }
-bot.reloadCommands = async function () { }
+bot.reloadCommands = function () {
+    let reloaded = bot.commandHandler.reloadCommands();
+    return reloaded;
+}
 
 bot.on("ready", () => {
     bot.user.setPresence({

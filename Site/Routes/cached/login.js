@@ -11,5 +11,4 @@ exports.settings = {
 };
 exports.route = Router.get('/', async (req, res) => {
     res.redirect(discordURL);
-    //res.redirect(`https://discordapp.com/oauth2/authorize?client_id=${CLIENT_ID}&scope=identify&response_type=code&redirect_uri=${redirect}`);
 });
