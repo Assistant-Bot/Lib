@@ -1,0 +1,9 @@
+/* Modules */
+exports.pager = require('./modules/pager/pager.js');
+exports.counter = require('./utils/LineCounter.js');
+exports.Permission = require('./modules/Permission.js');
+exports.Wrapper = require('./utils/Wrapper.js');
+exports.ErrorMsg = require('./utils/ErrorMsg.js');
+exports.CommandHandler = require('./utils/CommandHandler/main.js');
+/* Functions */
+exports.findMember = require('./utils/functions/findMember.js');
