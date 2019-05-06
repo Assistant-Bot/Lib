@@ -7,7 +7,7 @@
  * options.url - URL to listen for.	
  * Discord Auth uses cookies rather than session storage.	
  */
-const fetchURL = require('./fetch.js');
+const fetchURL = require('../Util/fetch.js');
 const btoa = require('btoa');
 function Auth(options) {
     if (!options.clientId) throw 'You must provide a clientId';
