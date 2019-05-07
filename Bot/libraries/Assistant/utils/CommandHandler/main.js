@@ -64,9 +64,9 @@ class CommandHandler {
         if (!this.loaded) this.loaded = true;
         else { this.loadCommands(); this.loaded = true };
         const listener = (this.clientTypes[this.clientType] == 'Eris') ? 'messageCreate' : 'message';
-        this.client.on(listener, (m) => {
-            /* Command shit here */
-        }); 
+
+        let handler = (this.options.customHandler) ? this.options.customHandler : this.default; 
+        this.client.on(listener, handler); 
     }
 
     /**
@@ -78,6 +78,33 @@ class CommandHandler {
         return this.client;
     }
 
+    /**
+     * @var default = Default command handler
+     */
+
+     default = async (msg) => {
+         let prefix = this.options.prefix;
+         let args = msg.content.slice(prefix.length).trim().split(/ +/g);
+         let command = args.shift().toLowerCase();
+         if (!this.options.allowBots) return;
+
+         if (msg.content.indexOf(prefix) !== 0) return;
+
+         try {
+             if (!cmdHandler.has(command)) return;
+             else {
+                 let cmd = cmdHandler.get(command);
+                 if (!cmd.test) return cmd.run.apply(f, [msg].concat(this.options.options));
+                 if (!cmd.test(msg)) return cmd.onError.apply(f, [msg].concat(this.options.options));
+                 else return cmd.test(msg, this.options.options).apply(f, [msg].concat(this.options.options));
+             }
+         } catch (e) {
+             if (!this.options.errorHandler) {
+                 console.error('Assistant CMD Handler: ' + e.message);
+                 msg.channel.send('An error occurred when peforming this command.')
+             }
+         }
+     }
     /* Static */
     static commandOptions = options;
 }

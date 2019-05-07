@@ -46,4 +46,21 @@ class Options {
         this.caching = def;
         return this;
     }
+
+    /**
+     * @param {Array} arr - Array of options to pass through each command. 
+     */
+    setVars(arr) {
+        this.options = arr;
+        return this;
+    }
+
+    /**
+     * @param {Function} func 
+     */
+    setCustomHandler(func) {
+        if(typeof func !== 'function') throw 'Must be a function';
+        this.customHandler = func;
+        return this;
+    }
 }
