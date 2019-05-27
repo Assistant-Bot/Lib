@@ -4,6 +4,7 @@ class Options {
         if(!token) this.token = null; // Token to the bot.
         if(!cooldown) this.cooldown = 3000; // 3 seconds.
         if(!client) this.client = false;
+
         return this;
     }
 
@@ -26,8 +27,9 @@ class Options {
     /**
      * @param {Number} time - Time until another command can be used.
      */
-    setCooldown(time) {
+    setCooldown(time, msg=null) {
         this.cooldown = time;
+        this.cooldownMsg = msg;
         return this;
     }
 
@@ -51,7 +53,7 @@ class Options {
      * @param {Array} arr - Array of options to pass through each command. 
      */
     setVars(arr) {
-        this.options = arr;
+        this.vars = arr;
         return this;
     }
 
@@ -63,4 +65,11 @@ class Options {
         this.customHandler = func;
         return this;
     }
+
+    loadSubfolders(bool=true) {
+        this.loadFolders = true;
+        return this;
+    }
 }
+
+module.exports = Options;

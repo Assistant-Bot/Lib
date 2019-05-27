@@ -1,20 +1,27 @@
-const Util = require('./libraries/Assistant/main.js');
+const Util = require('../libraries/Assistant/main.js');
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const config = require('./configuration/config.json');
 const emojis = require('./configuration/emojis.js');
     bot.emojis = emojis;
 
-const commandDB = Util.commandHandler.database;
-const commandOptions = new Util.commandHandler.commandOptions()
+//const commandDB = Util.commandHandler.database;
+const commandOptions = new Util.CommandHandlerOptions()
     .setPrefix('a!')
-    .setDatabase(commandDB) // NEEDS TO HAVE A getPrefix(guildID) function.
-    .setCooldown(3000)
+    .setCooldown(3000, emojis.redtick + ' You are using commands to fast.')
     .setClient(bot)
-    .setVars([ Util, emojis ]);
-const commandHandler = new Util.commandHandler(__dirname + '/commands', commandOptions);
-const Events = Util.loadEvents(__dirname + '/Events');
+    .loadSubfolders(true)
+    .setVars([Util, emojis]); // only accepts 2 additional args.
 
-bot.commandHandler = commandHandler;
-bot.events = Events;
-bot.login(config.token);
+try {
+    const commandHandler = new Util.CommandHandler(__dirname + '/Commands', commandOptions);
+    commandHandler.start(); // USE .start();
+
+    bot.commandHandler = commandHandler;
+    //bot.events = Events;
+    bot.login(config.dev_token);
+
+    bot.on('ready', () => { console.log('I am on! :)') });
+} catch (e) {
+    console.log('An error has occured: ' + e);
+}

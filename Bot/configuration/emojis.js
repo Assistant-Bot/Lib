@@ -4,7 +4,7 @@ module.exports = {
     square: '<a:load_box:480476301103464488>',
     ring: '<a:ring_load:480476507706359809>',
     dj: '<a:dj:482684220892905492>',
-    check: '<:check:461704813558759475>',
+    greentick: '<:check:461704813558759475>',
     redtick: '<:redtick:482667387250933770>',
     coin: '<:currency_ownage:483064541345742869>',
     update: '<a:updating:483092093934370816>',

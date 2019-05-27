@@ -1,0 +1,11 @@
+/* Modules */
+exports.pager = require('./modules/pager/pager');
+exports.counter = require('./utils/LineCounter');
+exports.Permission = require('./modules/Permission');
+exports.Wrapper = require('./utils/Wrapper');
+exports.ErrorMsg = require('./utils/ErrorMsg');
+exports.CommandHandler = require('./utils/CommandHandler/main');
+exports.CommandHandlerOptions = require('./utils/CommandHandler/Classes/Options');
+/* Functions */
+exports.findMember = require('./utils/functions/findMember');
+//exports.read = require('./utils/functions/read.js');
