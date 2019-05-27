@@ -261,8 +261,11 @@ class CommandHandler {
          }
 
          try {
-             if (!cc.commands.has(command)) return msg.channel.send('Command non existant (TEMP): ' + command);
-             else {
+             if (!cc.commands.has(command)) {
+                 if (cc.options.resToUnk == true)
+                    return msg.channel.send(cc.replaceAll(cc.options.resMsg, '{COMMAND}', command));
+                 else return;
+             } else {
                  let cmd = cc.commands.get(command);
                  if (!cmd.test) return cmd.onRun(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1]);
                  if (!cmd.test(msg)) return cmd.onError(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1]);

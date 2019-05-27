@@ -9,6 +9,16 @@ class Options {
     }
 
     /**
+     * @param {Boolean} bool - Respond to unknown commands? if so, msg :) 
+     * @param {String} msg - Message to respond with
+     */
+    unknownCommands(bool, msg) {
+        this.resToUnk = bool
+        this.resMsg = msg;
+        return this;
+    }
+
+    /**
      * @param {String} prefix - Prefix for the bot, if this is custom pass a database.
      */
     setPrefix(prefix) {

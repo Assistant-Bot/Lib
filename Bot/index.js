@@ -9,6 +9,7 @@ const emojis = require('./configuration/emojis.js');
 const commandOptions = new Util.CommandHandlerOptions()
     .setPrefix('a!')
     .setCooldown(3000, emojis.redtick + ' You are using commands to fast.')
+    .unknownCommands(true, emojis.redtick + ' `{COMMAND}` does not exist.')
     .setClient(bot)
     .loadSubfolders(true)
     .setVars([Util, emojis]); // only accepts 2 additional args.
