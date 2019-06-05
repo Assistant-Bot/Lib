@@ -1,3 +1,8 @@
+/**
+ * @author John.#9309
+ * @toDo Work on per-command cooldown & perm ints
+ */
+
 const CommandCollection = require('./Classes/CommandCollection');
 const util = require('util');
 const fs = require('fs');
@@ -18,12 +23,15 @@ class CommandHandler {
         if (options.client == false) {
             this.client = new Discord.Client(options.token);
             this.clientType = 0;
-        } else 
-            this.detectClient(options.client);
+        } else this.detectClient(options.client);
 
         if (!options.prefix) throw '[COMMAND-HANDLER]: Invalid prefix';
-        if (typeof options !== 'string') this.database = options.prefix;
-        
+        if (typeof options.prefix !== 'string') this.database = options.prefix;
+        if (this.database) {
+            if (!this.database.getPrefix) throw '[COMMAND-HANDLER]: Database must return false or string.';
+            let response = this.database.getPrefix('0');
+            if (response !== false || typeof response !== 'string') throw '[COMMAND-HANDLER]: Database must return false or string.';
+        }
         this.options = options;
         this.commands = new CommandCollection();
         this.load = this.start;
@@ -38,6 +46,7 @@ class CommandHandler {
     /**
      * @returns {Client} - Returns a client
      */
+
     async start() {
         await this.loadCommands();
         await this.registerMessage();
@@ -47,6 +56,7 @@ class CommandHandler {
     /**
      * @returns {Boolean}
      */
+
     async loadCommands() {
         if (this.options.loadFolders == false) {
             console.log('[COMMAND-HANDLER]: Attempting to load files to cache using FILE ONLY.');
@@ -60,6 +70,7 @@ class CommandHandler {
     /**
      * @param {Boolean} subVal - Allow subdirs?
      */
+
     async loadCmds(subVal) {
         try {
             if (subVal) {
@@ -90,10 +101,40 @@ class CommandHandler {
                             return;
                         }
 
-                        this.properlyLoad(fl, '[COMMAND-HANDLER]: {CMD} loaded with aliases: {ALIAS}!');
+                        this.register(fl, this.dir + '/' + type, '[COMMAND-HANDLER]: {CMD} loaded with aliases: {ALIAS}!');
                         loaded++;
                     });
                 }
+                console.log('[COMMAND-HANDLER]: ' + loaded + ' of ' + attempted + ' attempted commands loaded!');
+            } else {
+                let type = types[i];
+                let files = this.getFiles(this.dir + '\\' + type);
+                let loaded = 0;
+                let attempted = 0;
+                await files.forEach(fl => {
+                    attempted++;
+
+                    if (fl.search('.js') == -1) {
+                        console.log(`[COMMAND-HANDLER]: ${fl} could not be loaded -> INVALID FILE TYPE. (Error Ignored)`);
+                        return;
+                    }
+
+                    let cac = fl;
+                    fl = require(this.dir + '\\' + fl);
+
+                    if (!this.isValidCommand(fl)) {
+                        console.log(`[COMMAND-HANDLER]: ${cac} could not be loaded -> NOT VALID COMMAND. (Error Ignored)`);
+                        return;
+                    }
+
+                    if (this.commands.has(fl.name)) {
+                        console.log(`[COMMAND-HANDLER]: ${cac} could not be loaded -> EXISTS. (Error Ignored)`);
+                        return;
+                    }
+
+                    this.register(fl, this.dir + '/', '[COMMAND-HANDLER]: {CMD} loaded with aliases: {ALIAS}!');
+                    loaded++;
+                });
                 console.log('[COMMAND-HANDLER]: ' + loaded + ' of ' + attempted + ' attempted commands loaded!');
             }
         } catch (e) {
@@ -108,13 +149,12 @@ class CommandHandler {
 
         if (typeof cmd.name !== 'string') return false;
         if (typeof cmd.aliases !== 'object') return false;
-        if (typeof cmd.permission !== 'number') return false;
         if (typeof cmd.onError !== 'function') return false;
         if (typeof cmd.onRun !== 'function') return false;
         else return true;
     }
 
-    async properlyLoad(cmd, str) {
+    async register(cmd, type, str) {
         cmd = new cmd();
         let cache = cmd;
         let aliases = cmd.aliases;
@@ -123,33 +163,63 @@ class CommandHandler {
             cache.parent = cmd.name.toLowerCase();
             this.commands.set(alias.toLowerCase(), cache);
         });
-        
+        cmd.dir = type;
         this.commands.set(cmd.name.toLowerCase(), cmd);
         str = this.replaceAll(str, '{CMD}', cmd.name);
         str = this.replaceAll(str, '{ALIAS}', cmdAl);
-        console.log(str);
+        if (this.options.logMessages == false) return;
+        else return console.log(str);
     }
 
     /**
      * @returns {Boolean|Array}
      */
-    reloadCommands(resetClient=false, client=this.client) {
+
+    async reloadCommands(resetClient=false, client=this.client) {
+        let unloaded = 0;
         if (!this.loaded) throw '[COMMAND-HANDLER]: Commands have not been loaded yet, this may have been a failure.';
         if (!resetClient) {
-            this.commands = this.commands.clear();
+            await this.commands.forEachKey(async k => {
+                let cmd = this.commands.get(k);
+                await this.commands.delete(k);
+                if (cmd.parent && cmd.parent !== k) return;
+                await delete require.cache[require.resolve(cmd.dir + '/' + k + '.js')];
+                unloaded++;
+            });
+            if (this.options.logMessages !== false) console.log('[COMMAND-HANDLER]: Unloaded ' + unloaded + ' commands.');
             return this.loadCommands();
         } else {
-            this.commands = this.commands.clear();
+            await this.commands.forEachKey(async k => {
+                let cmd = this.commands.get(k);
+                await this.commands.delete(k);
+                if (cmd.parent && cmd.parent !== k) return;
+                await delete require.cache[require.resolve(cmd.dir + '/' + k + '.js')];
+                unloaded++
+            });
+            if (this.options.logMessages !== false) console.log('[COMMAND-HANDLER]: Unloaded ' + unloaded + ' commands.');
             this.client = client;
-            this.client.removeListener('message');
+            this.client.removeListener(this.handler);
             this.registerMessage();
             return this.loadCommands();
         }
     }
 
     /**
+     * @param {String} command - Command name
+     */
+
+    unregister(command) {
+        try {
+            return this.commands.delete(command);
+        } catch (e) {
+            return e;
+        }
+    }
+
+    /**
      * @param {Object} client 
      */
+
     detectClient(client) {
         if (client.login == undefined) throw '[COMMAND-HANDLER]: Invalid client';
         if (client.eventNames == undefined) throw '[COMMAND-HANDLER]: Invalid client';
@@ -158,17 +228,19 @@ class CommandHandler {
         if (events.includes('messageCreate')) {
             this.clientType = 1;
             this.client = client;
+            return this.clientType;
         } else {
             this.clientType = 0;
             this.client = client;
+            return this.clientType; 
         }
     }
 
     /**
      * @returns {VoidFunction} - Nothing.
      */
+
     async registerMessage() {
-        //if (util.inspect(this.client.listeners('message')).length >= 1) this.client.removeListener('message');
         if (!this.loaded) this.loaded = true;
         else { 
             this.loadCommands();
@@ -176,8 +248,8 @@ class CommandHandler {
         };
         const listener = (this.clientTypes[this.clientType] == 'Eris') ? 'messageCreate' : 'message';
 
-        let handler = (this.options.customHandler) ? this.options.customHandler : this.default; 
-        this.client.on(listener, handler); 
+        this.handler = (this.options.customHandler) ? this.options.customHandler : this.default; 
+        this.client.on(listener, this.handler); 
     }
 
     filterMessage(type, msg) {
@@ -201,6 +273,7 @@ class CommandHandler {
      * @param {String} replace - String
      * @returns {String} Filtered String
      */
+
     replaceAll(str, search, replace) {
         return str.split(search).join(replace);
     }
@@ -208,6 +281,7 @@ class CommandHandler {
     /**
      * @param {String} dir 
      */
+
     resolvable(dir) {
         if (!fs.existsSync(dir)) return false;
         else return true;
@@ -243,6 +317,16 @@ class CommandHandler {
      async default (msg) {
          let cc = this.commandHandler;
          let prefix = cc.options.prefix;
+         if (typeof prefix == 'function') {
+             try {
+                 let response = prefix.getPrefix(msg.guild.id);
+                 if (response == false) return;
+                 if (typeof response !== 'string') return;
+                 prefix = response;
+             } catch (e) {
+                 console.log('[COMMAND-HANDLER]: Unknown prefix error: ' + e);
+             }
+         }
          let args = msg.content.slice(prefix.length).trim().split(/ +/g);
          let command = args.shift().toLowerCase();
          if (cc.options.allowBots && msg.author.bot) return;
@@ -250,7 +334,6 @@ class CommandHandler {
          if (cc.options.cooldown > 0) {
              if (cc.cooldown.has(msg.author.id)) {
                  if (cc.warned.has(msg.author.id)) return;
-                
                  cc.warned.add(msg.author.id);
                  setTimeout(() => { cc.warned.delete(msg.author.id) }, cc.options.cooldown);
                  return msg.channel.send(cc.options.cooldownMsg);
@@ -267,15 +350,20 @@ class CommandHandler {
                  else return;
              } else {
                  let cmd = cc.commands.get(command);
-                 if (!cmd.test) return cmd.onRun(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1]);
-                 if (!cmd.test(msg)) return cmd.onError(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1]);
-                 else return cmd.test(msg, cc.client, msg, args, cc.options.vars[0], cc.options.vars[1]);
+                 if (!cmd.onPermCheck) await cmd.onRun(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1]);
+                 else if (!await cmd.onPermCheck(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1])) {
+                     if (!cmd.onNoPerm) await cmd.onError(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1]);
+                     else await cmd.onNoPerm(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1]);
+                 }
+                 else await cmd.onRun(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1]);
+                 return;
              }
          } catch (e) {
-             if (!cc.options.errorHandler) {
-                 console.error('Assistant CMD Handler: ' + e.message);
+             console.log(`[COMMAND-HANDLER]: Command ${command} ran into the error: ${e}`);
+             let cmd = cc.commands.get(command);
+             if (!cmd.onError) {
                  msg.channel.send('An error occurred when peforming this command.');
-             }
+             } else cmd.onError(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1]);
          }
      }
 

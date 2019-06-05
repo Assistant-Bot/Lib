@@ -7,19 +7,21 @@ const emojis = require('./configuration/emojis.js');
 
 //const commandDB = Util.commandHandler.database;
 const commandOptions = new Util.CommandHandlerOptions()
-    .setPrefix('a!')
-    .setCooldown(3000, emojis.redtick + ' You are using commands to fast.')
-    .unknownCommands(true, emojis.redtick + ' `{COMMAND}` does not exist.')
+    .setPrefix('a!') // if this has a getPrefix(GUILD ID) : string function, you can use custom prefixes.
+    .setCooldown(3000, emojis.redtick + ' You must wait a few seconds to use commands again.')
+    .unknownCommands(true, emojis.redtick + ' Command, `{COMMAND}` does not exist.')
     .setClient(bot)
     .loadSubfolders(true)
     .setVars([Util, emojis]); // only accepts 2 additional args.
 
 try {
     const commandHandler = new Util.CommandHandler(__dirname + '/Commands', commandOptions);
+   // const AntiRaid = new Util.AntiRaid(bot); // eventually pass settings
     commandHandler.start(); // USE .start();
+   // AntiRaid.initialize();
 
+   // bot.antiraid = AntiRaid;
     bot.commandHandler = commandHandler;
-    //bot.events = Events;
     bot.login(config.dev_token);
 
     bot.on('ready', () => { console.log('I am on! :)') });

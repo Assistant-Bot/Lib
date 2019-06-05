@@ -1,4 +1,4 @@
-const Group = require('../../utils/grouper');
+const Group = require('../../utils/Classes/grouper');
 
 class Pager {
     constructor(data, perpage) {

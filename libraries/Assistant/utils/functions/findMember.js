@@ -11,7 +11,7 @@ module.exports = (guild, search) => {
         (!m.user.username || m.user.username === null) ? false : m.user.username.toLowerCase().search(search) != -1 ||
         (!m.nickname || m.nickname === null) ? false : m.nickname.toLowerCase().search(search) != -1
     });
-    console.log(poss);
+    if (!poss) return false;
     if (poss.size < 1) return false;
     else return poss.toArray();
 }
