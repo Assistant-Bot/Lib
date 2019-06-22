@@ -10,10 +10,12 @@ class info {
     }
 
     async onRun(bot, msg, args, Util, emojis) {
+        /*
         let permission = Util.checkClientPermission(bot, msg, 'embedLinks');
         if (!permission) {
             return Util.sendError(msg, emojis, 'perm', 'embed_links');
-        }
+        }*/
+
     }
 
     async onError(bot, msg, args, Util, emojis) {
