@@ -1,3 +1,4 @@
+const ms = require('millisecond');
 class Eval {
     constructor () {
         this.name = 'eval';

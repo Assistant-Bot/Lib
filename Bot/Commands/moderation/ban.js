@@ -44,7 +44,7 @@ class Ban {
         return msg.channel.send(emojis.redtick + ' An error has occurred, join the support server if the problem persists.');
     }
 
-    async onPermCheck(msg) {
+    async onPermCheck(bot, msg) {
         if (!msg.member.hasPermission('ADMINISTRATOR')) return false;
         else return true;
     }

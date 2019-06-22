@@ -6,7 +6,7 @@
 class SimpleEmbed {
     constructor() {
         this.embed = {};
-        this.setFooter('Circle v1');
+        this.setFooter('Assistant v1');
         this.setTimestamp(new Date());
     }
 
@@ -19,19 +19,19 @@ class SimpleEmbed {
      */
 
     addField(title, description, inline) {
-        if(!title) title = 'No title provided';
-        if(!description) description = 'No description provided';
-        if(!inline) inline = false;
-        if(title.length >= 256) throw 'You need a shorter title';
-        if(description.length >= 1024) throw 'You need a shorter description';
-        if(typeof inline !== Boolean) inline = false;
+        if (!title) title = 'No title provided';
+        if (!description) description = 'No description provided';
+        if (!inline) inline = false;
+        if (title.length >= 256) throw 'You need a shorter title';
+        if (description.length >= 1024) throw 'You need a shorter description';
+        if (typeof inline !== Boolean) inline = false;
 
         let temp = {
             name: title,
             value: description,
             inline: inline
         };
-        if(!this.embed.fields) this.embed.fields = [];
+        if (!this.embed.fields) this.embed.fields = [];
         this.embed.fields.push(temp);
         return this.embed;
     }
@@ -43,9 +43,9 @@ class SimpleEmbed {
      */
 
     setTitle(title) {
-        if(typeof title !== 'string') throw 'Title must be a string';
-        if(!title) return this.embed;
-        if(title.length >= 256) throw 'You need a shorter title.';
+        if (typeof title !== 'string') throw 'Title must be a string';
+        if (!title) return this.embed;
+        if (title.length >= 256) throw 'You need a shorter title.';
         this.embed.title = title;
         return this.embed;
     }
@@ -58,8 +58,8 @@ class SimpleEmbed {
 
     setDescription(desc) {
         //2048 chars
-        if(!desc) return this.embed;
-        if(desc.length >= 2048) throw 'You need a shorter description';
+        if (!desc) return this.embed;
+        if (desc.length >= 2048) throw 'You need a shorter description';
         this.embed.description = desc;
         return this.embed;
     }
@@ -71,12 +71,12 @@ class SimpleEmbed {
      */
 
     setColor(val) {
-        if(!this.embed.color) this.embed.color = 0xffffff;
-        if(!val) return this.embed;
+        if (!this.embed.color) this.embed.color = 0xffffff;
+        if (!val) return this.embed;
         if (typeof val === 'number') this.embed.color = val;
         else {
             let str = val.split("#")[1];
-            if(!parseInt(`0x${str}`)) throw 'Color must be HEX or INTEGER.';
+            if (!parseInt(`0x${str}`)) throw 'Color must be HEX or INTEGER.';
             else this.embed.color = parseInt(`0x${str}`);
         }
         return this.embed;
@@ -92,10 +92,10 @@ class SimpleEmbed {
 
     setImage(url, height, width) {
         let temp = {};
-        if(!url) throw 'Invalid Image.';
+        if (!url) throw 'Invalid Image.';
         else temp.url = url;
-        if(height && parseInt(height)) temp.height = height;
-        if(height && parseInt(width)) temp.width = width;
+        if (height && parseInt(height)) temp.height = height;
+        if (height && parseInt(width)) temp.width = width;
         this.embed.image = temp;
         return this.embed;
     }
@@ -115,7 +115,7 @@ class SimpleEmbed {
         if (height && parseInt(height)) temp.height = height;
         if (height && parseInt(width)) temp.width = width;
         this.embed.video = temp;
-        return this.embed;    
+        return this.embed;
     }
 
     /**
@@ -143,7 +143,7 @@ class SimpleEmbed {
      */
 
     setTimestamp(date) {
-        if(!date) return this.embed;
+        if (!date) return this.embed;
         else {
             this.embed.timestamp = date;
             return this.embed;
@@ -158,12 +158,12 @@ class SimpleEmbed {
      *  
      */
 
-    setAuthor(name, url, iconURL) {
+    setAuthor(name, iconURL, url) {
         let temp = {};
-        if(name) temp.name = name;
-        if(url) temp.url = url;
-        if(iconURL) temp.icon_url = iconURL;
-        if(Object.keys(temp).length > 0) this.embed.author = temp;
+        if (name) temp.name = name;
+        if (url) temp.url = url;
+        if (iconURL) temp.icon_url = iconURL;
+        if (Object.keys(temp).length > 0) this.embed.author = temp;
         return this.embed;
     }
 

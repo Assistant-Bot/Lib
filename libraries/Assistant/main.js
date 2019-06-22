@@ -6,6 +6,8 @@ exports.Wrapper = require('./utils/Classes/Wrapper');
 exports.ErrorMsg = require('./utils/Classes/ErrorMsg');
 exports.CommandHandler = require('./utils/CommandHandler/main');
 exports.CommandHandlerOptions = require('./utils/CommandHandler/Classes/Options');
+exports.AdvancedMap = require('./utils/Classes/AdvancedMap');
+exports.SimpleEmbed = require('./utils/Classes/SimpleEmbed');
 /* Functions */
 exports.ObjectFilter = require('./utils/functions/objectFilter');
 exports.findMember = require('./utils/functions/findMember');

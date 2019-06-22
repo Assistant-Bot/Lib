@@ -12,6 +12,7 @@ const commandOptions = new Util.CommandHandlerOptions()
     .unknownCommands(true, emojis.redtick + ' Command, `{COMMAND}` does not exist.')
     .setClient(bot)
     .loadSubfolders(true)
+    .logMessages(false)
     .setVars([Util, emojis]); // only accepts 2 additional args.
 
 try {
