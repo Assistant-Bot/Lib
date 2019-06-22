@@ -41,7 +41,8 @@ class Ban {
     }
 
     async onError(bot, msg, args, Util, emojis) {
-        return msg.channel.send(emojis.redtick + ' An error has occurred, join the support server if the problem persists.');
+        Util.logError(bot, msg, args, Util, emojis, this);
+        return Util.sendError(msg, emojis, 'unknown');
     }
 
     async onPermCheck(bot, msg) {

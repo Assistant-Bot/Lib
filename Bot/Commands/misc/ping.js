@@ -11,12 +11,13 @@ class Ping {
     
     async onRun (bot, msg, args, Util, emojis) {
         let m = await msg.channel.send(`${emojis.square} Pinging...`);
-        let value = m.createdTimestamp - msg.createdTimestamp;
-        return m.edit(emojis.greentick + ' Pong! `' + value + '`');
+        let value = m.timestamp - msg.timestamp;
+        return m.edit(emojis.greentick + ' Pong! `' + value + '` ms.');
     }
     
-    async onError (bot, msg, args, Util, emojis) {
-        return msg.channel.send(emojis.redtick + ' You require `default` permissions to use this command.');
+    async onError(bot, msg, args, Util, emojis) {
+        Util.logError(bot, msg, args, Util, emojis, this);
+        return Util.sendError(msg, emojis, 'unknown');
     }
 }
 

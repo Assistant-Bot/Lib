@@ -8,16 +8,26 @@ class Reload {
     }
 
     async onRun (bot, msg, args, Util, emojis) {
+        let m;
+
         try {
-            await bot.commandHandler.reloadCommands();
-            return msg.channel.send(`${emojis.greentick} Commands reloaded!`);
+            if (!args[0]) {
+                m = await msg.channel.send(`${emojis.square} Attempting to reload command(s): **All**.`);
+                await bot.commandHandler.reloadCommands(true);
+                return m.edit(`${emojis.greentick} Commands reloaded!`);
+            } else {
+                m = await msg.channel.send(`${emojis.square} Attempting to reload command(s): **${args[0]}**.`);
+                bot.commandHandler.reloadCommand(args[0]);
+                return m.edit(`${emojis.greentick} Command **${args[0]}** reloaded!`);
+            }
         } catch (e) {
-            return msg.channel.send(`${emojis.redtick} When performing the command, I encountered the following error: \`\`\`xl\n${e}\`\`\``);
+            return m.edit(`${emojis.redtick} When performing the command, I encountered the following error: \`\`\`js\n${e}\`\`\``);
         }
     }
  
-    async onError (bot, msg, args, Util, emojis) {
-        return msg.channel.send(`${emojis.redtick} Something isn't right, try joining the support server.`);
+    async onError(bot, msg, args, Util, emojis) {
+        Util.logError(bot, msg, args, Util, emojis, this);
+        return Util.sendError(msg, emojis, 'unknown');
     }
 
     async onNoPerm () {

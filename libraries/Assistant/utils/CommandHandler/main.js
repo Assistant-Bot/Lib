@@ -57,21 +57,22 @@ class CommandHandler {
      * @returns {Boolean}
      */
 
-    async loadCommands() {
+    async loadCommands(silent=false) {
         if (this.options.loadFolders == false) {
-            console.log('[COMMAND-HANDLER]: Attempting to load files to cache using FILE ONLY.');
-            return this.loadCmds(this.options.loadFolders);
+            if (!silent) console.log('[COMMAND-HANDLER]: Attempting to load files to cache using FILE ONLY.');
+            return this.loadCmds(this.options.loadFolders, silent);
         } else {
-            console.log('[COMMAND-HANDLER]: Attempting to load files to cache using SUB-FOLDER RECURSIVE.');
-            return this.loadCmds(this.options.loadFolders);
+            if (!silent) console.log('[COMMAND-HANDLER]: Attempting to load files to cache using SUB-FOLDER RECURSIVE.');
+            return this.loadCmds(this.options.loadFolders, silent);
         }
     }
 
     /**
      * @param {Boolean} subVal - Allow subdirs?
+     * @param {Boolean} silent - Log to console?
      */
 
-    async loadCmds(subVal) {
+    async loadCmds(subVal, silent=false) {
         try {
             if (subVal) {
                 let types = this.getDirectories(this.dir);
@@ -84,7 +85,7 @@ class CommandHandler {
                         attempted++;
 
                         if (fl.search('.js') == -1) {
-                            console.log(`[COMMAND-HANDLER]: ${fl} could not be loaded -> INVALID FILE TYPE. (Error Ignored)`);
+                            if (!silent) console.log(`[COMMAND-HANDLER]: ${fl} could not be loaded -> INVALID FILE TYPE. (Error Ignored)`);
                             return;
                         }
 
@@ -92,12 +93,12 @@ class CommandHandler {
                         fl = require(this.dir + '\\' + type + '\\' + fl);
 
                         if (!this.isValidCommand(fl)) {
-                            console.log(`[COMMAND-HANDLER]: ${cac} could not be loaded -> NOT VALID COMMAND. (Error Ignored)`);
+                            if (!silent) console.log(`[COMMAND-HANDLER]: ${cac} could not be loaded -> NOT VALID COMMAND. (Error Ignored)`);
                             return;
                         }
 
                         if (this.commands.has(fl.name)) {
-                            console.log(`[COMMAND-HANDLER]: ${cac} could not be loaded -> EXISTS. (Error Ignored)`);
+                            if (!silent) console.log(`[COMMAND-HANDLER]: ${cac} could not be loaded -> EXISTS. (Error Ignored)`);
                             return;
                         }
 
@@ -105,7 +106,7 @@ class CommandHandler {
                         loaded++;
                     });
                 }
-                console.log('[COMMAND-HANDLER]: ' + loaded + ' of ' + attempted + ' attempted commands loaded!');
+                if (!silent) console.log('[COMMAND-HANDLER]: ' + loaded + ' of ' + attempted + ' attempted commands loaded!');
             } else {
                 let type = types[i];
                 let files = this.getFiles(this.dir + '\\' + type);
@@ -115,7 +116,7 @@ class CommandHandler {
                     attempted++;
 
                     if (fl.search('.js') == -1) {
-                        console.log(`[COMMAND-HANDLER]: ${fl} could not be loaded -> INVALID FILE TYPE. (Error Ignored)`);
+                        if (!silent) console.log(`[COMMAND-HANDLER]: ${fl} could not be loaded -> INVALID FILE TYPE. (Error Ignored)`);
                         return;
                     }
 
@@ -123,23 +124,42 @@ class CommandHandler {
                     fl = require(this.dir + '\\' + fl);
 
                     if (!this.isValidCommand(fl)) {
-                        console.log(`[COMMAND-HANDLER]: ${cac} could not be loaded -> NOT VALID COMMAND. (Error Ignored)`);
+                        if (!silent) console.log(`[COMMAND-HANDLER]: ${cac} could not be loaded -> NOT VALID COMMAND. (Error Ignored)`);
                         return;
                     }
 
                     if (this.commands.has(fl.name)) {
-                        console.log(`[COMMAND-HANDLER]: ${cac} could not be loaded -> EXISTS. (Error Ignored)`);
+                        if (!silent) console.log(`[COMMAND-HANDLER]: ${cac} could not be loaded -> EXISTS. (Error Ignored)`);
                         return;
                     }
 
                     this.register(fl, this.dir + '/', '[COMMAND-HANDLER]: {CMD} loaded with aliases: {ALIAS}!');
                     loaded++;
                 });
-                console.log('[COMMAND-HANDLER]: ' + loaded + ' of ' + attempted + ' attempted commands loaded!');
+                if (!silent) console.log('[COMMAND-HANDLER]: ' + loaded + ' of ' + attempted + ' attempted commands loaded!');
             }
         } catch (e) {
            console.log('[COMMAND-HANDLER]: Commands loading error -> ' + e);
         }
+    }
+
+    /**
+     * @param {String} cmd - Command Name
+     * @param {String} dir - Command Directory
+     */
+
+    loadCommand(cmd, dir) {
+        let fl = require(dir + '/' + cmd);
+
+        if (!this.isValidCommand(fl)) {
+            return 1;
+        }
+
+        if (this.commands.has(fl.name)) {
+            return 2;
+        }
+
+        return this.register(fl, dir);
     }
 
     isValidCommand(cmd) {
@@ -165,43 +185,13 @@ class CommandHandler {
         });
         cmd.dir = type;
         this.commands.set(cmd.name.toLowerCase(), cmd);
+
+        if (!str) return;
+
         str = this.replaceAll(str, '{CMD}', cmd.name);
         str = this.replaceAll(str, '{ALIAS}', cmdAl);
         if (this.options.logMessages == false) return;
         else return console.log(str);
-    }
-
-    /**
-     * @returns {Boolean|Array}
-     */
-
-    async reloadCommands(resetClient=false, client=this.client) {
-        let unloaded = 0;
-        if (!this.loaded) throw '[COMMAND-HANDLER]: Commands have not been loaded yet, this may have been a failure.';
-        if (!resetClient) {
-            await this.commands.forEachKey(async k => {
-                let cmd = this.commands.get(k);
-                await this.commands.delete(k);
-                if (cmd.parent && cmd.parent !== k) return;
-                await delete require.cache[require.resolve(cmd.dir + '/' + k + '.js')];
-                unloaded++;
-            });
-            if (this.options.logMessages !== false) console.log('[COMMAND-HANDLER]: Unloaded ' + unloaded + ' commands.');
-            return this.loadCommands();
-        } else {
-            await this.commands.forEachKey(async k => {
-                let cmd = this.commands.get(k);
-                await this.commands.delete(k);
-                if (cmd.parent && cmd.parent !== k) return;
-                await delete require.cache[require.resolve(cmd.dir + '/' + k + '.js')];
-                unloaded++
-            });
-            if (this.options.logMessages !== false) console.log('[COMMAND-HANDLER]: Unloaded ' + unloaded + ' commands.');
-            this.client = client;
-            this.client.removeListener(this.handler);
-            this.registerMessage();
-            return this.loadCommands();
-        }
     }
 
     /**
@@ -217,15 +207,68 @@ class CommandHandler {
     }
 
     /**
+     * @returns {Boolean|Array}
+     */
+
+    async reloadCommands(silent=false, resetClient=false, client=this.client) {
+        let unloaded = 0;
+        if (!this.loaded) throw '[COMMAND-HANDLER]: Commands have not been loaded yet, this may have been a failure.';
+        if (!resetClient) {
+            await this.commands.forEachKey(async k => {
+                let cmd = this.commands.get(k);
+                await this.commands.delete(k);
+                if (cmd.parent && cmd.parent !== k) return;
+                await delete require.cache[require.resolve(cmd.dir + '/' + k + '.js')];
+                unloaded++;
+            });
+            if (this.options.logMessages !== false) console.log('[COMMAND-HANDLER]: Unloaded ' + unloaded + ' commands.');
+            return this.loadCommands(silent);
+        } else {
+            await this.commands.forEachKey(async k => {
+                let cmd = this.commands.get(k);
+                await this.commands.delete(k);
+                if (cmd.parent && cmd.parent !== k) return;
+                await delete require.cache[require.resolve(cmd.dir + '/' + k + '.js')];
+                unloaded++
+            });
+            if (this.options.logMessages !== false) console.log('[COMMAND-HANDLER]: Unloaded ' + unloaded + ' commands.');
+            this.client = client;
+            this.client.removeListener(this.handler);
+            this.registerMessage();
+            return this.loadCommands(silent);
+        }
+    }
+
+    reloadCommand(name) {
+        name = name.toLowerCase();
+
+        try {
+            if (!this.commands.has(name)) return false;
+            let cmd = this.commands.get(name);
+            this.commands.delete(name);
+
+            if (cmd.parent && cmd.parent !== name) name = cmd.parent.name
+            delete require.cache[require.resolve(cmd.dir + '/' + name + '.js')];
+
+            this.loadCommand(name, cmd.dir);
+            return true;
+        } catch (e) {
+            return false;
+        }
+        
+    }
+
+
+    /**
      * @param {Object} client 
      */
 
     detectClient(client) {
-        if (client.login == undefined) throw '[COMMAND-HANDLER]: Invalid client';
+        // if (client.login == undefined) throw '[COMMAND-HANDLER]: Invalid client'; - DISABLE DISCORD.JS ONLY CHECK
         if (client.eventNames == undefined) throw '[COMMAND-HANDLER]: Invalid client';
         if (typeof client.eventNames != 'function') throw '[COMMAND-HANDLER]: Client does not have a valid event listener';
-        let events = client.eventNames();
-        if (events.includes('messageCreate')) {
+
+        if (client.options.disableEveryone !== undefined) {
             this.clientType = 1;
             this.client = client;
             return this.clientType;

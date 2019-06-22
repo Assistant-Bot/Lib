@@ -1,9 +1,12 @@
 const Util = require('../libraries/Assistant/main.js');
-const Discord = require('discord.js');
-const bot = new Discord.Client();
+const Eris = require('eris');
 const config = require('./configuration/config.json');
 const emojis = require('./configuration/emojis.js');
-    bot.emojis = emojis;
+
+/* Initialize the Client */
+Util.loadProperties(Eris);
+const bot = (config.dev_mode) ? new Eris(config.dev_token, config.eris) : new Eris(config.token, config.eris); //Discord.Client(); 
+bot.emojis = emojis;
 
 //const commandDB = Util.commandHandler.database;
 const commandOptions = new Util.CommandHandlerOptions()
@@ -23,9 +26,9 @@ try {
 
    // bot.antiraid = AntiRaid;
     bot.commandHandler = commandHandler;
-    bot.login(config.dev_token);
-
     bot.on('ready', () => { console.log('I am on! :)') });
 } catch (e) {
     console.log('An error has occured: ' + e);
 }
+
+bot.connect(); //bot.login(config.dev_token); - Eris.JS

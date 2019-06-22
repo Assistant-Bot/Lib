@@ -5,7 +5,7 @@ class Invite {
         this.aliases = ['inv', 'i'];
         this.longDescription = 'Invite.';
         this.permission = 0,
-            this.list = true;
+        this.list = true;
     }
 
     async onRun(bot, msg, args, Util, emojis) {
@@ -26,7 +26,8 @@ class Invite {
     }
 
     async onError(bot, msg, args, Util, emojis) {
-        return msg.channel.send(emojis.redtick + ' An error has occurred, join the support server if the problem persists.');
+        Util.logError(bot, msg, args, Util, emojis, this);
+        return Util.sendError(msg, emojis, 'unknown');
     }
 }
 

@@ -19,7 +19,7 @@ class Eval {
             const code = args.join(" ");
             let evaled = eval(code);
             if (typeof evaled !== "string") evaled = require("util").inspect(evaled, { depth: 0 });
-            msg.channel.send(clean(evaled), { code: "js" });
+            msg.channel.send(`\`\`\`js\n${clean(evaled)}\`\`\``);
         } catch (err) {
             msg.channel.send(`\`\`\`js\n${clean(err)}\n\`\`\``);
         }

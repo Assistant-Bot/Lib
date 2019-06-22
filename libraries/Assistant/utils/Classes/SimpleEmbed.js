@@ -3,11 +3,17 @@
  * @description: Simple Embed Constructor
 */
 
+/**
+ * FOR DISCORD.JS FOLLOW THESE STEPS:
+ * CRTL + F
+ * FIND: return this;
+ * REPLACE: return this.embed;
+ * RETURN -> SAVE
+ */
+
 class SimpleEmbed {
     constructor() {
         this.embed = {};
-        this.setFooter('Assistant v1');
-        this.setTimestamp(new Date());
     }
 
     /**
@@ -33,7 +39,7 @@ class SimpleEmbed {
         };
         if (!this.embed.fields) this.embed.fields = [];
         this.embed.fields.push(temp);
-        return this.embed;
+        return this;
     }
 
     /**
@@ -44,10 +50,10 @@ class SimpleEmbed {
 
     setTitle(title) {
         if (typeof title !== 'string') throw 'Title must be a string';
-        if (!title) return this.embed;
+        if (!title) return this;
         if (title.length >= 256) throw 'You need a shorter title.';
         this.embed.title = title;
-        return this.embed;
+        return this;
     }
 
     /**
@@ -58,10 +64,10 @@ class SimpleEmbed {
 
     setDescription(desc) {
         //2048 chars
-        if (!desc) return this.embed;
+        if (!desc) return this;
         if (desc.length >= 2048) throw 'You need a shorter description';
         this.embed.description = desc;
-        return this.embed;
+        return this;
     }
 
     /**
@@ -72,14 +78,23 @@ class SimpleEmbed {
 
     setColor(val) {
         if (!this.embed.color) this.embed.color = 0xffffff;
-        if (!val) return this.embed;
+        if (!val) return this;
         if (typeof val === 'number') this.embed.color = val;
         else {
             let str = val.split("#")[1];
             if (!parseInt(`0x${str}`)) throw 'Color must be HEX or INTEGER.';
             else this.embed.color = parseInt(`0x${str}`);
         }
-        return this.embed;
+        return this;
+    }
+
+    /**
+     * @param {String} str - Message 
+     */
+
+    setContent(str) {
+        this.content = str;
+        return this;
     }
 
     /**
@@ -97,7 +112,7 @@ class SimpleEmbed {
         if (height && parseInt(height)) temp.height = height;
         if (height && parseInt(width)) temp.width = width;
         this.embed.image = temp;
-        return this.embed;
+        return this;
     }
 
     /**
@@ -115,7 +130,7 @@ class SimpleEmbed {
         if (height && parseInt(height)) temp.height = height;
         if (height && parseInt(width)) temp.width = width;
         this.embed.video = temp;
-        return this.embed;
+        return this;
     }
 
     /**
@@ -133,7 +148,7 @@ class SimpleEmbed {
         if (height && parseInt(height)) temp.height = height;
         if (height && parseInt(width)) temp.width = width;
         this.embed.thumbnail = temp;
-        return this.embed;
+        return this;
     }
 
     /**
@@ -143,10 +158,10 @@ class SimpleEmbed {
      */
 
     setTimestamp(date) {
-        if (!date) return this.embed;
+        if (!date) return this;
         else {
             this.embed.timestamp = date;
-            return this.embed;
+            return this;
         }
     }
 
@@ -164,7 +179,7 @@ class SimpleEmbed {
         if (url) temp.url = url;
         if (iconURL) temp.icon_url = iconURL;
         if (Object.keys(temp).length > 0) this.embed.author = temp;
-        return this.embed;
+        return this;
     }
 
     /**
@@ -174,10 +189,10 @@ class SimpleEmbed {
      */
 
     setUrl(url) {
-        if (!url) return this.embed;
+        if (!url) return this;
         else {
             this.embed.url = url;
-            return this.embed;
+            return this;
         }
     }
 
@@ -194,7 +209,7 @@ class SimpleEmbed {
         if (text.length >= 2048) text = text.split(text[2047][0]);
         if (url) temp.url = url;
         this.embed.footer = temp;
-        return this.embed
+        return this
     }
 
     /**
