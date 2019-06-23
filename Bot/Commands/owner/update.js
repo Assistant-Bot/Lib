@@ -15,9 +15,8 @@ class Update {
                 let cmd = args.slice(0).join(' ');
                 m = await msg.channel.send(`${emojis.loading} Attempting to update...`);
                 output = await Util.runCommand(cmd);
-
-                if (typeof output == 'object')
-                    return m.edit(emojis.redtick + ' Failed to pull from `' + branch + '`');
+                console.log(output);
+                if (typeof output == 'object') return m.edit(emojis.redtick + ' Failed to pull from `' + branch + '`');
                 else return m.edit(emojis.greentick + ' Successfully pulled from `' + branch + '` - Restarting');
         } catch (e) {
             return m.edit(`${emojis.redtick} Failed to run command: ${e}`);
