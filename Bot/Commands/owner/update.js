@@ -21,6 +21,7 @@ class Update {
                  if (restart == false) return await m.edit(emojis.greentick + ' Successfully updated! Pulled from: `' + branch + '`.');
                  else {
                      await m.edit(emojis.greentick + ' Successfully updated! Pulled from: `' + branch + '`. Restarting!');
+                     await msg.channel.send('```xl\n' + output + '\n```');
                      process.exit();
                  }
              }
