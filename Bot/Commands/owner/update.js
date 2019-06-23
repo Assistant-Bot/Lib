@@ -13,7 +13,7 @@ class Update {
         try {
             if (args[0]) branch = args[0]
                 m = await msg.channel.send(`${emojis.loading} Attempting to update...`);
-                output = await Util.runCommand('git pull ' + branch);
+                output = await Util.runCommand('git pull origin ' + branch);
                 console.log(output);
             if (typeof output == 'object') return m.edit(emojis.redtick + ' Failed to pull from `' + branch + '`');
              else return m.edit(emojis.greentick + ' Successfully pulled from `' + branch + '` - Restarting');
