@@ -19,7 +19,9 @@ class BanList {
             let page = (!args[0]) ? 0 : (!parseInt(args[0])) ? 0 : parseInt(args[0]);
             let cache = bans.length;
             if (page > cache) page = 0;
-            bans = bans.slice(page, 35);
+            if (page < 0) page = 0;
+            bans = bans.slice(page, page + 35);
+            i = page;
 
             await bans.forEach((ban) => {
                 pretty.push(`**${i}.)** ` + '__' + ban.user.username + '__ (`' + ban.user.id + ')`');
@@ -29,7 +31,7 @@ class BanList {
             let em = new Util.SimpleEmbed();
             em.setColor('#fc5928');
             em.setAuthor(msg.guild.name, msg.guild.iconURL);
-            em.setTitle('Showing ' + pretty.length + 'of ' + cache + 'bans. [' + page + ' - ' + cache + ']');
+            em.setTitle('Showing ' + pretty.length + ' of ' + cache + ' bans. Bans ' + page + ' - ' + page + 35 + '');
             em.setDescription(pretty.join('\n'));
 
             msg.channel.send(em);
