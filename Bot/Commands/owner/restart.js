@@ -11,7 +11,7 @@ class Restart {
         let m;
 
         try {
-            m = await msg.channel.send(`${emojis.check} Restarting...`);
+            m = await msg.channel.send(`${emojis.greentick} Restarting...`);
             process.exit();
         } catch (e) {
             return m.edit(`${emojis.redtick} Restart failed: ${e}`);
