@@ -34,7 +34,7 @@ class BanList {
             em.setTitle('Bans ' + ((page > 0) ? page : page + 1) + ' - ' + (page + 35));
             em.setDescription(pretty.join('\n'));
 
-            m.edit(em);
+            m.edit({content: emojis.check + 'Found: **' + cache + '** bans!', embed: em.embed});
         } catch (e) {
             Util.logError(bot, msg, args, Util, emojis, this, e);
             return Util.sendError(msg, emojis, 'unknown');

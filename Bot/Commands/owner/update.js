@@ -13,12 +13,14 @@ class Update {
 
         try {
             if (args[0]) branch = args[0];
+            if (args[0] == 'restart') branch = 'v1';
                 m = await msg.channel.send(`${emojis.loading} Attempting to update...`);
                 output = await Util.runCommand('git pull origin ' + branch);
             if (typeof output == 'object') return await m.edit(emojis.redtick + ' Failed to pull from `' + branch + '`');
              else {
                     await m.edit(emojis.greentick + ' Successfully updated! Pulled from: `' + branch + '`.');
-                    await msg.channel.send('```xl\n' + output + '\n```');
+                    if (args[0] == 'restart') process.exit();
+                    //await msg.channel.send('```xl\n' + output + '\n```');
             }
         } catch (e) {
             return m.edit(`${emojis.redtick} Failed to run command: ${e}`);
