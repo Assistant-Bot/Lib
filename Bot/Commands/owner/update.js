@@ -16,11 +16,11 @@ class Update {
                 m = await msg.channel.send(`${emojis.loading} Attempting to update...`);
                 output = await Util.runCommand('git pull origin ' + branch);
                 console.log(output);
-            if (typeof output == 'object') return m.edit(emojis.redtick + ' Failed to pull from `' + branch + '`');
+            if (typeof output == 'object') return await m.edit(emojis.redtick + ' Failed to pull from `' + branch + '`');
              else {
-                 if (restart == false) return m.edit(emojis.greentick + ' Successfully updated! Pulled from: `' + branch + '`.');
+                 if (restart == false) return await m.edit(emojis.greentick + ' Successfully updated! Pulled from: `' + branch + '`.');
                  else {
-                     m.edit(emojis.greentick + ' Successfully updated! Pulled from: `' + branch + '`. Restarting!');
+                     await m.edit(emojis.greentick + ' Successfully updated! Pulled from: `' + branch + '`. Restarting!');
                      process.exit();
                  }
              }
