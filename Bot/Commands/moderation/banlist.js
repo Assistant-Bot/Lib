@@ -31,7 +31,7 @@ class BanList {
             let em = new Util.SimpleEmbed();
             em.setColor('#fc5928');
             em.setAuthor(msg.guild.name, msg.guild.iconURL);
-            em.setTitle('Showing ' + pretty.length + ' of ' + cache + ' bans. Bans ' + page + ' - ' + page + 35 + '');
+            em.setTitle('Bans ' + page + ' - ' + (page + 35));
             em.setDescription(pretty.join('\n'));
 
             msg.channel.send(em);
