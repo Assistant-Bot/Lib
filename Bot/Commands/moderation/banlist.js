@@ -17,7 +17,7 @@ class BanList {
             let pretty = [];
             let i = 1;
             let cache = bans.length;
-            bans = bans.slice(1, 35);
+            bans = bans.slice(0, 35);
 
             await bans.forEach((ban) => {
                 pretty.push(`**${i}.)** ` + '__' + ban.user.username + '__ (`' + ban.user.id + ')`');
