@@ -34,7 +34,7 @@ class BanList {
             em.setTitle('Bans ' + ((page > 0) ? page : page + 1) + ' - ' + (page + 35));
             em.setDescription(pretty.join('\n'));
 
-            msg.channel.send(em);
+            m.edit(em);
         } catch (e) {
             Util.logError(bot, msg, args, Util, emojis, this, e);
             return Util.sendError(msg, emojis, 'unknown');
