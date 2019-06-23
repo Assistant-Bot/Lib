@@ -23,14 +23,19 @@ class CommandHandler {
         if (options.client == false) {
             this.client = new Discord.Client(options.token);
             this.clientType = 0;
-        } else this.detectClient(options.client);
+        } else 
+            this.detectClient(options.client);
 
         if (!options.prefix) throw '[COMMAND-HANDLER]: Invalid prefix';
         if (typeof options.prefix !== 'string') this.database = options.prefix;
         if (this.database) {
-            if (!this.database.getPrefix) throw '[COMMAND-HANDLER]: Database must return false or string.';
+            if (!this.database.getPrefix) throw '[COMMAND-HANDLER]: Database must include .getPrefix()';
+            if (!this.database.createGuild) throw '[COMMAND-HANDLER]: Database must include .createGuild()';
             let response = this.database.getPrefix('0');
-            if (response !== false || typeof response !== 'string') throw '[COMMAND-HANDLER]: Database must return false or string.';
+            if (typeof response == 'object') {
+                console.warn('[COMMAND-HANDLER]: Database could not check output, will error in future.');
+            } else if (response !== false || response !== null || typeof response !== 'string') throw '[COMMAND-HANDLER]: Database must return false, null, or string.';
+            else console.log('[COMMAND-HANDLER]: Database loaded.');
         }
         this.options = options;
         this.commands = new CommandCollection();
@@ -362,8 +367,12 @@ class CommandHandler {
          let prefix = cc.options.prefix;
          if (typeof prefix == 'function') {
              try {
-                 let response = prefix.getPrefix(msg.guild.id);
-                 if (response == false) return;
+                 let response = await prefix.getPrefix(msg.guild.id);
+                 if (response == false || response == null) {
+                     await prefix.createGuild(msg.guild.id);
+                     response = await prefix.getPrefix(msg.guild.id);
+                     if (response == false || response == null) throw 'Prefix could not be resolved.';
+                 };
                  if (typeof response !== 'string') return;
                  prefix = response;
              } catch (e) {

@@ -20,3 +20,5 @@ exports.sendError = require('./utils/functions/errorMsg');
 exports.sendErr = this.sendError;
 exports.logError = require('./utils/functions/logError');
 exports.LogError = this.logError;
+exports.database = require('./Database/Main');
+exports.runCommand = require('./utils/functions/runCommand');

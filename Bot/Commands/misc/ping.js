@@ -2,7 +2,7 @@ class Ping {
     constructor() {
         this.name = 'ping'; // Name of the command AKA normal name of cmd.
         this.description = '/ping'; // Short description on how the command is used.
-        this.aliases = []; // Aliases! What other names should this command run on?
+        this.aliases = ['p']; // Aliases! What other names should this command run on?
         this.longDescription = 'Check the response time of assistant.'; // Long description of the command.
         this.permission = 0; // Permissions to use the command (Optional, you can refer to other methods by refferring to documentation)
         this.list = true; // Should we list the command in the help menu

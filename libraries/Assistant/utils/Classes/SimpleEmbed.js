@@ -24,19 +24,18 @@ class SimpleEmbed {
      * 
      */
 
-    addField(title, description, inline) {
+    addField(title, description, inline=false) {
         if (!title) title = 'No title provided';
         if (!description) description = 'No description provided';
-        if (!inline) inline = false;
         if (title.length >= 256) throw 'You need a shorter title';
         if (description.length >= 1024) throw 'You need a shorter description';
-        if (typeof inline !== Boolean) inline = false;
 
         let temp = {
             name: title,
             value: description,
             inline: inline
         };
+
         if (!this.embed.fields) this.embed.fields = [];
         this.embed.fields.push(temp);
         return this;
@@ -207,7 +206,8 @@ class SimpleEmbed {
         let temp = {};
         if (!text) throw 'You need a text string.';
         if (text.length >= 2048) text = text.split(text[2047][0]);
-        if (url) temp.url = url;
+        if (url) temp.icon_url = url;
+        temp.text = text;
         this.embed.footer = temp;
         return this
     }

@@ -15,7 +15,16 @@ class info {
         if (!permission) {
             return Util.sendError(msg, emojis, 'perm', 'embed_links');
         }*/
-
+        let em = new Util.SimpleEmbed();
+        em.setColor('#26d1ff');
+        em.addField('Version', process.version, true);
+        em.addField('Library', 'Eris\nAssistant v2', true);
+        em.addField('Users', bot.users.size, true);
+        em.addField('Servers', bot.guilds.size, true);
+        em.addField('Support', '[Support Server](https://discord.gg/FKTrmsK)', true);
+        em.addField('Invite', '[Invite]()', true);
+        em.setFooter('Assistant V2', bot.user.avatarURL);
+        return msg.channel.send(em);
     }
 
     async onError(bot, msg, args, Util, emojis) {

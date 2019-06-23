@@ -9,15 +9,15 @@ class Invite {
     }
 
     async onRun(bot, msg, args, Util, emojis) {
-        const link = 'https://discordapp.com/oauth2/authorize?client_id=414493146588905497&scope=bot&permissions=8';
-        const link2 = 'https://discordapp.com/oauth2/authorize?client_id=414493146588905497&scope=bot&permissions=2133912823';
+        const link = 'https://discordapp.com/oauth2/authorize?client_id=' + bot.user.id + '&scope=bot&permissions=8';
+        const link2 = 'https://discordapp.com/oauth2/authorize?client_id=' + bot.user.id + '&scope=bot&permissions=2133912823';
         const main = 'https://discordapp.com/oauth2/authorize?client_id=344506432223182848&scope=bot&permissions=2133912831';
         let embed = new Util.SimpleEmbed();
-        embed.setAuthor(bot.user.tag, bot.user.displayAvatarURL);
+        embed.setAuthor(bot.user.tag, bot.user.avatarURL);
         embed.setColor('#' + Util.getColor('assistant').split('0x')[1]);
-        embed.addField('Recommended Invite', '[Admin Permissions](' + link + ')');
-        embed.addField('Alternative Invite', '[Working Permissions]('+ link2 + ')');
-        embed.addField('Main Bot Invite', '[All Permissions](' + main + ')');
+        embed.addField('Recommended Invite', '[Admin Permissions](' + link + ')', true);
+        embed.addField('Alternative Invite', '[Working Permissions]('+ link2 + ')', true);
+        embed.addField('Main Bot Invite', '[All Permissions](' + main + ')', true);
         return msg.channel.send(embed);
     }
 

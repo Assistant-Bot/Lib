@@ -6,9 +6,9 @@ const emojis = require('./configuration/emojis.js');
 /* Initialize the Client */
 Util.loadProperties(Eris);
 const bot = (config.dev_mode) ? new Eris(config.dev_token, config.eris) : new Eris(config.token, config.eris); //Discord.Client(); 
-bot.emojis = emojis;
+    bot.emojis = emojis;
+    bot.db = new Util.database();
 
-//const commandDB = Util.commandHandler.database;
 const commandOptions = new Util.CommandHandlerOptions()
     .setPrefix('a!') // if this has a getPrefix(GUILD ID) : string function, you can use custom prefixes.
     .setCooldown(3000, emojis.redtick + ' You must wait a few seconds to use commands again.')
@@ -29,6 +29,7 @@ try {
     bot.on('ready', () => { console.log('I am on! :)') });
 } catch (e) {
     console.log('An error has occured: ' + e);
+    process.exit(403);
 }
 
 bot.connect(); //bot.login(config.dev_token); - Eris.JS

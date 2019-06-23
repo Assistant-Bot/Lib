@@ -33,7 +33,7 @@ class SlowMode {
     }
 
     async onPermCheck(bot, msg) {
-        if (!msg.member.hasPermission('ADMINISTRATOR')) return false;
+        if (!msg.member.permission.has('administrator')) return false;
         else return true;
     }
 
