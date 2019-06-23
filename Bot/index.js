@@ -16,6 +16,7 @@ const commandOptions = new Util.CommandHandlerOptions()
     .setClient(bot)
     .loadSubfolders(true)
     .logMessages(false)
+    .setOS(1)
     .setVars([Util, emojis]); // only accepts 2 additional args.
 
 try {
