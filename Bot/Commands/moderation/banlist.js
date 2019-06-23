@@ -17,7 +17,7 @@ class BanList {
             let pretty = [];
             let i = 1;
             let cache = bans.length;
-            bans = bans.slice(0, 50);
+            bans = bans.slice(1, 35);
 
             await bans.forEach((ban) => {
                 pretty.push(`**${i}.)** ` + '__' + ban.user.username + '__ (`' + ban.user.id + ')`');
@@ -26,7 +26,7 @@ class BanList {
             let em = new Util.SimpleEmbed();
             em.setColor('#fc5928');
             em.setAuthor(msg.guild.name, msg.guild.iconURL);
-            em.setTitle('Showing 50 of ' + cache + 'bans');
+            em.setTitle('Showing 35 of ' + cache + 'bans');
             em.setDescription(pretty.join('\n'));
 
             msg.channel.send(em);
