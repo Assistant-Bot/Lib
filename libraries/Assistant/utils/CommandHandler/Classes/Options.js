@@ -4,6 +4,7 @@ class Options {
         if(!token) this.token = null; // Token to the bot.
         if(!cooldown) this.cooldown = 3000; // 3 seconds.
         if(!client) this.client = false;
+        this.os = 1;
 
         return this;
     }
@@ -17,6 +18,14 @@ class Options {
         this.resToUnk = bool
         this.resMsg = msg;
         return this;
+    }
+
+    /**
+     * 
+     * @param {Number} system - Use 0 for windows and 1 for linux (this changes how the handler loads)
+     */
+    setOS(system) {
+        this.os = system;
     }
 
     /**

@@ -86,6 +86,7 @@ class CommandHandler {
                 for (let i = 0; i < types.length; i++) {
                     let type = types[i];
                     let files = this.getFiles(this.dir + '\\' + type);
+                    if (this.os == 1) this.getFiles(this.dir + '/' + type);
                     await files.forEach(fl => {
                         attempted++;
 
@@ -95,8 +96,9 @@ class CommandHandler {
                         }
 
                         let cac = fl;
-                        fl = require(this.dir + '\\' + type + '\\' + fl);
-
+                        if (this.os == 0) fl = require(this.dir + '\\' + type + '\\' + fl);
+                        else fl = require(this.dir + '/' + type + '/' + fl);
+                        
                         if (!this.isValidCommand(fl)) {
                             if (!silent) console.log(`[COMMAND-HANDLER]: ${cac} could not be loaded -> NOT VALID COMMAND. (Error Ignored)`);
                             return;
@@ -117,6 +119,7 @@ class CommandHandler {
                 let files = this.getFiles(this.dir + '\\' + type);
                 let loaded = 0;
                 let attempted = 0;
+                if (this.os == 1) this.getFiles(this.dir + '/' + type);
                 await files.forEach(fl => {
                     attempted++;
 
@@ -126,7 +129,8 @@ class CommandHandler {
                     }
 
                     let cac = fl;
-                    fl = require(this.dir + '\\' + fl);
+                    if (this.os == 0) fl = require(this.dir + '\\' + type + '\\' + fl);
+                    else fl = require(this.dir + '/' + type + '/' + fl);
 
                     if (!this.isValidCommand(fl)) {
                         if (!silent) console.log(`[COMMAND-HANDLER]: ${cac} could not be loaded -> NOT VALID COMMAND. (Error Ignored)`);
