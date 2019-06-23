@@ -26,6 +26,7 @@ class Options {
      */
     setOS(system) {
         this.os = system;
+        return this;
     }
 
     /**

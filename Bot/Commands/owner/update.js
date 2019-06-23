@@ -8,22 +8,19 @@ class Update {
     }
 
     async onRun(bot, msg, args, Util, emojis) {
-        let m;
-        let branch = 'master';
-
+        let m, output;
+        let branch = 'v1';
         try {
-            if (!args[0]) {
-                m = await msg.channel.send(`${emojis.square} Attempting to update from \`master\`.`);
-                await Util.runCommand('git pull assistant master');
-                return m.edit(`${emojis.greentick} Update queued!`);
-            } else {
-                m = await msg.channel.send(`${emojis.square} Attempting to update from \`${branch}\``);
-                let out = await Util.runCommand('git pull assistant ' + branch);
-                let pp = Util.gitClean(out);
-                return m.edit(`${emojis.greentick} Update queued. ${pp}`);
-            }
+            if (args[0]) branch = args[0]
+                let cmd = args.slice(0).join(' ');
+                m = await msg.channel.send(`${emojis.loading} Attempting to update...`);
+                output = await Util.runCommand(cmd);
+
+                if (typeof output == 'object')
+                    return m.edit(emojis.redtick + ' Failed to pull from `' + branch + '`');
+                else return m.edit(emojis.greentick + ' Successfully pulled from `' + branch + '` - Restarting');
         } catch (e) {
-            return m.edit(`${emojis.redtick} Failed to get updates from \`${branch}\``);
+            return m.edit(`${emojis.redtick} Failed to run command: ${e}`);
         }
     }
 

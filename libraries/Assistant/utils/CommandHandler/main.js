@@ -85,8 +85,10 @@ class CommandHandler {
                 let attempted = 0;
                 for (let i = 0; i < types.length; i++) {
                     let type = types[i];
-                    let files = this.getFiles(this.dir + '\\' + type);
+                    let files;
                     if (this.options.os == 1) files = this.getFiles(this.dir + '/' + type);
+                    else files = this.getFiles(this.dir + '\\' + type);
+                    
                     await files.forEach(fl => {
                         attempted++;
 
@@ -116,10 +118,11 @@ class CommandHandler {
                 if (!silent) console.log('[COMMAND-HANDLER]: ' + loaded + ' of ' + attempted + ' attempted commands loaded!');
             } else {
                 let type = types[i];
-                let files = this.getFiles(this.dir + '\\' + type);
+                let files;
                 let loaded = 0;
                 let attempted = 0;
                 if (this.options.os == 1) files = this.getFiles(this.dir + '/' + type);
+                else files = this.getFiles(this.dir + '\\' + type);
                 await files.forEach(fl => {
                     attempted++;
 
