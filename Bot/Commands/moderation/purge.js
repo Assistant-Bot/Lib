@@ -17,14 +17,14 @@ class Purge {
             let amount = parseInt(wrapped[0]);
             if (!amount) return Util.sendError(msg, emojis, 'custom', 'Invalid number, **' + wrapped[0] + '** provided.');
 
-            if (amount > 2000) return Util.sendError(msg, emojis, 'custom', 'You can not purge more than 2000 messages at a time.');
+            if (amount > 1999) return Util.sendError(msg, emojis, 'custom', 'You can not purge more than 1999 messages at a time.');
             if (!msg.guild.members.get(bot.user.id).permission.has('manageMessages')) return Util.sendError(msg, emojis, 'perm', 'Manage Message');
             try {
-                await msg.channel.purge(amount, (ms) => {
+                m = await msg.channel.send(emojis.loading + ' Purging `' + amount + '` messages..');
+                await msg.channel.purge(amount + 1, (ms) => {
                     if (ms.id == m.id) return false;
                     else return true;
                 });
-                m = await msg.channel.send(emojis.loading + ' Purging `' + amount + '` messages..');
                 m.edit(emojis.greentick + ' Purged `' + amount + '` messages.');
             } catch (e) {
                 Util.logError(bot, msg, args, Util, emojis, this, e);
