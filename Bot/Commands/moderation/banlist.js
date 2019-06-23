@@ -21,7 +21,7 @@ class BanList {
             if (page > cache) page = 0;
             if (page < 0) page = 0;
             bans = bans.slice(page, page + 35);
-            i = page;
+            i = (page > 0) ? page : page + 1;
 
             await bans.forEach((ban) => {
                 pretty.push(`**${i}.)** ` + '__' + ban.user.username + '__ (`' + ban.user.id + ')`');
