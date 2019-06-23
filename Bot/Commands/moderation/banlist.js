@@ -11,7 +11,7 @@ class BanList {
     async onRun(bot, msg, args, Util, emojis) {
         if (!msg.guild.members.get(bot.user.id).permission.has('banMembers')) return Util.sendError(msg, emojis, 'perm', 'Ban Members');
         if (!msg.guild.members.get(bot.user.id).permission.has('embedLinks')) return Util.sendError(msg, emojis, 'perm', 'Embed Links');
-        
+
         let m = await msg.channels.send(emojis.loading + ' Gathering bans...');
         let bans = await msg.guild.getBans();
         let pretty = [];
@@ -45,4 +45,4 @@ class BanList {
         else return true;
     }
 }
-module.exports = Purge;
+module.exports = BanList;
