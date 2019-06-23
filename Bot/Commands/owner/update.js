@@ -39,4 +39,4 @@ class Update {
     }
 }
 
-module.exports = Reload;
+module.exports = Update;
