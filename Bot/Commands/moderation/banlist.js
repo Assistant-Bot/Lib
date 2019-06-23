@@ -3,9 +3,9 @@ class BanList {
         this.name = 'banlist';
         this.description = '/banlist';
         this.aliases = ['bl'];
-        this.longDescription = 'Purge';
+        this.longDescription = 'Show the bans for the guild.';
         this.permission = 0,
-            this.list = true;
+        this.list = true;
     }
 
     async onRun(bot, msg, args, Util, emojis) {
