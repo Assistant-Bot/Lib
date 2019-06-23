@@ -16,17 +16,20 @@ class BanList {
             let bans = await msg.guild.getBans();
             let pretty = [];
             let i = 1;
+            let page = (!args[0]) ? 0 : (!parseInt(args[0])) ? 0 : parseInt(args[0]);
             let cache = bans.length;
-            bans = bans.slice(0, 35);
+            if (page > cache) page = 0;
+            bans = bans.slice(page, 35);
 
             await bans.forEach((ban) => {
                 pretty.push(`**${i}.)** ` + '__' + ban.user.username + '__ (`' + ban.user.id + ')`');
+                i++;
             });
 
             let em = new Util.SimpleEmbed();
             em.setColor('#fc5928');
             em.setAuthor(msg.guild.name, msg.guild.iconURL);
-            em.setTitle('Showing 35 of ' + cache + 'bans');
+            em.setTitle('Showing ' + pretty.length + 'of ' + cache + 'bans. [' + page + ' - ' + cache + ']');
             em.setDescription(pretty.join('\n'));
 
             msg.channel.send(em);
