@@ -10,7 +10,7 @@ class Update {
     async onRun(bot, msg, args, Util, emojis) {
         let m, output;
         let branch = 'v1';
-        let restart = false;
+        let restart = true;
         try {
             if (args[0]) branch = args[0];
                 m = await msg.channel.send(`${emojis.loading} Attempting to update...`);
@@ -18,7 +18,7 @@ class Update {
                 console.log(output);
             if (typeof output == 'object') return m.edit(emojis.redtick + ' Failed to pull from `' + branch + '`');
              else {
-                 if (!restart) return m.edit(emojis.greentick + ' Successfully updated! Pulled from: `' + branch + '`.');
+                 if (restart == false) return m.edit(emojis.greentick + ' Successfully updated! Pulled from: `' + branch + '`.');
                  else {
                      m.edit(emojis.greentick + ' Successfully updated! Pulled from: `' + branch + '`. Restarting!');
                      process.exit();
