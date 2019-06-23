@@ -11,6 +11,10 @@ module.exports = (msg, emojis, type='unknown', other='Unknown Node') => {
         return msg.channel.send(emojis.redtick + ' ' + other);
     }
 
+    if (type == 'argErr') {
+        return msg.channel.send(emojis.redtick);
+    }
+
     if (type == 'noperm') {
         return msg.channel.send(emojis.redtick + 'You need **' + other + '** permissions to perform this command.');
     }
