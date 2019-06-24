@@ -20,10 +20,7 @@ class Blacklist {
                 await keys.forEach(async (key) => {
                     i++;
                     let ob = blacklisted[key];
-                    let f = await bot._restClient.getRESTUser(key);
-                    let a = await bot._restClient.getRESTUser(ob.admin);
-
-                    clean.push(`**${i}.)** __${f.username} (\`${key}\`)__ - **M** ${a.username} (\`${ob.admin}\`)`);
+                    clean.push(`**${i}.)** __${ob.user.username} (\`${key}\`)__ - **M** ${ob.admin.username} (\`${ob.admin.id}\`)`);
                 });
 
                 if (keys.length == 0) return Util.sendError(msg, emojis, 'custom', 'No blacklisted users.');
@@ -38,7 +35,7 @@ class Blacklist {
                 let user = await bot._restClient.getRESTUser(wrapped[1]);
                 if (!user) return Util.sendError(msg, emojis, 'custom', 'Invalid user.');
                 let reason = (!wrapped[2]) ? "No reason provided" : wrapped[2];
-                Util.blacklist(wrapped[1], 0, msg.author.id, reason);
+                Util.blacklist(wrapped[1], 0, msg.author.id, reason, {user: user, admin: msg.author});
 
                 return msg.channel.send(emojis.greentick + ' Successfully blacklisted `' + user.username + ' (' + user.id + ')` with reason: `' + reason + '`');
             } else if (args[0] == 'remove') {

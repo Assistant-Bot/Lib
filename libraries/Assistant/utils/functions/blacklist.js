@@ -5,7 +5,7 @@ let f = path.join(__dirname,  '../../../../Bot/configuration/blacklisted.json');
 let blacklist = require(f);
 let writeFile = require('util').promisify(fs.writeFile);
 
-module.exports = (id, type=2, mod='0', reason="none") => {
+module.exports = (id, type=2, mod='0', reason="none", data) => {
     function onBlacklist(id) {
         let ids = Object.keys(blacklist);
         if (ids.includes(id)) return true;
@@ -22,11 +22,23 @@ module.exports = (id, type=2, mod='0', reason="none") => {
         if (onBlacklist(id)) {
             return blacklist[id];
         }
+        
+        if (!data) data = {
+            user: {
+                username: 'Not Found',
+                id: id
+            },
+            admin: {
+                username: 'Not Found',
+                id: mod
+            }
+        }
 
         blacklist[id] = {
             time: new Date(),
-            admin: mod,
-            reason: reason 
+            reason: reason,
+            user: data.user,
+            admin: data.admin
         }
         try {
             writeFile(f, JSON.stringify(blacklist, null, 2));
@@ -45,7 +57,8 @@ module.exports = (id, type=2, mod='0', reason="none") => {
         try {
             writeFile(f, JSON.stringify(blacklist, null, 2));
             updateBlacklist();
-            return true
+            return true;
+            
         } catch (e) {
             return e;
         }
