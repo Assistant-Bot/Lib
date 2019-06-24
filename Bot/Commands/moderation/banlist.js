@@ -61,7 +61,7 @@ class BanList {
                     return msg.channel.send(em);
                 } else {
                     let ban = await msg.guild.getBan(parseInt(user));
-                    return msg.channel.send('```json\n' + ban + '\n```');
+                    return msg.channel.send(ban);
                     let em = new Util.SimpleEmbed();
                     em.setColor('#fc5928');
                     em.setAuthor(ban.user.username, Util.resolveAvatar(ban.user));
