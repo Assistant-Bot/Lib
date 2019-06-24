@@ -26,7 +26,7 @@ class Blacklist {
                         em.addField('Moderator Username', blacklisted.admin.username + '#' + blacklisted.admin.discriminator, true);
                         em.addField('Moderator ID', blacklisted.admin.id);
                         em.setTimestamp(new Date(blacklisted.time));
-                        em.setFooter('is date of blacklist.');
+                        em.setFooter('Blacklisted since');
                         return msg.channel.send(em);
                     }
                 }
