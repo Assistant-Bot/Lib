@@ -43,7 +43,7 @@ class Blacklist {
             }
             return Util.sendError(msg, emojis, 'custom', '**Usage:** a!blacklist <add/remove/view> [id] [reason]');
         } catch (e) {
-            return m.edit(`${emojis.redtick} Failed to run command: ${e}`);
+            return msg.channel.send(`${emojis.redtick} Failed to run command: ${e}`);
         }
     }
 
