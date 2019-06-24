@@ -20,6 +20,7 @@ class BanList {
             let cache = bans.length;
             if (page > cache) page = 0;
             if (page < 0) page = 0;
+            console.log(bans[0]);
             bans = bans.slice(page, page + 35);
             i = (page > 0) ? page : page + 1;
 
