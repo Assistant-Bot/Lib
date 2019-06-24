@@ -24,3 +24,4 @@ exports.database = require('./Database/Main');
 exports.runCommand = require('./utils/functions/runCommand');
 exports.resolveAvatar = require('./utils/functions/resolveAvatar');
 exports.blackList = require('./utils/functions/blacklist');
+exports.blacklist = this.blackList;
