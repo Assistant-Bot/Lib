@@ -22,7 +22,7 @@ class BanList {
                 let cache = bans.length;
                 if (page > cache) page = 0;
                 if (page < 0) page = 0;
-                bans = bans.slice(page, page + 35);
+                bans = bans.slice(page, page + 36);
                 i = (page > 0) ? page : page + 1;
 
                 await bans.forEach((ban) => {
