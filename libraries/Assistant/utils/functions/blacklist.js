@@ -1,5 +1,7 @@
 const fs = require('fs');
-let f = __dirname + '/../../../../configuration/blacklisted.json';
+const path = require("path");
+
+let f = path.join(__dirname,  '../../../../configuration/blacklisted.json');
 let blacklist = require(f);
 let writeFile = require('util').promisify(fs.writeFile);
 
