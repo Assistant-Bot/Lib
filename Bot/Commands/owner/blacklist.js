@@ -19,7 +19,7 @@ class Blacklist {
                 let i = 0;
                 await keys.forEach((key) => {
                     i++;
-                    let ob = blacklisted[ob];
+                    let ob = blacklisted[key];
                     clean.push(`**${i}.)** __${key}__ - **M** (${ob.mod})`);
                 });
 
