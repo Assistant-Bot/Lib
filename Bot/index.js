@@ -8,6 +8,7 @@ Util.loadProperties(Eris);
 const bot = (config.dev_mode) ? new Eris(config.dev_token, config.eris) : new Eris(config.token, config.eris); //Discord.Client(); 
     bot.emojis = emojis;
     bot.db = new Util.database();
+    bot._restClient = (config.dev_mode) ? new Eris(`Bot ${config.dev_token}`, config['eris.rest']) : new Eris(`Bot ${config.token}`, config['eris.rest']);
 
 const commandOptions = new Util.CommandHandlerOptions()
     .setPrefix('a!') // if this has a getPrefix(GUILD ID) : string function, you can use custom prefixes.
