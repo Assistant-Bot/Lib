@@ -145,7 +145,7 @@ class CommandHandler {
                         return;
                     }
 
-                    this.register(fl, this.dir + '/', '[COMMAND-HANDLER]: {CMD} loaded with aliases: {ALIAS}!');
+                    this.register(fl, this.dir + '/', '[COMMAND-HANDLER]: {CMD} loaded with aliases: {ALIAS}!', type);
                     loaded++;
                 });
                 if (!silent) console.log('[COMMAND-HANDLER]: ' + loaded + ' of ' + attempted + ' attempted commands loaded!');
@@ -186,7 +186,7 @@ class CommandHandler {
         else return true;
     }
 
-    async register(cmd, type, str) {
+    async register(cmd, type, str=false, type='none') {
         cmd = new cmd();
         let cache = cmd;
         let aliases = cmd.aliases;
@@ -196,6 +196,7 @@ class CommandHandler {
             this.commands.set(alias.toLowerCase(), cache);
         });
         cmd.dir = type;
+        cmd.category = type;
         this.commands.set(cmd.name.toLowerCase(), cmd);
 
         if (!str) return;
@@ -259,7 +260,7 @@ class CommandHandler {
             let cmd = this.commands.get(name);
             this.commands.delete(name);
 
-            if (cmd.parent && cmd.parent !== name) name = cmd.parent.name
+            if (cmd.parent && cmd.parent !== name) name = cmd.parent.name;
             delete require.cache[require.resolve(cmd.dir + '/' + name + '.js')];
 
             this.loadCommand(name, cmd.dir);
