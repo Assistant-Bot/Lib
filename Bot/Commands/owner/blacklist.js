@@ -20,7 +20,7 @@ class Blacklist {
                 await keys.forEach((key) => {
                     i++;
                     let ob = blacklisted[key];
-                    clean.push(`**${i}.)** __${bot._restClient.getRESTUser(key)} (\`${key}\`)__ - **M** (${bot._restClient.getRESTUser(ob.admin)})`);
+                    clean.push(`**${i}.)** __${bot._restClient.getRESTUser(key).username} (\`${key}\`)__ - **M** (${bot._restClient.getRESTUser(ob.admin).username})`);
                 });
 
                 if (keys.length == 0) return Util.sendError(msg, emojis, 'custom', 'No blacklisted users.');
