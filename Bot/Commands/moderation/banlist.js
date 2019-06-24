@@ -13,7 +13,7 @@ class BanList {
         if (!msg.guild.members.get(bot.user.id).permission.has('embedLinks')) return Util.sendError(msg, emojis, 'perm', 'Embed Links');
         let wrapped = new Util.Wrapper(args);
         try {
-            if (!args[0] || args[0].length < 18) {
+            if (!args[0] || (parseInt(args[0]) && args[0].length < 18)) {
                 let m = await msg.channel.send(emojis.loading + ' Gathering bans...');
                 let bans = await msg.guild.getBans();
                 let pretty = [];
