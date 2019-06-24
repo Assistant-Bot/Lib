@@ -5,7 +5,7 @@ let f = path.join(__dirname,  '../../../../Bot/configuration/blacklisted.json');
 let blacklist = require(f);
 let writeFile = require('util').promisify(fs.writeFile);
 
-module.exports = (id, type=2, mod, reason="none") => {
+module.exports = (id, type=2, mod='0', reason="none") => {
     function onBlacklist(id) {
         let ids = Object.keys(blacklist);
         if (ids.includes(id)) return true;
