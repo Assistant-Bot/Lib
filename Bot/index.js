@@ -15,10 +15,8 @@ const commandOptions = new Util.CommandHandlerOptions()
     .setCooldown(3000, emojis.redtick + ' You must wait a few seconds to use commands again.')
     .unknownCommands(true, emojis.redtick + ' Command, `{COMMAND}` does not exist.')
     .setClient(bot)
-    .loadSubfolders(true)
-    .logMessages(true)
+    .logMessages(false)
     .setBlacklist(Util.blackList)
-    .setOS(1)
     .setVars([Util, emojis]); // only accepts 2 additional args.
 
 try {
