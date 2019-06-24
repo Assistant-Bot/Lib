@@ -111,18 +111,17 @@ class CommandHandler {
                             return;
                         }
 
-                        this.register(fl, this.dir + '/' + type, '[COMMAND-HANDLER]: {CMD} loaded with aliases: {ALIAS}!');
+                        this.register(fl, this.dir + '/' + type, '[COMMAND-HANDLER]: {CMD} loaded with aliases: {ALIAS}!', type);
                         loaded++;
                     });
                 }
                 if (!silent) console.log('[COMMAND-HANDLER]: ' + loaded + ' of ' + attempted + ' attempted commands loaded!');
             } else {
-                let type = types[i];
                 let files;
                 let loaded = 0;
                 let attempted = 0;
-                if (this.options.os == 1) files = this.getFiles(this.dir + '/' + type);
-                else files = this.getFiles(this.dir + '\\' + type);
+                if (this.options.os == 1) files = this.getFiles(this.dir + '/');
+                else files = this.getFiles(this.dir + '\\');
                 await files.forEach(fl => {
                     attempted++;
 
@@ -132,8 +131,8 @@ class CommandHandler {
                     }
 
                     let cac = fl;
-                    if (this.options.os == 0) fl = require(this.dir + '\\' + type + '\\' + fl);
-                    else fl = require(this.dir + '/' + type + '/' + fl);
+                    if (this.options.os == 0) fl = require(this.dir + '\\' + fl);
+                    else fl = require(this.dir + '/' + fl);
 
                     if (!this.isValidCommand(fl)) {
                         if (!silent) console.log(`[COMMAND-HANDLER]: ${cac} could not be loaded -> NOT VALID COMMAND. (Error Ignored)`);
@@ -145,7 +144,7 @@ class CommandHandler {
                         return;
                     }
 
-                    this.register(fl, this.dir + '/', '[COMMAND-HANDLER]: {CMD} loaded with aliases: {ALIAS}!', type);
+                    this.register(fl, this.dir + '/', '[COMMAND-HANDLER]: {CMD} loaded with aliases: {ALIAS}!');
                     loaded++;
                 });
                 if (!silent) console.log('[COMMAND-HANDLER]: ' + loaded + ' of ' + attempted + ' attempted commands loaded!');
