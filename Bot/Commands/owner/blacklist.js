@@ -22,6 +22,7 @@ class Blacklist {
                     let ob = blacklisted[key];
                     let f = bot._restClient.getRESTUser(key);
                     let a = bot._restClient.getRESTUser(ob.admin);
+                    msg.channel.send(f);
                     clean.push(`**${i}.)** __${f.username} (\`${key}\`)__ - **M** ${a.username} (\`${ob.admin}\`)`);
                 });
 
