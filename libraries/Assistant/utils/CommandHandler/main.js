@@ -390,6 +390,7 @@ class CommandHandler {
          let command = args.shift().toLowerCase();
          if (cc.options.allowBots && msg.author.bot) return;
          if (msg.content.indexOf(prefix) !== 0) return;
+         if (cc.options.blacklistFunction(msg.author.id)) return;
          if (cc.options.cooldown > 0) {
              if (cc.cooldown.has(msg.author.id)) {
                  if (cc.warned.has(msg.author.id)) return;
@@ -403,7 +404,6 @@ class CommandHandler {
          }
 
          try {
-             if (cc.options.blacklistFunction(msg.author.id)) return;
              if (!cc.commands.has(command)) {
                  if (cc.options.resToUnk == true)
                     return msg.channel.send(cc.replaceAll(cc.options.resMsg, '{COMMAND}', command));
