@@ -29,6 +29,7 @@ try {
 
    // bot.antiraid = AntiRaid;
     bot.commandHandler = commandHandler;
+    bot.commands = commandHandler.commands.find((key,v) => {return key == v.name}).map((c) => c[1]);
     bot.on('ready', () => { console.log('I am on! :)') });
 } catch (e) {
     console.log('An error has occured: ' + e);
