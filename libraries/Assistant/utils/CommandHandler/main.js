@@ -403,6 +403,7 @@ class CommandHandler {
          }
 
          try {
+             console.log(typeof this.options.blacklistFunction);
              if (this.options.blacklistFunction(msg.author.id)) return;
              if (!cc.commands.has(command)) {
                  if (cc.options.resToUnk == true)
