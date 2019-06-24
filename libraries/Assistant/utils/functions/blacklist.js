@@ -13,7 +13,6 @@ module.exports = (id, type=2, mod='0', reason="none") => {
     }
 
     function updateBlacklist() {
-        blacklist = undefined;
         delete require.cache[require.resolve(f)];
         blacklist = require(f);
     }
