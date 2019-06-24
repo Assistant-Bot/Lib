@@ -19,7 +19,6 @@ class Blacklist {
                     else {
                         let em = new Util.SimpleEmbed();
                         em.setColor('#ff0000');
-                        em.setTitle(blacklisted.user.username);
                         em.addField('Username', blacklisted.user.username + '#' + blacklisted.user.discriminator, true);
                         em.addField('ID', blacklisted.user.id, true);
                         em.addField('Reason', blacklisted.reason, true);
