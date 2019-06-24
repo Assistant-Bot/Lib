@@ -14,6 +14,7 @@ class Blacklist {
             if (!wrapped[0]) return Util.sendError(msg, emojis, 'custom', '**Usage:** a!blacklist <add/remove/view> [id] [reason]');
             if (args[0] == 'view') {
                 let blacklisted = Util.blacklist('0', 4);
+                msg.channel.send(JSON.stringify(blacklisted));
                 let clean = [];
                 let keys = Object.keys(blacklisted);
                 let i = 0;
