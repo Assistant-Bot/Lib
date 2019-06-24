@@ -60,16 +60,19 @@ class BanList {
                     em.setFooter('Assitant v2', bot.user.avatarURl);
                     return msg.channel.send(em);
                 } else {
-                    let ban = await msg.guild.getBan(parseInt(user));
-                    return msg.channel.send(ban);
-                    let em = new Util.SimpleEmbed();
-                    em.setColor('#fc5928');
-                    em.setAuthor(ban.user.username, Util.resolveAvatar(ban.user));
-                    em.setTitle('Showing ban for ' + ban.user.username);
-                    em.addField('User', `**Username:** ${ban.user.username}#${ban.user.discriminator}\n**ID:** ${ban.user.id}\n**Avatar:** [Click Here](${Util.resolveAvatar(ban.user)})`);
-                    em.addField('Reason', ban.reason);
-                    em.setFooter('Assitant v2', bot.user.avatarURl);
-                    return msg.channel.send(em);
+                    try {
+                        let ban = await msg.guild.getBan(user);
+                        let em = new Util.SimpleEmbed();
+                        em.setColor('#fc5928');
+                        em.setAuthor(ban.user.username, Util.resolveAvatar(ban.user));
+                        em.setTitle('Showing ban for ' + ban.user.username);
+                        em.addField('User', `**Username:** ${ban.user.username}#${ban.user.discriminator}\n**ID:** ${ban.user.id}\n**Avatar:** [Click Here](${Util.resolveAvatar(ban.user)})`);
+                        em.addField('Reason', ban.reason);
+                        em.setFooter('Assitant v2', bot.user.avatarURl);
+                        return msg.channel.send(em);
+                    } catch (e) {
+                        return Util.sendError(msg, emojis, 'custom', 'I could not find a ban for that userID.');
+                    }
                 }
             }
         } catch (e) {
