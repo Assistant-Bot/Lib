@@ -45,6 +45,7 @@ module.exports = (id, type=2, mod='0', reason="none", data) => {
             updateBlacklist();
             return blacklist[id];
         } catch (e) {
+            updateBlacklist();
             return e;
         } 
     } else if (type == 1) { // remove
@@ -58,8 +59,9 @@ module.exports = (id, type=2, mod='0', reason="none", data) => {
             writeFile(f, JSON.stringify(blacklist, null, 2));
             updateBlacklist();
             return true;
-            
+
         } catch (e) {
+            updateBlacklist();
             return e;
         }
     } else if (type == 2) { // check 

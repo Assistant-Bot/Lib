@@ -13,8 +13,24 @@ class Blacklist {
         try {
             if (!wrapped[0]) return Util.sendError(msg, emojis, 'custom', '**Usage:** a!blacklist <add/remove/view> [id] [reason]');
             if (args[0] == 'view') {
+                if (args[1]) {
+                    let blacklisted = Util.blacklist(args[1], 3);
+                    if (!blacklisted) return Util.sendError(msg, emojis, 'custom', 'User not found. ');
+                    else {
+                        let em = new Util.SimpleEmbed();
+                        em.setColor('#ff0000');
+                        em.setTitle(blacklisted.user.username);
+                        em.addField('Username', blacklisted.user.username + '#' + blacklisted.user.discriminator, true);
+                        em.addField('ID', blacklisted.user.id, true);
+                        em.addField('Reason', blacklisted.reason);
+                        em.addField('Moderator Username', blacklisted.admin.username + '#' + blacklisted.admin.discriminator, true);
+                        em.addField('Moderator ID', blacklisted.admin.id);
+                        em.setTimestamp(new Date(blacklisted.time));
+                        em.setFooter('is date of blacklist.');
+                        return msg.channel.send(em);
+                    }
+                }
                 let blacklisted = Util.blacklist('0', 4);
-                msg.channel.send(JSON.stringify(blacklisted));
                 let clean = [];
                 let keys = Object.keys(blacklisted);
                 let i = 0;
@@ -30,8 +46,11 @@ class Blacklist {
                 em.setColor('#ff0000');
                 em.setTitle('All blacklisted users');
                 em.setDescription(clean.join('\n'));
-                msg.channel.send(em);
-            } else if (args[0] == 'add') {
+                return msg.channel.send(em);
+            } 
+            if (msg.author.id != '217006264570347520') return Util.sendError(msg, emojis, 'custom', 'You can\'t do this.');
+
+            if (args[0] == 'add') {
                 if (!wrapped[1]) return Util.sendError(msg, emojis, 'custom', 'Invalid user.');
                 let user = await bot._restClient.getRESTUser(wrapped[1]);
                 if (!user) return Util.sendError(msg, emojis, 'custom', 'Invalid user.');
@@ -47,7 +66,7 @@ class Blacklist {
                 Util.blacklist(wrapped[1], 1, msg.author.id, reason);
 
                 return msg.channel.send(emojis.greentick + ' Successfully unblacklisted `' + user.username + ' (' + user.id + ')` with reason: `' + reason + '`');
-            } else return Util.sendError(msg, emojis, 'custom', '**Usage:** a!blacklist <add/remove/view> [id] [reason] fuck: ' + args);
+            } else return Util.sendError(msg, emojis, 'custom', '**Usage:** a!blacklist <add/remove/view> [id] [reason]');
         } catch (e) {
             return msg.channel.send(`${emojis.redtick} Failed to run command: ${e}`);
         }
@@ -63,8 +82,7 @@ class Blacklist {
     }
 
     async onPermCheck(bot, msg, args, Util, emojis) {
-        if (msg.author.id != '217006264570347520') return false;
-        else return true;
+        return true;
     }
 }
 
