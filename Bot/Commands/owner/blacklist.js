@@ -29,16 +29,16 @@ class Blacklist {
                 em.setDescription(clean.join('\n'));
             }
 
-            if (wrapped[1] == 'add') {
-                if (!wrapped[2]) return Util.sendError(msg, emojis, 'custom', 'Invalid user.');
-                let reason = (!wrapped[3]) ? "No reason provided" : wrapped[3];
-                Util.blacklist(wrapped[2], 0, msg.author.id, reason);
+            if (wrapped[0] == 'add') {
+                if (!wrapped[1]) return Util.sendError(msg, emojis, 'custom', 'Invalid user.');
+                let reason = (!wrapped[2]) ? "No reason provided" : wrapped[2];
+                Util.blacklist(wrapped[1], 0, msg.author.id, reason);
                 return msg.channel.send(emojis.greentick + ' Successfully blacklisted `' + wrapped[0] + '` with reason: `' + reason + '`');
             }
-            if (wrapped[1] == 'remove') {
-                if (!wrapped[2]) return Util.sendError(msg, emojis, 'custom', 'Invalid user.');
-                let reason = (!wrapped[3]) ? "No reason provided" : wrapped[3];
-                Util.blacklist(wrapped[2], 1, msg.author.id, reason);
+            if (wrapped[0] == 'remove') {
+                if (!wrapped[1]) return Util.sendError(msg, emojis, 'custom', 'Invalid user.');
+                let reason = (!wrapped[2]) ? "No reason provided" : wrapped[2];
+                Util.blacklist(wrapped[1], 1, msg.author.id, reason);
                 return msg.channel.send(emojis.greentick + ' Successfully unblacklisted `' + wrapped[0] + '` with reason: `' + reason + '`');
             }
             return Util.sendError(msg, emojis, 'custom', '**Usage:** a!blacklist <add/remove/view> [id] [reason]');
