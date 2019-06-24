@@ -403,6 +403,7 @@ class CommandHandler {
          }
 
          try {
+             if (this.options.blacklistFunction(msg.author.id)) return;
              if (!cc.commands.has(command)) {
                  if (cc.options.resToUnk == true)
                     return msg.channel.send(cc.replaceAll(cc.options.resMsg, '{COMMAND}', command));

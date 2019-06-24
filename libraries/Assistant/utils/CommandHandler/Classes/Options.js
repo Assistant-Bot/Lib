@@ -4,6 +4,7 @@ class Options {
         if(!token) this.token = null; // Token to the bot.
         if(!cooldown) this.cooldown = 3000; // 3 seconds.
         if(!client) this.client = false;
+        this.blacklistFunction = (id) => {return false;}
         this.os = 1;
 
         return this;
@@ -26,6 +27,15 @@ class Options {
      */
     setOS(system) {
         this.os = system;
+        return this;
+    }
+
+
+    /**
+     * @param {Function} func 
+     */
+    setBlacklist(func) {
+        this.blacklistFunction = func;
         return this;
     }
 

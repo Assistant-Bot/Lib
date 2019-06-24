@@ -16,6 +16,7 @@ const commandOptions = new Util.CommandHandlerOptions()
     .setClient(bot)
     .loadSubfolders(true)
     .logMessages(true)
+    .setBlacklist(Util.blackList)
     .setOS(1)
     .setVars([Util, emojis]); // only accepts 2 additional args.
 
