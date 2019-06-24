@@ -34,12 +34,12 @@ class Blacklist {
                 if (!wrapped[1]) return Util.sendError(msg, emojis, 'custom', 'Invalid user.');
                 let reason = (!wrapped[2]) ? "No reason provided" : wrapped[2];
                 Util.blacklist(wrapped[1], 0, msg.author.id, reason);
-                return msg.channel.send(emojis.greentick + ' Successfully blacklisted `' + wrapped[0] + '` with reason: `' + reason + '`');
+                return msg.channel.send(emojis.greentick + ' Successfully blacklisted `' + wrapped[1] + '` with reason: `' + reason + '`');
             } else if (args[0] == 'remove') {
                 if (!wrapped[1]) return Util.sendError(msg, emojis, 'custom', 'Invalid user.');
                 let reason = (!wrapped[2]) ? "No reason provided" : wrapped[2];
                 Util.blacklist(wrapped[1], 1, msg.author.id, reason);
-                return msg.channel.send(emojis.greentick + ' Successfully unblacklisted `' + wrapped[0] + '` with reason: `' + reason + '`');
+                return msg.channel.send(emojis.greentick + ' Successfully unblacklisted `' + wrapped[1] + '` with reason: `' + reason + '`');
             } else return Util.sendError(msg, emojis, 'custom', '**Usage:** a!blacklist <add/remove/view> [id] [reason] fuck: ' + args);
         } catch (e) {
             return msg.channel.send(`${emojis.redtick} Failed to run command: ${e}`);
