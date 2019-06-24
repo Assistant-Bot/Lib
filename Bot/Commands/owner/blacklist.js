@@ -22,9 +22,9 @@ class Blacklist {
                         em.setTitle(blacklisted.user.username);
                         em.addField('Username', blacklisted.user.username + '#' + blacklisted.user.discriminator, true);
                         em.addField('ID', blacklisted.user.id, true);
-                        em.addField('Reason', blacklisted.reason);
+                        em.addField('Reason', blacklisted.reason, true);
                         em.addField('Moderator Username', blacklisted.admin.username + '#' + blacklisted.admin.discriminator, true);
-                        em.addField('Moderator ID', blacklisted.admin.id);
+                        em.addField('Moderator ID', blacklisted.admin.id, true);
                         em.setTimestamp(new Date(blacklisted.time));
                         em.setFooter('Blacklisted since');
                         return msg.channel.send(em);
