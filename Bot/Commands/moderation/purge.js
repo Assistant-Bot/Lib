@@ -31,7 +31,7 @@ class Purge {
     }
 
     async onNoPerm(bot, msg, args, Util, emojis) {
-        return Util.sendError(msg, emojis, 'noperm', 'Administrator')
+        return Util.sendError(msg, emojis, 'noperm', 'Manage Messages')
     }
 
     async onError(bot, msg, args, Util, emojis, e) {
