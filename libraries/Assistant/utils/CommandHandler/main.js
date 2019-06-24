@@ -388,8 +388,8 @@ class CommandHandler {
          }
          let args = msg.content.slice(prefix.length).trim().split(/ +/g);
          let command = args.shift().toLowerCase();
-         if (cc.options.allowBots && msg.author.bot) return;
          if (msg.content.indexOf(prefix) !== 0) return;
+         if (!cc.options.allowBots && msg.author.bot) return;
          if (cc.options.blacklistFunction(msg.author.id)) return;
          if (cc.options.cooldown > 0) {
              if (cc.cooldown.has(msg.author.id)) {
