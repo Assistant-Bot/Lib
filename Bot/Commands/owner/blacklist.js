@@ -32,7 +32,7 @@ class Blacklist {
                 msg.channel.send(em);
             } else if (args[0] == 'add') {
                 if (!wrapped[1]) return Util.sendError(msg, emojis, 'custom', 'Invalid user.');
-                let user = await client._restClient.getRESTUser(wrapped[1]);
+                let user = await bot._restClient.getRESTUser(wrapped[1]);
                 if (!user) return Util.sendError(msg, emojis, 'custom', 'Invalid user.');
                 let reason = (!wrapped[2]) ? "No reason provided" : wrapped[2];
                 Util.blacklist(wrapped[1], 0, msg.author.id, reason);
@@ -40,11 +40,11 @@ class Blacklist {
                 return msg.channel.send(emojis.greentick + ' Successfully blacklisted `' + user.username + '(' + user.id + ')` with reason: `' + reason + '`');
             } else if (args[0] == 'remove') {
                 if (!wrapped[1]) return Util.sendError(msg, emojis, 'custom', 'Invalid user.');
-                let user = await client._restClient.getRESTUser(wrapped[1]);
+                let user = await bot._restClient.getRESTUser(wrapped[1]);
                 if (!user) return Util.sendError(msg, emojis, 'custom', 'Invalid user.');
                 let reason = (!wrapped[2]) ? "No reason provided" : wrapped[2];
                 Util.blacklist(wrapped[1], 1, msg.author.id, reason);
-                
+
                 return msg.channel.send(emojis.greentick + ' Successfully blacklisted `' + user.username + '(' + user.id + ')` with reason: `' + reason + '`');
             } else return Util.sendError(msg, emojis, 'custom', '**Usage:** a!blacklist <add/remove/view> [id] [reason] fuck: ' + args);
         } catch (e) {
