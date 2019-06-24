@@ -11,6 +11,10 @@ module.exports = (msg, emojis, type='unknown', other='Unknown Node') => {
         return msg.channel.send(emojis.redtick + ' ' + other);
     }
 
+    if (type == 'warn') {
+        return msg.channel.send(emojis.warning + ' ' + other);
+    }
+
     if (type == 'argErr') {
         return msg.channel.send(emojis.redtick);
     }
