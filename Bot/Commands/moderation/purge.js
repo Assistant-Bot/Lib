@@ -21,7 +21,7 @@ class Purge {
             if (!msg.guild.members.get(bot.user.id).permission.has('manageMessages')) return Util.sendError(msg, emojis, 'perm', 'Manage Message');
             try {
                 msg.delete();
-                await msg.channel.purge(amount);
+                await msg.channel.purge(amount + 1);
                 msg.channel.send(emojis.greentick + ' Purged `' + amount + '` messages.');
             } catch (e) {
                 Util.logError(bot, msg, args, Util, emojis, this, e);
