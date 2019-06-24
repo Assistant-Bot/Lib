@@ -147,6 +147,7 @@ class CommandHandler {
                     this.register(fl, this.dir + '/', '[COMMAND-HANDLER]: {CMD} loaded with aliases: {ALIAS}!');
                     loaded++;
                 });
+                this.options.commands = this.commands.find((key,v) => {return key == v.name}).map((c) => c[1]);
                 if (!silent) console.log('[COMMAND-HANDLER]: ' + loaded + ' of ' + attempted + ' attempted commands loaded!');
             }
         } catch (e) {

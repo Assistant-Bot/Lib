@@ -5,6 +5,7 @@ class Options {
         if(!cooldown) this.cooldown = 3000; // 3 seconds.
         if(!client) this.client = false;
         this.allowBots = false;
+        this.storeCmd = true;
         this.blacklistFunction = (id) => {return false;}
         this.os = 1;
 
@@ -19,6 +20,11 @@ class Options {
     unknownCommands(bool, msg=null) {
         this.resToUnk = bool
         this.resMsg = msg;
+        return this;
+    }
+
+    storeUnderclient(bool) {
+        this.storeCmd = bool;
         return this;
     }
 
