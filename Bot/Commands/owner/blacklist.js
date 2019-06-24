@@ -17,12 +17,12 @@ class Blacklist {
                 let clean = [];
                 let keys = Object.keys(blacklisted);
                 let i = 0;
-                await keys.forEach((key) => {
+                await keys.forEach(async (key) => {
                     i++;
                     let ob = blacklisted[key];
-                    let f = bot._restClient.getRESTUser(key);
-                    let a = bot._restClient.getRESTUser(ob.admin);
-                    msg.channel.send(f);
+                    let f = await bot._restClient.getRESTUser(key);
+                    let a = await bot._restClient.getRESTUser(ob.admin);
+
                     clean.push(`**${i}.)** __${f.username} (\`${key}\`)__ - **M** ${a.username} (\`${ob.admin}\`)`);
                 });
 
