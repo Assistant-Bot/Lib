@@ -23,10 +23,13 @@ class Blacklist {
                     clean.push(`**${i}.)** __${key}__ - **M** (${ob.mod})`);
                 });
 
+                if (keys.length == 0) return Util.sendError(msg, emojis, 'custom', 'No blacklisted users.');
+
                 let em = new Util.SimpleEmbed();
                 em.setColor('#ff0000');
                 em.setTitle('All blacklisted users');
                 em.setDescription(clean.join('\n'));
+                msg.channel.send(em);
             } else if (args[0] == 'add') {
                 if (!wrapped[1]) return Util.sendError(msg, emojis, 'custom', 'Invalid user.');
                 let reason = (!wrapped[2]) ? "No reason provided" : wrapped[2];
