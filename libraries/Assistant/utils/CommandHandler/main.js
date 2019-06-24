@@ -186,7 +186,7 @@ class CommandHandler {
         else return true;
     }
 
-    async register(cmd, type, str=false, type='none') {
+    async register(cmd, dir, str=false, type='none') {
         cmd = new cmd();
         let cache = cmd;
         let aliases = cmd.aliases;
@@ -195,7 +195,7 @@ class CommandHandler {
             cache.parent = cmd.name.toLowerCase();
             this.commands.set(alias.toLowerCase(), cache);
         });
-        cmd.dir = type;
+        cmd.dir = dir;
         cmd.category = type;
         this.commands.set(cmd.name.toLowerCase(), cmd);
 
