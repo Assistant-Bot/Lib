@@ -50,7 +50,7 @@ class BanList {
                         else return false;
                     });
                     if (found.length < 1) return Util.sendError(msg, emojis, 'custom', 'I could not find a ban for that search.');
-                    if (found.length > 1) return Util.sendError(msg, emojis, 'warn', 'I found multiple bans for this search, returning the first one.');
+                    if (found.length > 1) Util.sendError(msg, emojis, 'warn', 'I found multiple bans for this search, returning the first one.');
                     let em = new Util.SimpleEmbed();
                     em.setColor('#fc5928');
                     em.setAuthor(found[0].user.username, Util.resolveAvatar(found[0].user));
