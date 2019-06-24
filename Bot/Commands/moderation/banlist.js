@@ -55,8 +55,8 @@ class BanList {
                     em.setColor('#fc5928');
                     em.setAuthor(found[0].user.username, Util.resolveAvatar(found[0].user));
                     em.setTitle('Showing ban for ' + found[0].user.username);
-                    em.addField('User', `**Username:** ${found[0].user.username}#${found[0].user.discriminator}\n**ID:** ${found[0].user.id}\n**Avatar:** [Click Here](${Util.resolveAvatar(found[0].user)})`);
-                    em.addField('Reason', found[0].reason);
+                    em.addField('User', `**Username:** ${found[0].user.username}#${found[0].user.discriminator}\n**ID:** ${found[0].user.id}\n**Avatar:** [Click Here](${Util.resolveAvatar(found[0].user)})`, true);
+                    em.addField('Reason', found[0].reason, true);
                     em.setFooter('Assitant v2', bot.user.avatarURl);
                     return msg.channel.send(em);
                 } else {
@@ -66,9 +66,9 @@ class BanList {
                         em.setColor('#fc5928');
                         em.setAuthor(ban.user.username, Util.resolveAvatar(ban.user));
                         em.setTitle('Showing ban for ' + ban.user.username);
-                        em.addField('User', `**Username:** ${ban.user.username}#${ban.user.discriminator}\n**ID:** ${ban.user.id}\n**Avatar:** [Click Here](${Util.resolveAvatar(ban.user)})`);
+                        em.addField('User', `**Username:** ${ban.user.username}#${ban.user.discriminator}\n**ID:** ${ban.user.id}\n**Avatar:** [Click Here](${Util.resolveAvatar(ban.user)})`, true);
                         em.addField('Reason', ban.reason);
-                        em.setFooter('Assitant v2', bot.user.avatarURl);
+                        em.setFooter('Assitant v2', bot.user.avatarURl, true);
                         return msg.channel.send(em);
                     } catch (e) {
                         return Util.sendError(msg, emojis, 'custom', 'I could not find a ban for that userID.');
