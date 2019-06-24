@@ -54,7 +54,7 @@ class BanList {
                     let em = new Util.SimpleEmbed();
                     em.setColor('#fc5928');
                     em.setAuthor(found[0].user.username, Util.resolveAvatar(found[0].user));
-                    em.setTitle('Showing ban for ' + found[0]);
+                    em.setTitle('Showing ban for ' + found[0].user.username);
                     em.addField('User', `**Username:** ${found[0].user.username}#${found[0].user.discriminator}\n**ID:** ${found[0].user.id}\n**Avatar:** [Click Here](${Util.resolveAvatar(found[0].user)})`);
                     em.addField('Reason', found[0].reason);
                     em.setFooter('Assitant v2', bot.user.avatarURl);
