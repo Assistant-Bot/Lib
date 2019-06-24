@@ -79,7 +79,7 @@ class BanList {
     }
 
     async onNoPerm(bot, msg, args, Util, emojis) {
-        return Util.sendError(msg, emojis, 'perm', 'Ban Members')
+        return Util.sendError(msg, emojis, 'noperm', 'Ban Members')
     }
 
     async onError(bot, msg, args, Util, emojis, e) {
