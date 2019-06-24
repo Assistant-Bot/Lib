@@ -115,7 +115,6 @@ class CommandHandler {
                         loaded++;
                     });
                 }
-                this.parentCommands = this.commands.find((n, c) => {return c.name == n}).map(c => c[1]);
                 if (!silent) console.log('[COMMAND-HANDLER]: ' + loaded + ' of ' + attempted + ' attempted commands loaded!');
             } else {
                 let files;
@@ -148,8 +147,7 @@ class CommandHandler {
                     this.register(fl, this.dir + '/', '[COMMAND-HANDLER]: {CMD} loaded with aliases: {ALIAS}!');
                     loaded++;
                 });
-                this.parentCommands = this.commands.find((n, c) => {return c.name == n}).map(c => c[1]);
-                
+
                 if (!silent) console.log('[COMMAND-HANDLER]: ' + loaded + ' of ' + attempted + ' attempted commands loaded!');
             }
         } catch (e) {
