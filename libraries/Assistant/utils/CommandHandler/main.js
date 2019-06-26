@@ -40,8 +40,8 @@ class CommandHandler {
             if (!this.database.createGuild) throw '[COMMAND-HANDLER]: Database must include .createGuild()';
             let response = this.database.getPrefix('0');
             if (typeof response == 'object') {
-                console.warn('[COMMAND-HANDLER]: Database could not check output, will error in future.');
-            } else if (response !== false || response !== null || typeof response !== 'string') throw '[COMMAND-HANDLER]: Database must return false, null, or string.';
+                throw '[COMMAND-HANDLER]: Database could not check output because an object was returned when fetching the prefix.';
+            } else if (typeof response !== 'string' && typeof response !== 'boolean') throw '[COMMAND-HANDLER]: Database must return false, null, or string.';
             else console.log('[COMMAND-HANDLER]: Database loaded.');
         }
         this.options = options;
@@ -389,7 +389,7 @@ class CommandHandler {
      async default (msg) {
          let cc = this.commandHandler;
          let prefix = cc.options.prefix;
-         if (typeof prefix == 'function') {
+         if (cc.database) {
              try {
                  let response = await prefix.getPrefix(msg.guild.id);
                  if (response == false || response == null) {
@@ -401,6 +401,7 @@ class CommandHandler {
                  prefix = response;
              } catch (e) {
                  console.log('[COMMAND-HANDLER]: Unknown prefix error: ' + e);
+                 return;
              }
          }
          let args = msg.content.slice(prefix.length).trim().split(/ +/g);
