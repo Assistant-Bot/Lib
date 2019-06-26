@@ -27,7 +27,47 @@ class Purge {
                 Util.logError(bot, msg, args, Util, emojis, this, e);
                 return Util.sendError(msg, emojis, 'unknown');
             }
-        } else return Util.sendError(msg, emojis, 'alias', 'purge');
+        } else if (wrapped[1]) {
+            let amount = (!wrapped[0]) ? 100 : (!parseInt(wrapped[0])) ? 100 : parseInt(wrapped[0]);
+            try {
+                if (amount > 2000) return Util.sendError(msg, emojis, 'custom', 'You can not purge more than 2000 messages at a time.');
+                if (wrapped[1] == 'bots' || wrapped[1] == 'bot') {
+                    let i_ = 0;
+                    let am = await msg.channel.purge(-1, (m) => {
+                        if (amount == i_) return false;
+                        if (m.author.bot) {
+                            i_++;
+                            return true;
+                        } else return false
+                    });
+                    return msg.channel.send(emojis.greentick + ' Purged `' + am + '` messages.');
+                }
+                if (wrapped[1] == 'clean') {
+                    let i_ = 0;
+                    let am = await msg.channel.purge(-1, (m) => {
+                        let locale = 0;
+                        let common = ['!', 'a!', '!<', 'c!', '/', '>', '<', ';', ':', '"', '`', '@', '#'];
+                        if (amount == i_) return false;
+                        if (m.author.bot) {
+                            i_++;
+                            return true;
+                        } 
+                        for (locale; locale < common.length; locale++) {
+                            let index = common[locale];
+                            if (m.content.toLowerCase().search(index) != -1) return true;
+                            continue;
+                        } return false;
+                    });
+                    return msg.channel.send(emojis.greentick + ' Purged `' + am + '` messages.');
+                }
+                return Util.sendError(msg, emojis, 'custom', 'Invalid option provided. Use `help purge` for usage.');
+                
+            } catch (e) {
+                this.onError(bot, msg, args, Util, emojis, e);
+            }          
+        } else {
+            if (!wrapped[0]) return Util.sendError(msg, emojis, 'alias', 'purge');
+        }
     }
 
     async onNoPerm(bot, msg, args, Util, emojis) {
@@ -35,7 +75,8 @@ class Purge {
     }
 
     async onError(bot, msg, args, Util, emojis, e) {
-        return msg.channel.send(emojis.red_x + ' I couldn\'t set the channel cooldown: ' + e.message);
+        Util.logError(bot, msg, args, Util, emojis, this, e);
+        return msg.channel.send(emojis.red_x + ' An internal error occured.');
     }
 
     async onPermCheck(bot, msg) {
