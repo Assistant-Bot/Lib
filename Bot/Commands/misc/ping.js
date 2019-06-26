@@ -10,9 +10,9 @@ class Ping {
     }
     
     async onRun (bot, msg, args, Util, emojis) {
-        let m = await msg.channel.send(`${emojis.square} Pinging...`);
+        let m = await msg.channel.send(`${emojis.empty} Pinging...`);
         let value = m.timestamp - msg.timestamp;
-        return m.edit(emojis.greentick + ' Pong! `' + value + '` ms.');
+        return m.edit(emojis.check + ' Pong! `' + value + '` ms.');
     }
     
     async onError(bot, msg, args, Util, emojis) {

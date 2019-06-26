@@ -18,7 +18,7 @@ class SlowMode {
         let time = this.getTime(args.slice(0).join(' '));
         try {
             await msg.channel.edit({rateLimitPerUser: time.intVal});
-            return msg.channel.send(emojis.greentick + ' I set the cooldown in: **#' + msg.channel.name + '** to **' + time.txt + '**');
+            return msg.channel.send(emojis.check + ' I set the cooldown in: **#' + msg.channel.name + '** to **' + time.txt + '**');
         } catch (e) {
             return this.onError(bot, msg, args, Util, emojis, e);
         }
