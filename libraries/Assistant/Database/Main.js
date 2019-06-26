@@ -5,15 +5,17 @@ class Database {
     constructor () {
         this.guildSchema = require('./Schems/Guild');
         this.defaults = {
-            prefix: 'a!'
+            prefix: '!'
         }
 
         this.createGuild = this.initGuild; // called by cmd handler
     }
 
     async getPrefix(id) {
+        //if (id == '0') return this.defaults.prefix;
         let g = await this.fetchGuild(id);
         if (g == null) {
+            this.initGuild(id);
             return this.defaults.prefix;
         } else return  g.prefix;
     }

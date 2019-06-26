@@ -35,7 +35,7 @@ class Purge {
     }
 
     async onError(bot, msg, args, Util, emojis, e) {
-        return msg.channel.send(emojis.redtick + ' I couldn\'t set the channel cooldown: ' + e.message);
+        return msg.channel.send(emojis.red_x + ' I couldn\'t set the channel cooldown: ' + e.message);
     }
 
     async onPermCheck(bot, msg) {

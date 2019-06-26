@@ -40,7 +40,12 @@ class CommandHandler {
             if (!this.database.createGuild) throw '[COMMAND-HANDLER]: Database must include .createGuild()';
             let response = this.database.getPrefix('0');
             if (typeof response == 'object') {
-                throw '[COMMAND-HANDLER]: Database could not check output because an object was returned when fetching the prefix.';
+                if (response.toString() == '[object Promise]') {
+                    console.log('[COMMAND-HANDLER]: Database result was a promise, accepted without testing.');
+                    console.log('[COMMAND-HANDLER]: Database loaded.');
+                } else {
+                    throw '[COMMAND-HANDLER]: Database could not check output because an object was returned when fetching the prefix.';
+                }
             } else if (typeof response !== 'string' && typeof response !== 'boolean') throw '[COMMAND-HANDLER]: Database must return false, null, or string.';
             else console.log('[COMMAND-HANDLER]: Database loaded.');
         }

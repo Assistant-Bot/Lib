@@ -13,6 +13,7 @@ module.exports = {
     opebot: '<:OwnagebotCirc:506584126422253579>',
 
     // NEW
+    red_x: '<:red_x:593328642885550109>',
     check: '<:check:593262657243578368>',
     
     empty: '<:empty:593257698963750935>',

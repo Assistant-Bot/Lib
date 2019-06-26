@@ -13,23 +13,23 @@ class SlowMode {
         if (!args[0]) {
             let curr = msg.channel.rateLimitPerUser;
             let c = (curr == 0) ? "Off" : curr + ' seconds';
-            return msg.channel.send(emojis.greentick + ' The slowmode for this channel is set to: **' + c + '**.');
+            return msg.channel.send(emojis.check + ' The slowmode for this channel is set to: **' + c + '**.');
         }
         let time = this.getTime(args.slice(0).join(' '));
         try {
             await msg.channel.edit({rateLimitPerUser: time.intVal});
-            return msg.channel.send(emojis.check + ' I set the cooldown in: **#' + msg.channel.name + '** to **' + time.txt + '**');
+            return msg.channel.send(emojis.check + ' Cooldown set to **' + time.txt + '** in **#' + msg.channel.name + '**.');
         } catch (e) {
             return this.onError(bot, msg, args, Util, emojis, e);
         }
     }
 
     async onNoPerm(bot, msg, args, Util, emojis) {
-        return msg.channel.send(emojis.redtick + ' You require `default` permissions to use this command.');
+        return msg.channel.send(emojis.red_x + ' You require `default` permissions to use this command.');
     }
 
     async onError(bot, msg, args, Util, emojis, e) {
-        return msg.channel.send(emojis.redtick + ' I couldn\'t set the channel cooldown: ' + e.message);
+        return msg.channel.send(emojis.red_x + ' I couldn\'t set the channel cooldown: ' + e.message);
     }
 
     async onPermCheck(bot, msg) {

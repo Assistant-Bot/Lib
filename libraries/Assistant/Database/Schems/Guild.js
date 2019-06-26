@@ -1,6 +1,6 @@
-const {Schema, model} = require('mongoose');
-
-var guildSchema = new Schema({
+const mongoose = require('mongoose');
+mongoose.set('useFindAndModify', false);
+var guildSchema = new mongoose.Schema({
     /* General settings */
     guildID: { type: String, required: true, index: true }, // Guild ID
     prefix: { type: String, default: 'a!' }, // Guild Prefix
@@ -26,4 +26,4 @@ var guildSchema = new Schema({
 });
 
 
-module.exports = new model('Guild', guildSchema);
+module.exports = new mongoose.model('Guild', guildSchema);
