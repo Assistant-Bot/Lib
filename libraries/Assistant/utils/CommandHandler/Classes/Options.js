@@ -1,6 +1,6 @@
 class Options {
     constructor(prefix, token, cooldown, client) {
-        if(!prefix) this.prefix = '!<'; // Default prefix.
+        if(!prefix) this.prefix = '!'; // Default prefix.
         if(!token) this.token = null; // Token to the bot.
         if(!cooldown) this.cooldown = 3000; // 3 seconds.
         if(!client) this.client = false;
@@ -30,8 +30,20 @@ class Options {
 
     /**
      * 
-     * @param {Number} system - Use 0 for windows and 1 for linux (this changes how the handler loads)
+     * @param {Boolean} bool - Respond to bots?
+     * @default false
      */
+
+    setAllowBots(bool = true) {
+        this.allowBots = bool;
+        return this;
+    }
+
+    /**
+     * @param {Number} system - Use 0 if windows is being picky, and 1 for linux/windows (this changes how the handler loads)
+     * @default 1
+     */
+    
     setOS(system) {
         this.os = system;
         return this;

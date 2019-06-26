@@ -1,6 +1,13 @@
 /**
+ * COMMAND HANDLER
+ * 
  * @author John.#9309
- * @toDo Work on per-command cooldown & perm ints
+ * @toDo Work on per-command cooldown 
+ * 
+ * TO DO:
+ * - Register cooldown per command
+ * - allowedRoles
+ * - allowedUsers
  */
 
 const CommandCollection = require('./Classes/CommandCollection');
@@ -44,6 +51,8 @@ class CommandHandler {
             0: 'Discord.JS',
             1: 'Eris'
         };
+
+        this.perCooldown = new Map();
         this.cooldown = new Set();
         this.warned = new Set();
     }
@@ -185,6 +194,7 @@ class CommandHandler {
         if (typeof cmd.aliases !== 'object') return false;
         if (typeof cmd.onError !== 'function') return false;
         if (typeof cmd.onRun !== 'function') return false;
+        //if (cmd.cooldown && typeof cmd.cooldown !== 'function') return false;
         else return true;
     }
 
@@ -197,6 +207,10 @@ class CommandHandler {
             cache.parent = cmd.name.toLowerCase();
             this.commands.set(alias.toLowerCase(), cache);
         });
+        
+        /* REGISTER COOLDOWN SETTINGS */
+        this.perCooldown.set(cmd.name.toLowerCase(), new Set());
+
         cmd.dir = dir;
         cmd.category = type;
         this.commands.set(cmd.name.toLowerCase(), cmd);
@@ -431,4 +445,6 @@ class CommandHandler {
      }
 
 }
+CommandHandler.CommandOptions = Options;
+
 module.exports = CommandHandler;
