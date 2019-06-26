@@ -60,6 +60,18 @@ class Purge {
                     });
                     return msg.channel.send(emojis.greentick + ' Purged `' + am + '` messages.');
                 }
+                if (wrapped[1] == 'match') {
+                    if (!wrapped[2]) return Util.sendError(msg, emojis, 'custom', 'You must provide something to purge.');
+                    let i_ = 0;
+                    let am = await msg.channel.purge(-1, (m) => {
+                        if (amount == i_) return false;
+                        if (m.content.search(wrapped[2].toLowerCase()) != -1) {
+                            i_++;
+                            return true;
+                        } else return false
+                    });
+                    return msg.channel.send(emojis.greentick + ' Purged `' + am + '` messages.');
+                }
                 return Util.sendError(msg, emojis, 'custom', 'Invalid option provided. Use `help purge` for usage.');
                 
             } catch (e) {
