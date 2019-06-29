@@ -8,6 +8,8 @@ class Options {
         this.storeCmd = true;
         this.blacklistFunction = (id) => {return false;}
         this.os = 1;
+        this.caching = false;
+        
 
         return this;
     }

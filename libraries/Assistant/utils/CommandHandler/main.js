@@ -15,7 +15,8 @@ const util = require('util');
 const fs = require('fs');
 const Options = require('./Classes/Options');
 const Command = require('./Classes/Command');
-
+const Permission = require('./Classes/Permission');
+const PermissionHandler = require('./PermissionManager');
 class CommandHandler {
     /**
      * @param {String} dir 
@@ -451,6 +452,10 @@ class CommandHandler {
      }
 
 }
+
+/* Node js static variables when :sob: ;c im actually sad about it lmao */
+CommandHandler.PermissionOptions = PermissionOptions;
+CommandHandler.PermissionManager = PermissionManager;
 CommandHandler.CommandOptions = Options;
 
 module.exports = CommandHandler;
