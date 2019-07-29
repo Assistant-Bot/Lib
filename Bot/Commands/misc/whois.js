@@ -9,7 +9,7 @@ class whois {
 
     async onRun(bot, msg, args, Util, emojis) {
 
-        if (!msg.guild.members.get(bot.user.id).permissions.has('embedLinks')) {
+        if (!msg.guild.members.get(bot.user.id).permission.has('embedLinks')) {
             return Util.sendError(msg, emojis, 'perm', 'Embed Links');
         }
 
