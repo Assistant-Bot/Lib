@@ -16,7 +16,8 @@ const fs = require('fs');
 const Options = require('./Classes/Options');
 const Command = require('./Classes/Command');
 const Permission = require('./Classes/Permission');
-const PermissionHandler = require('./PermissionManager');
+const PermissionOptions = Permission;
+const PermissionManager = require('./PermissionManager');
 class CommandHandler {
     /**
      * @param {String} dir 
