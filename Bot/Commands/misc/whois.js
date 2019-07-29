@@ -42,8 +42,10 @@ class whois {
             let em = new Util.SimpleEmbed();
             em.setAuthor(username, avatar);
             em.addField('Username', username, true);
-            em.addField('User ID', user.id);
+            em.addField('User ID', user.id, true);
             em.addField('Joined Discord', new Date(create).toLocaleDateString('en'), true);
+            em.setThumbnail(avatar);
+            em.setFooter('This user was fetched using the REST api');
             return msg.channel.send(em);
         }
 
