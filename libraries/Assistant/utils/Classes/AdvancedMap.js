@@ -65,7 +65,7 @@ class AdvancedMap extends Map {
         return Array.from(this.keys());
     }
 
-    getEnteries() {
+    getEntries() {
         return Array.from(this.entries());
     }
 

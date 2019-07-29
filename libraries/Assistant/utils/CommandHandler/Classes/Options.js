@@ -9,8 +9,17 @@ class Options {
         this.blacklistFunction = (id) => {return false;}
         this.os = 1;
         this.caching = false;
-        
-
+        this.defaults = {
+            helpMenu: {
+                embed: true, // Embed all help messages?
+                color: 0x26d1ff, // Color of embed mMLUL
+                display: 'compact', // Cat - Commands VS command - info command - info command - info command - info
+                perCommand: true, // allow usage of !help [command]?
+                pager: false // OPTION NOT DONE YET PLS NO
+            }
+        };
+        this.helpMenu = true;
+        this.helpMenuOpts = this.defaults.helpMenu;
         return this;
     }
 
@@ -24,6 +33,17 @@ class Options {
         this.resMsg = msg;
         return this;
     }
+
+    /**
+     * @param {Boolean} bool - Use built in help menu?
+     */
+    useHelpMenu(bool=true, opts) {
+        this.helpMenu = true;
+        this.helpMenuOpts = (!opts) ? this.defaults.helpMenu : opts;
+        return this;
+    }
+    
+    
 
     storeUnderclient(bool) {
         this.storeCmd = bool;

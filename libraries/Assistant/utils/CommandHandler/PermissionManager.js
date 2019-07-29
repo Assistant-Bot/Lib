@@ -6,7 +6,10 @@ const Permission = require('./Classes/Permission');
 const AdvancedMap = require('../Classes/AdvancedMap');
 
 class PermissionManager {
-    constructor() {
+    constructor(opts) {
+        if (opts) {
+            if (!opts.bindValue) throw 'Could not parse';
+        } 
         this.permissions = new AdvancedMap();
     }
 
@@ -15,7 +18,7 @@ class PermissionManager {
         if (!permission instanceof Permission) throw 'Permission must be an instanceof Permission class.';
         else {
             if (this.permissions.has(permission.permission)) throw 'Permission' + permission.permission + 'already exists.';
-            this.permissions.push(permission);
+            this.permissions.add(permission.permission, permission);
         }
     }
 
