@@ -37,7 +37,7 @@ class whois {
         let avatar = user.avatarURL;
         let username = user.tag;
         let create = user.createdAt;
-
+        msg.channel.send('USING MODE: ' + mode);
         if (mode == 1) {
             let permissions = Util.stringPerms(user.permission.json);
             let status = (emojis[user.status]) ? emojis[user.status] : user.status;
@@ -69,7 +69,7 @@ class whois {
             em.addField('Nitro Boosting', 'Since ' + nitroBooster, true);
             em.addField('User Roles', roles.slice(0, 30).join(', '), true);
             em.addField('User Permissions', permissions, true);
-            msg.channel.send(em);
+            return msg.channel.send(em);
         }
 
         if (mode == 2 || mode == 0) {
