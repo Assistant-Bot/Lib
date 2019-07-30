@@ -2,7 +2,7 @@ module.exports = (guild, search) => {
     let search2 = search.replace(/[<@!, <@, >]/ig, '');
     if (parseInt(search2)) {
         let poss = guild.members.filter(m => m.id === search2);
-        if (poss.length < 1) return false;
+        if (poss.size < 1) return false;
         else return poss[0];
     }
 
