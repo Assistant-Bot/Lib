@@ -49,9 +49,11 @@ class whois {
             let game = user.game;
             let roles = msg.guild.roles.filter(r => {
                 if (user.roles.includes(r.id)) return r;
-            }).map(r => r.name).sort(function (a, b) {
-                return a.position - b.position
-            });
+            }).sort(function (a, b) {
+                a = a.position;
+                b = b.position;
+                return a > b ? 1 : b > a ? -1 : 0;
+            }).map(r => r.name);
 
             roles = (roles.length > 0) ? roles : 'None';
 
@@ -60,7 +62,8 @@ class whois {
             let color = msg.guild.roles.filter(r => {
                 if (user.roles.includes(r.id)) return r;
             }).sort(function (a, b) {
-                return a.position - b.position
+                // Decending
+                return a.position > b.position ? -1 : b.position > a.position ? 1 : 0;
             });
 
             if (!color[0]) color = 0;
