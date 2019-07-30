@@ -8,14 +8,14 @@ module.exports = (json) => {
         let perm = permissions[i];
         let hasPerm = json[i];
 
-        if (!hasPerm) return;
+        if (!hasPerm) continue;
         else {
             perm = perm.split(/(?=[A-Z])/).join(' ').title();
             perms.push(perm);
         }
     }
 
-    if (perms.length === 0) return 'None';
+    if (perms.length < 1) return 'None';
     
     return perms.join(', ');
 }
