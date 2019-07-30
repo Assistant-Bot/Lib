@@ -9,6 +9,8 @@ exports.CommandHandlerOptions = require('./utils/CommandHandler/Classes/Options'
 exports.AdvancedMap = require('./utils/Classes/AdvancedMap');
 exports.SimpleEmbed = require('./utils/Classes/SimpleEmbed');
 /* Functions */
+exports.stringPerms = require('./utils/functions/stringPerms');
+exports.getObjectProperties = require('./utils/functions/getObjectProperties');
 exports.ObjectFilter = require('./utils/functions/objectFilter');
 exports.findMember = require('./utils/functions/findMember');
 exports.resolveMember = require('./utils/functions/findMember');
