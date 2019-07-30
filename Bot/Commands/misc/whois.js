@@ -42,16 +42,19 @@ class whois {
         let create = user.createdAt;
 
         if (mode == 1) {
-            let permissions = Util.stringPerms(user.permission.json);
+            let permissions = Object.keys(user.permission.json).join(', ');
             let status = (emojis[user.status]) ? emojis[user.status] : user.status;
             let nick = (!user.nick) ? 'None' : user.nick;
             let mention = user.mention;
             let game = user.game;
             let roles = msg.guild.roles.filter(r => {
                 if (user.roles.includes(r.id)) return r;
-            }).map(r => r.name);
+            }).map(r => r.name).sort(function (a, b) {
+                return a.position - b.position
+            });
+
             roles = (roles.length > 0) ? roles : 'None';
-            
+
             let joinedAt = new Date(user.joinedAt).toLocaleDateString('en');
             let nitroBooster = (!user.premiumSince) ? 'Never' : new Date(user.premiumSince).toLocaleDateString('en');
             let color = msg.guild.roles.filter(r => {
