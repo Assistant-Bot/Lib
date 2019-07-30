@@ -16,7 +16,10 @@ class whois {
         let user;
         let mode = 0;
 
-        if (!args[0]) user = msg.member;
+        if (!args[0]) {
+            user = msg.member;
+            mode = 1;
+        }
         if (args[0]) {
             let toSearch = args.slice(0).join(' ');
             let isGuildMember = Util.findMember(msg.guild, toSearch);
@@ -35,9 +38,9 @@ class whois {
 
         // These are 100% always the same.
         let avatar = user.avatarURL;
-        let username = user.tag;
+        let username = user.username + '#' + user.descriminator;
         let create = user.createdAt;
-        msg.channel.send('USING MODE: ' + mode);
+
         if (mode == 1) {
             let permissions = Util.stringPerms(user.permission.json);
             let status = (emojis[user.status]) ? emojis[user.status] : user.status;
@@ -59,7 +62,8 @@ class whois {
             let em = new Util.SimpleEmbed();
             em.setColor(color);
             em.setAuthor(username, avatar);
-            em.addField('Username', username, true);
+            em.setThumbnail(user.avatarURL);
+            em.addField('Username', user.username, true);
             em.addField('User ID', user.id, true);
             em.addField('User Mention', mention, true);
             em.addField('User Status', `${status} ${game}`, true);
