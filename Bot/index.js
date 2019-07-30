@@ -1,10 +1,10 @@
 const Util = require('../libraries/Assistant/main.js');
-const Eris = require('eris');
+let Eris = require('eris');
 const config = require('./configuration/config.json');
 const emojis = require('./configuration/emojis.js');
 
 /* Initialize the Client */
-Util.loadProperties(Eris);
+Eris = Util.loadProperties(Eris);
 const bot = (config.dev_mode) ? new Eris(config.dev_token, config.eris) : new Eris(config.token, config.eris); //Discord.Client(); 
     bot.emojis = emojis;
     bot.db = new Util.database();
