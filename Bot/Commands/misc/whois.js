@@ -23,7 +23,7 @@ class whois {
         if (args[0]) {
             let toSearch = args.slice(0).join(' ');
             let isGuildMember = Util.findMember(msg.guild, toSearch);
-            let lastResort = bot._restClient.getRESTUser(toSearch);
+            let lastResort = (!parseInt(toSearch)) ? false : true;
 
             if (isGuildMember !== false) {
                 user = isGuildMember;
@@ -31,14 +31,19 @@ class whois {
             } else if (!lastResort) {
                 return Util.sendError(msg, emojis, 'custom', 'I could not find that user.');
             } else {
-                user = lastResort;
-                mode = 2;
+                try {
+                    let lastResort = bot._restClient.getRESTUser(toSearch);
+                    user = lastResort;
+                    mode = 2;
+                } catch (e) {
+                    return Util.sendError(msg, emojis, 'custom', 'I could not find that user.');
+                }
             }
         }
 
         // These are 100% always the same.
         let avatar = user.avatarURL;
-        let username = user.username + '#' + user.descriminator;
+        let username = user.username + '#' + user.discriminator;
         let create = user.createdAt;
 
         if (mode == 1) {
