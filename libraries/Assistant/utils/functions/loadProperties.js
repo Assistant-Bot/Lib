@@ -1,4 +1,7 @@
 module.exports = (eris) => {
+    Object.defineProperty(eris.TextChannel.prototype, 'send', (content) => {
+        return this.createMessage(content);
+    });
     if (!eris.TextChannel.send) {
         Object.defineProperty(eris.TextChannel.prototype, 'send', (content) => {
             return this.createMessage(content);
