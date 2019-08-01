@@ -43,7 +43,7 @@ class Help {
                 if (em.hasField(25)) continue; // NO MORE THAN 25 FIELDS
 
                 let cat = title(categories[i]);
-                em.addField(cat, commands.join(', '));
+                em.addField(`${cat} [${commands.length}]`, commands.join(', '));
             }
 
             msg.channel.send(em);
