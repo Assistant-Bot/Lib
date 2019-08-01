@@ -1,10 +1,12 @@
 class Help {
     constructor () {
         this.name = 'help';
+        this.description = '/help';
         this.aliases = ['h'];
-        this.description = 'Help for commands.';
-        this.longDescription = 'Show help for each command.';
-        this.usage = 'help [command]';
+        this.longDescription = 'Show useful information on how to use commands!';
+        this.permission = 0;
+        this.list = true;
+        this.cooldown = 0;
     }
 
     async onRun(bot, msg, args, Util, emojis) {
