@@ -38,6 +38,19 @@ class Help {
         }
     }
 
+    async onError(bot, msg, args, Util, emojis) {
+        Util.logError(bot, msg, args, Util, emojis, this);
+        return Util.sendError(msg, emojis, 'unknown');
+    }
+
+    async onNoPerm(bot, msg, args, Util, emojis) {
+        return Util.sendError(msg, emojis, 'perm', 'Moderator');
+    }
+
+    async onPermCheck(bot, msg, args, Util, emojis) {
+        return true;
+    }
+
     unDupe(arr) {
         let seen = [];
         for (let i = 0; i < arr.length; i++) {
