@@ -37,13 +37,13 @@ class Help {
             
             for (let i = 0; i < categories.length; i++) {
                 let commands = parents.filter((cmd) => {
-                    cmd.category === categories[i]
+                    return cmd.category === categories[i];
                 }).map(c => c.name);
 
                 if (em.hasField(25)) continue; // NO MORE THAN 25 FIELDS
 
                 let cat = title(categories[i]);
-                em.addField(cat, commands);
+                em.addField(cat, commands.join(', '));
             }
 
             msg.channel.send(em);
