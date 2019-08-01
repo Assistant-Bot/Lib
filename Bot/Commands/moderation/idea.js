@@ -31,7 +31,7 @@ class Eval {
             em.addField('Idea Now In Progress', `**Developer:** ${msg.author.tag}\n **Author:** ${user.user.tag} (\`${user.id}\`)\n**Idea:** ${details}`);
             em.addField('Reason', emojis.greentick + ' ' + reason);
             em.setTimestamp(new Date());
-            em.setFooter('Assistant v1 DEV');
+            em.setFooter('Assistant v2 DEV');
             await bot.createMessage(dm.id, ':tada: **Hooray!** An idea of yours was accepted! View it in the support server!');
             return bot.createMessage('591906037217361921', em);
         } else if (wrapped[0].toLowerCase() == 'deny') {
@@ -41,7 +41,7 @@ class Eval {
             em.addField('Idea Declined', `**Developer:** ${msg.author.tag}\n **Author:** ${user.user.tag} (\`${user.id}\`)\n**Idea:** ${details}`);
             em.addField('Reason', emojis.redtick + ' ' + reason);
             em.setTimestamp(new Date());
-            em.setFooter('Assistant v1 DEV');
+            em.setFooter('Assistant v2 DEV');
             await bot.createMessage(dm.id, '**Awe Snap!** An idea of yours was declined... View it in the support server for more info.');
             return bot.createMessage('591906037217361921', em);
         } else if (wrapped[0].toLowerCase() == 'complete') {
@@ -51,7 +51,7 @@ class Eval {
             em.addField('Feature complete!', `**Developer:** ${msg.author.tag}\n **Author:** ${user.user.tag} (\`${user.id}\`)\n**Feature:** ${details}`);
             em.addField('Details', reason);
             em.setTimestamp(new Date());
-            em.setFooter('Assistant v1 DEV');
+            em.setFooter('Assistant v2 DEV');
             await bot.createMessage(dm.id, ':tada: **Yay!** Your feature request: **' + details + '** was completed!');
             return bot.createMessage('591906037217361921', em);
         } else {
@@ -61,7 +61,7 @@ class Eval {
             em.addField('Idea Declined', `**Developer:** ${msg.author.tag}\n **Author:** ${user.user.tag} (\`${user.id}\`)\n**Idea:** ${details}`);
             em.addField('Reason', emojis.redtick + ' ' + reason);
             em.setTimestamp(new Date());
-            em.setFooter('Assistant v1 DEV');
+            em.setFooter('Assistant v2 DEV');
             await bot.createMessage(dm.id, '**Awe Snap!** An idea of yours was declined... View it in the support server for more info.');
             return bot.createMessage('591906037217361921', em);
         }
