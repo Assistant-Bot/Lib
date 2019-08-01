@@ -49,3 +49,5 @@ class Help {
         return seen;
     }
 }
+
+module.exports = Help;
