@@ -21,6 +21,7 @@ class Blacklist {
                         em.setColor('#ff0000');
                         em.addField('Username', blacklisted.user.username + '#' + blacklisted.user.discriminator, true);
                         em.addField('ID', blacklisted.user.id, true);
+                        em.addField('Date of Blacklist', new Date(blacklisted.time).toDateString(), true);
                         em.addField('Moderator Username', blacklisted.admin.username + '#' + blacklisted.admin.discriminator, true);
                         em.addField('Moderator ID', blacklisted.admin.id, true);
                         em.addField('Reason', blacklisted.reason, true);
