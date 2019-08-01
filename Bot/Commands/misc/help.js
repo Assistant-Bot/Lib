@@ -1,3 +1,15 @@
+function title(str) {
+    let twords = ["of", "the", "is", "and"];
+    let arr = str.split(" ");
+    let newarr = [];
+    arr.forEach(e => {
+        if (twords.includes(e)) return newarr.push(e);
+        e = e[0].toUpperCase() + e.slice(1, e.length);
+        return newarr.push(e);
+    })
+    return newarr.join(" ");
+}
+
 class Help {
     constructor () {
         this.name = 'help';
@@ -26,11 +38,11 @@ class Help {
             for (let i = 0; i < categories.length; i++) {
                 let commands = parents.filter((cmd) => {
                     cmd.category === categories[i]
-                }).map(c => c.name.title());
+                }).map(c => c.name);
 
                 if (em.hasField(25)) continue; // NO MORE THAN 25 FIELDS
 
-                let cat = categories[i].title();
+                let cat = title(categories[i]);
                 em.addField(cat, commands);
             }
 
