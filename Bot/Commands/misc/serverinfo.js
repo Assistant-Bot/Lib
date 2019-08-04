@@ -24,9 +24,9 @@ class serverinfo {
         let nitro = {
             level: g.premiumTier,
             boosts: g.premiumSuscriptionCount
-        }
+        };
 
-        return new Util.sendError(msg, emojis, 'custom', 'Error - Void Loop');
+        return Util.sendError(msg, emojis, 'custom', 'Error - Void Loop');
 
     }
 
