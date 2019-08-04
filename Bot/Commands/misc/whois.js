@@ -4,7 +4,7 @@ class whois {
         this.aliases = ['userinfo', 'w', 'ui'];
         this.description = 'whois @John';
         this.longDescription = 'Show information for the queried user';
-        this.list = false;
+        this.list = true;
     }
 
     async onRun(bot, msg, args, Util, emojis) {

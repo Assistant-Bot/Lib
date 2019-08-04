@@ -1,5 +1,5 @@
 const ms = require('millisecond');
-class Eval {
+class Idea {
     constructor() {
         this.name = 'idea';
         this.description = '/idea <accept/deny> <user>';
@@ -81,4 +81,4 @@ class Eval {
     }
 }
 
-module.exports = Eval;
+module.exports = Idea;
