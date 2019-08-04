@@ -25,9 +25,7 @@ class Help {
         if (!args[0]) {
             let parents = bot.commandHandler.commands.find((c, cmd) => {
                 if (c !== cmd.name) return false;
-                if (c.list) {
-                    if (c.list === false) return false;
-                }
+                if (!cmd.list) return false; 
                 else return true;
             }).map(c => c[1]);
 
