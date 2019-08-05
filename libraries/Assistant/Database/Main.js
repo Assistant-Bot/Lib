@@ -72,6 +72,19 @@ class Database {
             upsert: true,
         }).exec();
     }
+
+    updateIgnoredChannels(gID, value) {
+        return this.guildSchema.findOneAndUpdate({
+            guildID: gID,
+        }, {
+            $set: {
+                ignoredChannels: value,
+            },
+        }, {
+            new: true,
+            upsert: true,
+        }).exec();
+    }
 }
 
 module.exports = Database;
