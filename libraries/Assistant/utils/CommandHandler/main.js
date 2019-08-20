@@ -411,6 +411,7 @@ class CommandHandler {
                  return;
              }
          }
+         msg.prefix = prefix;
          let args = msg.content.slice(prefix.length).trim().split(/ +/g);
          let command = args.shift().toLowerCase();
          if (msg.content.indexOf(prefix) !== 0) return;
