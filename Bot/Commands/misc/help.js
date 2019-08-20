@@ -62,8 +62,9 @@ class Help {
                     return Util.sendError(msg, emojis, 'custom', 'Sorry! But that command is non-existant, or you don\'t have permission to view it.');
                 }
             }
-
-            embed.setTitle(data.parent + ' - ' + data.description);
+            embed.setAuthor(bot.user.username, bot.user.avatarURL);
+            embed.setColor('#26d1ff');
+            embed.setTitle(title(data.parent) + ' - ' + data.description);
             embed.addField('Aliases', data.aliases, true);
             embed.addField('Description', data.longDescription, true);
             embed.addField('Usage', data.usage, true);
