@@ -16,6 +16,14 @@ class Help {
         this.description = '/help';
         this.aliases = ['h'];
         this.longDescription = 'Show useful information on how to use commands!';
+        this.usage = [
+            '/help ban **-** Shows detailed information on the ban command',
+            '/help help **-** Shows detailed information for help, why would you need to do that?',
+            '/help prefix -perms **-** Shows the permissions required to use prefix in your server.',
+            '/help prefix -bugs **-** Shows a list of known bugs with a given command.',
+            '/help misc **-** Shows a list of commands and detailed information about a specific assistant module.',
+            '/help misc -recent **-** Shows a list of recent updates to the miscellanious module.'
+        ];
         this.permission = 0;
         this.list = true;
         this.cooldown = 0;
