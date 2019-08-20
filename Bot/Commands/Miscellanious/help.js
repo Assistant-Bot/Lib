@@ -42,7 +42,7 @@ class Help {
             em.setColor('#26d1ff');
             em.setAuthor(bot.user.username, bot.user.avatarURL);
             em.setTitle('Assistant v2 - Help and Command Menu');
-            em.setDescription('This menu is breif, and only shows a list of commands. For more information on a command use `help <command>`. Alternatively, you can set assistant up using our [site](https://assistantbot.net/');
+            em.setDescription('This menu is breif, and only shows a list of commands. For more information on a command use `help <command>`. Alternatively, you can set assistant up using our [site](https://assistantbot.net/)');
             
             for (let i = 0; i < categories.length; i++) {
                 let commands = parents.filter((cmd) => {
