@@ -17,11 +17,11 @@ class Help {
         this.aliases = ['h'];
         this.longDescription = 'Show useful information on how to use commands!';
         this.usage = [
-            '**/help ban**          - Shows detailed information on the ban command',
-            '**/help help**         - Shows detailed information for help, why would you need to do that?',
+            '**/help ban** - Shows detailed information on the ban command',
+            '**/help help** - Shows detailed information for help, why would you need to do that?',
             '**/help prefix -perms** - Shows the permissions required to use prefix in your server.',
             '**/help prefix -bugs** - Shows a list of known bugs with a given command.',
-            '**/help misc**         - Shows a list of commands and detailed information about a specific assistant module.',
+            '**/help misc** - Shows a list of commands and detailed information about a specific assistant module.',
             '**/help misc -recent** - Shows a list of recent updates to the miscellanious module.'
         ];
         this.permission = 0;
@@ -66,10 +66,11 @@ class Help {
             const embed = new Util.SimpleEmbed();
 
             if (command.onPermCheck) {
-                if (command.onPermCheck(bot, msg, args, Util, emojis) === false) {
+                if (!command.onPermCheck(bot, msg, args, Util, emojis)) {
                     return Util.sendError(msg, emojis, 'custom', 'Sorry! But that command is non-existant, or you don\'t have permission to view it.');
                 }
             }
+            if (command.list === false && msg.author.id !== '217006264570347520') return Util.sendError(msg, emojis, 'custom', 'Sorry! But that command is non-existant, or you don\'t have permission to view it.');
             embed.setAuthor(bot.user.username, bot.user.avatarURL);
             embed.setColor('#26d1ff');
             embed.setTitle(`Help [${data.category}]` + ' - ' + title(data.parent));

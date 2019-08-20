@@ -1,7 +1,7 @@
 class info {
     constructor() {
         this.name = 'info'; // Name of the command AKA normal name of cmd.
-        this.description = '/info'; // Short description on how the command is used.
+        this.description = 'Shows statistical information about the bot.'; // Short description on how the command is used.
         this.aliases = []; // Aliases! What other names should this command run on?
         this.longDescription = 'Provide information on Assisant.'; // Long description of the command.
         this.permission = 0; // Permissions to use the command (Optional, you can refer to other methods by refferring to documentation)
