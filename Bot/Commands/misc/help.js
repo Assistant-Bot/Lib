@@ -64,8 +64,9 @@ class Help {
             }
             embed.setAuthor(bot.user.username, bot.user.avatarURL);
             embed.setColor('#26d1ff');
-            embed.setTitle(title(data.parent) + ' - ' + data.description);
+            embed.setTitle(`Help [${data.category}]` + ' - ' + title(data.parent));
             embed.addField('Aliases', data.aliases, true);
+            embed.addField('Information', data.description, true);
             embed.addField('Description', data.longDescription, true);
             embed.addField('Usage', data.usage, true);
             embed.addField('More Help', `**Site:** [${data.parent}](https://assistantbot.net/commands/${data.parent})\n**Support:** https://discord.gg/FKTrmsK`, true);
@@ -89,10 +90,11 @@ class Help {
     buildHelp(cmd) {
         let data = {};
         data.parent = cmd.name;
-        data.aliases = (!cmd.aliases || cmd.aliases.length < 1) ? 'No Aliases for this command.' : cmd.aliases.join(', ');
+        data.aliases = (!cmd.aliases || cmd.aliases.length < 1) ? 'No Aliases for this command.' : '/' + cmd.aliases.join(', /');
         data.description = (!cmd.description) ? 'No description for this command.' : cmd.description;
         data.longDescription = (!cmd.longDescription) ? 'No detailed description for this command.' : cmd.longDescription;
         data.usage = (!cmd.usage || typeof cmd.usage !== 'object') ? 'No usage details for this command.' : cmd.usage.join('\n');
+        data.category = cmd.category;
         return data;
     }
 
