@@ -34,7 +34,7 @@ class Help {
             em.setColor('#26d1ff');
             em.setAuthor(bot.user.username, bot.user.avatarURL);
             em.setTitle('Assistant v2 - Help and Command Menu');
-            em.setDescription('This menu is breif, and only shows a list of commands. For more information on a command use `help <command>`.');
+            em.setDescription('This menu is breif, and only shows a list of commands. For more information on a command use `help <command>`. Alternatively, you can set assistant up using our [site](https://assistantbot.net/');
             
             for (let i = 0; i < categories.length; i++) {
                 let commands = parents.filter((cmd) => {
@@ -49,7 +49,26 @@ class Help {
 
             msg.channel.send(em);
         } else {
-            return Util.sendError(msg, emojis, 'custom', 'This has not been implemented yet.');
+            const cmd = args[0].toLowerCase();
+            const command = bot.commandHandler.commands.get(cmd);
+            if (!command) return Util.sendError(msg, emojis, 'custom', 'Sorry! But that command is non-existant, or you don\'t have permission to view it.');
+
+            // Get the permission for the command
+            const data = this.buildHelp(command);
+            const embed = new Util.SimpleEmbed();
+
+            if (command.onPermCheck) {
+                if (command.onPermCheck(bot, msg, args, Util, emojis) === false) {
+                    return Util.sendError(msg, emojis, 'custom', 'Sorry! But that command is non-existant, or you don\'t have permission to view it.');
+                }
+            }
+
+            embed.setTitle(data.parent + ' - ' + data.description);
+            embed.addField('Aliases', data.aliases, true);
+            embed.addField('Description', data.longDescription, true);
+            embed.addField('Usage', data.usage, true);
+            embed.addField('More Help', `**Site:** [${data.parent}](https://assistantbot.net/commands/${data.parent})\n**Support:** https://discord.gg/FKTrmsK`, true);
+            return msg.channel.send(embed);
         }
     }
 
@@ -64,6 +83,16 @@ class Help {
 
     async onPermCheck(bot, msg, args, Util, emojis) {
         return true;
+    }
+
+    buildHelp(cmd) {
+        let data = {};
+        data.parent = cmd.name;
+        data.aliases = (!cmd.aliases || cmd.aliases.length < 1) ? 'No Aliases for this command.' : cmd.aliases.join(', ');
+        data.description = (!cmd.description) ? 'No description for this command.' : cmd.description;
+        data.longDescription = (!cmd.longDescription) ? 'No detailed description for this command.' : cmd.longDescription;
+        data.usage = (!cmd.usage || typeof cmd.usage !== 'object') ? 'No usage details for this command.' : cmd.usage.join('\n');
+        return data;
     }
 
     unDupe(arr) {
