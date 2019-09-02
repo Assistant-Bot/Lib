@@ -62,6 +62,7 @@ class CommandHandler {
         this.perCooldown = new Map();
         this.cooldown = new Set();
         this.warned = new Set();
+        this.cooldown_violations = new Map();
     }
 
     /**
@@ -417,8 +418,17 @@ class CommandHandler {
          if (msg.content.indexOf(prefix) !== 0) return;
          if (!cc.options.allowBots && msg.author.bot) return;
          if (cc.options.blacklistFunction(msg.author.id)) return;
+         if (cc.cooldown_violations.has(msg.author.id)) {
+             let amount = cc.cooldown_violations.get(msg.author.id).amount;
+             if (amount >= 5) return;
+         }
          if (cc.options.cooldown > 0) {
              if (cc.cooldown.has(msg.author.id)) {
+                 if (!cc.cooldown_violations) {
+                     cc.cooldown_violations.add(msg.author.id, {amount: 1});
+                 } else {
+                     cc.cooldown_violations.get(msg.author.id).amount++;
+                 }
                  if (cc.warned.has(msg.author.id)) return;
                  cc.warned.add(msg.author.id);
                  setTimeout(() => { cc.warned.delete(msg.author.id) }, cc.options.cooldown);
