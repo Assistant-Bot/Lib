@@ -424,7 +424,7 @@ class CommandHandler {
          }
          if (cc.options.cooldown > 0) {
              if (cc.cooldown.has(msg.author.id)) {
-                 if (!cc.cooldown_violations) {
+                 if (!cc.cooldown_violations.has(msg.author.id)) {
                      cc.cooldown_violations.add(msg.author.id, {amount: 1});
                  } else {
                      cc.cooldown_violations.get(msg.author.id).amount++;
