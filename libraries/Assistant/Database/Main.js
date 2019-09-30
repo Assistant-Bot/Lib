@@ -4,8 +4,9 @@
 class Database {
     constructor () {
         this.guildSchema = require('./Schems/Guild');
+        this.backupSchema = require('./Schems/GuildBackup');
         this.defaults = {
-            prefix: '!'
+            prefix: 'a!'
         }
 
         this.createGuild = this.initGuild; // called by cmd handler
@@ -83,6 +84,37 @@ class Database {
         }, {
             new: true,
             upsert: true,
+        }).exec();
+    }
+
+    rawUpdate(gID, key, newValue) {
+        let newIndex = {};
+        newIndex[key] = newValue;
+        return this.guildSchema.findOneAndUpdate({
+            guildID: gID,
+        }, {
+            $set: newIndex,
+        }, {
+            new: true,
+            upsert: true,
+        }).exec();
+    }
+
+    saveBackup(gID, bk) {
+        console.log(bk);
+        return this.backupSchema.findOneAndUpdate({
+            guildID: gID,
+        }, {
+            $set: bk,
+        }, {
+            new: true,
+            upsert: true,
+        }).exec();
+    }
+
+    getBackup(gID) {
+        return this.backupSchema.findOne({
+            guildID: gID,
         }).exec();
     }
 }

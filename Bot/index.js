@@ -1,4 +1,5 @@
 const Util = require('../libraries/Assistant/main.js');
+const BackupManager = require('../libraries/Assistant/Backups/BackupManager');
 let Eris = require('eris');
 const config = require('./configuration/config.json');
 const emojis = require('./configuration/emojis.js');
@@ -7,6 +8,7 @@ const emojis = require('./configuration/emojis.js');
 Eris = Util.loadProperties(Eris);
 const bot = (config.dev_mode) ? new Eris(config.dev_token, config.eris) : new Eris(config.token, config.eris); //Discord.Client(); 
     bot.emojis = emojis;
+    bot.backupDb = new BackupManager();
     bot.db = new Util.database();
     bot._restClient = (config.dev_mode) ? new Eris(`Bot ${config.dev_token}`, config['eris.rest']) : new Eris(`Bot ${config.token}`, config['eris.rest']);
 
