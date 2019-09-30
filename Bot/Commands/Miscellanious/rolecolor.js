@@ -21,7 +21,7 @@ class RoleColor {
         if (!color) return msg.channel.send(emojis.redtick + ' Color invalid.');
         
         try {
-            await msg.guild.roles.get(roles[0].id).setColor(color);
+            await msg.guild.roles.get(roles[0].id).edit({color: parseInt(color)});
             return msg.channel.send(emojis.greentick + ` Set the color to **${Util.resolveColor(color)}** for the role **${roles[0].name}** (\`${roles[0].id}\`).`);
         } catch (e) {
             console.error(e);
@@ -35,11 +35,12 @@ class RoleColor {
     }
 
     async onError(bot, msg, args, Util, emojis) {
-        return msg.channel.send(emojis.redtick + ' An error has occurred, join the support server if the problem persists.');
+        Util.logError(bot, msg, args, Util, emojis, this);
+        return Util.sendError(msg, emojis, 'unknown');
     }
 
-    async onPermCheck (msg) {
-        if (!msg.member.hasPermission('ADMINISTRATOR')) return false;
+    async onPermCheck (bot, msg) {
+        if (!msg.member.permission.has('administrator')) return false;
         else return true;
     }
 }

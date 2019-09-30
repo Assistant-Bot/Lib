@@ -1,17 +1,25 @@
 const Util = require('../libraries/Assistant/main.js');
-const Discord = require('discord.js');
-const bot = new Discord.Client();
+const BackupManager = require('../libraries/Assistant/Backups/BackupManager');
+let Eris = require('eris');
 const config = require('./configuration/config.json');
 const emojis = require('./configuration/emojis.js');
-    bot.emojis = emojis;
 
-//const commandDB = Util.commandHandler.database;
-const commandOptions = new Util.CommandHandlerOptions()
-    .setPrefix('a!') // if this has a getPrefix(GUILD ID) : string function, you can use custom prefixes.
-    .setCooldown(3000, emojis.redtick + ' You must wait a few seconds to use commands again.')
+/* Initialize the Client */
+Eris = Util.loadProperties(Eris);
+const bot = (config.dev_mode) ? new Eris(config.dev_token, config.eris) : new Eris(config.token, config.eris); //Discord.Client(); 
+    bot.emojis = emojis;
+    bot.backupDb = new BackupManager();
+    bot.db = new Util.database();
+    bot._restClient = (config.dev_mode) ? new Eris(`Bot ${config.dev_token}`, config['eris.rest']) : new Eris(`Bot ${config.token}`, config['eris.rest']);
+
+const commandOptions = new Util.CommandHandler.CommandOptions()
+    .setPrefix(bot.db) // if this has a getPrefix(GUILD ID) : string function, you can use custom prefixes.
+    .setCooldown(2000, emojis.redtick + ' You must wait a few seconds to use commands again.')
     .unknownCommands(true, emojis.redtick + ' Command, `{COMMAND}` does not exist.')
     .setClient(bot)
-    .loadSubfolders(true)
+    .loadSubfolders()
+    .logMessages(false)
+    .setBlacklist(Util.blackList)
     .setVars([Util, emojis]); // only accepts 2 additional args.
 
 try {
@@ -22,9 +30,10 @@ try {
 
    // bot.antiraid = AntiRaid;
     bot.commandHandler = commandHandler;
-    bot.login(config.dev_token);
-
     bot.on('ready', () => { console.log('I am on! :)') });
 } catch (e) {
     console.log('An error has occured: ' + e);
+    process.exit(403);
 }
+
+bot.connect(); //bot.login(config.dev_token); - Eris.JS

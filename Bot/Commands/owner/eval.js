@@ -1,3 +1,4 @@
+const ms = require('millisecond');
 class Eval {
     constructor () {
         this.name = 'eval';
@@ -15,10 +16,11 @@ class Eval {
                 return text;
         }
         try {
-            const code = args.join(" ");
+            let code = args.join(" ");
+            if (code.search('await') != -1) code = 'async function f() {' + code + '}';
             let evaled = eval(code);
             if (typeof evaled !== "string") evaled = require("util").inspect(evaled, { depth: 0 });
-            msg.channel.send(clean(evaled), { code: "js" });
+            msg.channel.send(`\`\`\`js\n${clean(evaled)}\`\`\``);
         } catch (err) {
             msg.channel.send(`\`\`\`js\n${clean(err)}\n\`\`\``);
         }

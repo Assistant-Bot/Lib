@@ -1,6 +1,7 @@
 const Util = require('../../main');
 module.exports = (color) => {
     let colors = {
+        assistant: '0x26d1ff',
         aliceblue: '0xF0F8FF',
         antiquewhite: '0xFAEBD7',
         aqua: '0x00FFFF',

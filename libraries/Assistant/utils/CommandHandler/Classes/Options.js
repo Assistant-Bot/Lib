@@ -1,10 +1,25 @@
 class Options {
     constructor(prefix, token, cooldown, client) {
-        if(!prefix) this.prefix = '!<'; // Default prefix.
+        if(!prefix) this.prefix = '!'; // Default prefix.
         if(!token) this.token = null; // Token to the bot.
         if(!cooldown) this.cooldown = 3000; // 3 seconds.
         if(!client) this.client = false;
-
+        this.allowBots = false;
+        this.storeCmd = true;
+        this.blacklistFunction = (id) => {return false;}
+        this.os = 1;
+        this.caching = false;
+        this.defaults = {
+            helpMenu: {
+                embed: true, // Embed all help messages?
+                color: 0x26d1ff, // Color of embed mMLUL
+                display: 'compact', // Cat - Commands VS command - info command - info command - info command - info
+                perCommand: true, // allow usage of !help [command]?
+                pager: false // OPTION NOT DONE YET PLS NO
+            }
+        };
+        this.helpMenu = true;
+        this.helpMenuOpts = this.defaults.helpMenu;
         return this;
     }
 
@@ -16,6 +31,52 @@ class Options {
     unknownCommands(bool, msg=null) {
         this.resToUnk = bool
         this.resMsg = msg;
+        return this;
+    }
+
+    /**
+     * @param {Boolean} bool - Use built in help menu?
+     */
+    useHelpMenu(bool=true, opts) {
+        this.helpMenu = true;
+        this.helpMenuOpts = (!opts) ? this.defaults.helpMenu : opts;
+        return this;
+    }
+    
+    
+
+    storeUnderclient(bool) {
+        this.storeCmd = bool;
+        return this;
+    }
+
+    /**
+     * 
+     * @param {Boolean} bool - Respond to bots?
+     * @default false
+     */
+
+    setAllowBots(bool = true) {
+        this.allowBots = bool;
+        return this;
+    }
+
+    /**
+     * @param {Number} system - Use 0 if windows is being picky, and 1 for linux/windows (this changes how the handler loads)
+     * @default 1
+     */
+    
+    setOS(system) {
+        this.os = system;
+        return this;
+    }
+
+
+    /**
+     * @param {Function} func 
+     */
+    setBlacklist(func) {
+        this.blacklistFunction = func;
         return this;
     }
 

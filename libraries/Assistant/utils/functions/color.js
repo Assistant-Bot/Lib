@@ -1,6 +1,7 @@
 const Util = require('../../main');
 module.exports = (color) => {
     let colors = {
+        assistant: '0x26d1ff',
         aliceblue: '0xF0F8FF',
         antiquewhite: '0xFAEBD7',
         aqua: '0x00FFFF',
@@ -153,7 +154,6 @@ module.exports = (color) => {
     }
 
     if (color.split('#').length > 1){
-        if (color.split('#')[1] > 6) return false;
         if (parseInt(`0x${color.split('#')[1]}`)) return `0x${color.split('#')[1]}`;
         else return false;
     }

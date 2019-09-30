@@ -12,7 +12,7 @@ class AdvancedMap extends Map {
         if (!typeof func === 'function') throw 'Must be a function';
         let map = this;
         return map.forEach((val, key, arr) => {
-            func(key);
+            func(key, val);
         });
     }
 
@@ -21,7 +21,7 @@ class AdvancedMap extends Map {
         if (!typeof func === 'function') throw 'Must be a function';
         let map = this;
         return map.forEach((val, key, arr) => {
-            func(val);
+            func(val, key);
         });
     }
 
@@ -65,7 +65,7 @@ class AdvancedMap extends Map {
         return Array.from(this.keys());
     }
 
-    getEnteries() {
+    getEntries() {
         return Array.from(this.entries());
     }
 
@@ -111,6 +111,15 @@ class AdvancedMap extends Map {
 
         return this;
     }
+
+    clone() {
+        return this;
+    }
+
+    /*
+    unset(val) {
+        let poss = this.fo
+    }*/
 
 }
 

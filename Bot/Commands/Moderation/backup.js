@@ -1,11 +1,11 @@
 class Ban {
     constructor() {
         this.name = 'ban',
-        this.description = '/ban user reason',
-        this.aliases = ['b'];
+            this.description = '/ban user reason',
+            this.aliases = ['b'];
         this.longDescription = 'Ban a user in the server.';
         this.permission = 0,
-        this.list = true;
+            this.list = true;
     }
 
     async onRun(bot, msg, args, Util, emojis) {
@@ -22,7 +22,7 @@ class Ban {
         try {
             if (!user) return m.edit(emojis.redtick + ' Invalid user, make sure you are providing an ID or a member name.');
             console.log(user);
-            user = (typeof user == 'number') ? user : user.id; 
+            user = (typeof user == 'number') ? user : user.id;
             console.log(user);
             let ban = await msg.guild.ban(user);
 
