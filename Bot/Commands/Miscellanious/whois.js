@@ -42,6 +42,7 @@ class whois {
         }
 
         // These are 100% always the same.
+        if (!user) return Util.sendError(msg, emojis, 'custom', 'I could not find that user.');
         let avatar = user.avatarURL;
         let username = user.username + '#' + user.discriminator;
         let create = user.createdAt;
