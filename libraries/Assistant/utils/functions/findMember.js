@@ -3,7 +3,8 @@ module.exports = (guild, search) => {
     if (parseInt(search2)) {
         let poss = guild.members.filter(m => m.id === search2);
         if (!poss) return false;
-        if (poss.size < 1) return false;
+        if (poss.length < 1) return false;
+        if (!poss.map(m=>m.id).includes(search2)) return false;
         else return poss[0];
     }
 

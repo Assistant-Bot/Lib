@@ -43,7 +43,6 @@ class whois {
 
         // These are 100% always the same.
         let avatar = user.avatarURL;
-        console.log(avatar)
         let username = user.username + '#' + user.discriminator;
         let create = user.createdAt;
 
@@ -74,7 +73,6 @@ class whois {
 
             if (!color[0]) color = 0;
             else color = color[0].color;
-            
             let em = new Util.SimpleEmbed();
             em.setColor(color);
             em.setAuthor(username, avatar);
@@ -87,7 +85,7 @@ class whois {
             em.addField('Joined Server', joinedAt, true);
             em.addField('Nickname', nick, true);
             em.addField('Nitro Boosting', 'Since ' + nitroBooster, true);
-            em.addField('User Roles', roles.slice(0, 30).join(', '), true);
+            em.addField('User Roles', (roles === 'None') ? roles : roles.slice(0, 30).join(', '), true);
             em.addField('User Permissions', permissions, true);
             return msg.channel.send(em);
         }
