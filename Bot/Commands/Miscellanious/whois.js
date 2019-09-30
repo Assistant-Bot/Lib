@@ -32,7 +32,7 @@ class whois {
                 return Util.sendError(msg, emojis, 'custom', 'I could not find that user.');
             } else {
                 try {
-                    let lastResort = bot._restClient.getRESTUser(toSearch);
+                    let lastResort = await bot._restClient.getRESTUser(toSearch);
                     user = lastResort;
                     mode = 2;
                 } catch (e) {
@@ -43,6 +43,7 @@ class whois {
 
         // These are 100% always the same.
         let avatar = user.avatarURL;
+        console.log(avatar)
         let username = user.username + '#' + user.discriminator;
         let create = user.createdAt;
 
