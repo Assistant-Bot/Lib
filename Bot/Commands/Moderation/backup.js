@@ -23,7 +23,7 @@ class Backup {
             if (!backup) return Util.sendError(msg, emojis, 'custom', 'Sorry but we couldn\'t find a backup with that id.');
 
             const em = new Util.SimpleEmbed();
-            em.setAuthor('Assistant v1 Backups', bot.user.iconURL);
+            em.setAuthor('Assistant v2 Backups', bot.user.iconURL);
             em.setTitle('BackupID: ' + args[1]);
             em.setDescription('All backups are kept indefinitely unless deleted. You can access them anywhere, as long as the backup owner gives you access to do so.');
             em.setColor('#' + Util.getColor('assistant').replace('0x', ''));

@@ -75,7 +75,6 @@ class GuildBackup {
         this.afkTimeout = this.guild.afkTimeout;
         this.afkChannelID = this.guild.afkChannelID;
         this.preferredLocale = this.guild.preferredLocale;
-        this.guild = undefined;
         await this.clean();
         return this.getBackup();
     }
@@ -134,9 +133,7 @@ class GuildBackup {
                 time: new Date()
             };
         } else {
-            let bk = this.guild.data;
-            bk.time = this.guild.time;
-            return bk;
+            return this.guild;
         }
     }
 
@@ -155,12 +152,12 @@ class GuildBackup {
         return data;
     }
 
-    saveBackup(db=null) {
+    async saveBackup(db=null) {
         let database = (!db) ? this.database : db;
         let backupCode = this.randomBkCode();
         let stats = this.getStats();
         stats.backupCode = backupCode;
-        database.saveBackup(this.guild.id, backupCode, this.getBackup());
+        await database.saveBackup(this.guild.id, backupCode, this.getBackup());
         return stats;
     }
 

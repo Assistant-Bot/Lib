@@ -9,16 +9,15 @@ class BackupManager {
         const bk = new GuildBackup(database, guild);
         await bk.initBackup();
         this.backups++;
-        const res = bk.saveBackup(database);
-        console.log(res);
-        return res;
+        return await bk.saveBackup();
     }
 
     async getBackup(database, guild) {
         const found = await database.getBackup(guild.id);
         if (!found) return null;
         else {
-            const backup = new GuildBackup(database, found);
+            let data = JSON.parse(found.data);
+            const backup = new GuildBackup(database, data);
             return backup;
         }
     }
@@ -27,7 +26,9 @@ class BackupManager {
         const found = await database.getBackupById(id);
         if (!found) return null;
         else {
-            const backup = new GuildBackup(database, found);
+            let data = JSON.parse(found.data);
+            //data.guildID = found.guildID;
+            const backup = new GuildBackup(database, data);
             return backup;
         }
     }

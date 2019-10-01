@@ -103,9 +103,10 @@ class Database {
     saveBackup(gID, backupId, bk) {
         const backup = {
             guildID: gID,
-            data: bk,
+            data: JSON.stringify(bk),
             time: new Date()
         };
+        
         return this.backupSchema.findOneAndUpdate({
             backupID: backupId,
         }, {
