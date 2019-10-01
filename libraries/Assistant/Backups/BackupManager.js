@@ -9,11 +9,22 @@ class BackupManager {
         const bk = new GuildBackup(database, guild);
         await bk.initBackup();
         this.backups++;
-        return bk.saveBackup(database);
+        const res = bk.saveBackup(database);
+        console.log(res);
+        return res;
     }
 
     async getBackup(database, guild) {
         const found = await database.getBackup(guild.id);
+        if (!found) return null;
+        else {
+            const backup = new GuildBackup(database, found);
+            return backup;
+        }
+    }
+
+    async getBackupById(database, id) {
+        const found = await database.getBackupById(id);
         if (!found) return null;
         else {
             const backup = new GuildBackup(database, found);
@@ -39,9 +50,15 @@ class BackupManager {
             }, reason);
             // destroy guild entirely.
             await guild.roles.map(r => r).forEach(r => r.delete('Restore'))
-            // restore parent channels
-            for (let i = 0; i < this.textChannels.length; i++) {
-
+            await guild.channels.map(r => r).forEach(r => r.delete('Restore'))
+            // restore parent channels first
+            for (let i = 0; i < backup.parentChannels.length; i++) {
+                let ch = backup.parentChannels[i];
+                let newCh = await guild.createChannel(ch.name, ch)
+            }
+            for (let i = 0; i < backup.textChannels.length; i++) {
+                let ch = backup.textChannels[i];
+                let newCh = await guild.createChannel(ch.name, ch)
             }
         }
     }

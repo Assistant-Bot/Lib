@@ -22,7 +22,7 @@ class GuildBackup {
             return {
                 id: m.id,
                 roles: m.roles,
-                nick: m.nick
+                nick: m.nick,
             }
         });
         this.textChannels = this.guild.channels.map(c => {
@@ -32,7 +32,8 @@ class GuildBackup {
                 topic: c.topic,
                 slowdown: c.rateLimitPerUser,
                 customPerms: c.permissionOverwrites,
-                nsfw: c.nsfw
+                nsfw: c.nsfw,
+                type: c.type
             }
         });
         this.parentChannels = this.guild.channels.map(c => {
@@ -40,7 +41,8 @@ class GuildBackup {
                 name: c.name,
                 customPerms: c.permissionOverwrites,
                 position: c.position,
-                channels: c.channels.map(ch => ch.id)
+                channels: c.channels.map(ch => ch.id),
+                type: c.type
             }
         });
         this.voiceChannels = this.guild.channels.map(c => {
@@ -49,7 +51,8 @@ class GuildBackup {
                 name: c.name,
                 bitrate: c.bitrate,
                 userLimit: c.userLimit,
-                customPerms: c.permissionOverwrites
+                customPerms: c.permissionOverwrites,
+                type: c.type
             }
         });
 
@@ -126,20 +129,47 @@ class GuildBackup {
                 region: this.region,
                 afkTimeout: this.afkTimeout,
                 afkChannelID: this.afkChannelID,
-                preferredLocale: this.preferredLocale
+                preferredLocale: this.preferredLocale,
+                time: new Date()
             };
         } else {
-            return this.guild;
+            let bk = this.guild.data;
+            bk.time = this.guild.time;
+            return bk;
         }
+    }
+
+    getStats() {
+        let bk = this.getBackup();
+        let data = {
+            roles: bk.roles.length,
+            members: bk.members.length,
+            bans: bk.bans.length,
+            channels: bk.textChannels.length + bk.voiceChannels.length + bk.parentChannels.length,
+            guildSettings: '**Name:** ' + bk.name + '\n **Region:** ' + bk.region + 
+            '\n **Content Filter:** ' + bk.explicitContentFilter,
+            iconURL: bk.iconURL,
+            time: bk.time
+        }
+        return data;
     }
 
     saveBackup(db=null) {
         let database = (!db) ? this.database : db;
-        let stats = {
-            roles: 0
-        }
-        database.saveBackup(this.guild.id, this.getBackup());
+        let backupCode = this.randomBkCode();
+        let stats = this.getStats();
+        stats.backupCode = backupCode;
+        database.saveBackup(this.guild.id, backupCode, this.getBackup());
         return stats;
+    }
+
+    randomBkCode(amt=20) {
+        let poss = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_+=.';
+        let code = '';
+        for (let i = 0; i < amt; i++) {
+            code += poss[Math.floor(Math.random() * poss.length)];
+        }
+        return code;
     }
 }
 

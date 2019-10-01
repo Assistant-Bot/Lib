@@ -17,12 +17,12 @@ class Help {
         this.aliases = ['h'];
         this.longDescription = 'Show useful information on how to use commands!';
         this.usage = [
-            '**/help ban** - Shows detailed information on the ban command',
-            '**/help help** - Shows detailed information for help, why would you need to do that?',
-            '**/help prefix -perms** - Shows the permissions required to use prefix in your server.',
-            '**/help prefix -bugs** - Shows a list of known bugs with a given command.',
-            '**/help misc** - Shows a list of commands and detailed information about a specific assistant module.',
-            '**/help misc -recent** - Shows a list of recent updates to the miscellanious module.'
+            '**{prefix}help ban** - Shows detailed information on the ban command',
+            '**{prefix}help help** - Shows detailed information for help, why would you need to do that?',
+            '**{prefix}help prefix -perms** - Shows the permissions required to use prefix in your server.',
+            '**{prefix}help prefix -bugs** - Shows a list of known bugs with a given command.',
+            '**{prefix}help misc** - Shows a list of commands and detailed information about a specific assistant module.',
+            '**{prefix}help misc -recent** - Shows a list of recent updates to the miscellanious module.'
         ];
         this.permission = 0;
         this.list = true;
@@ -74,13 +74,17 @@ class Help {
             embed.setAuthor(bot.user.username, bot.user.avatarURL);
             embed.setColor('#26d1ff');
             embed.setTitle(`Help [${data.category}]` + ' - ' + title(data.parent));
-            embed.addField('Aliases', data.aliases, true);
-            embed.addField('Information', data.description, true);
-            embed.addField('Description', data.longDescription, true);
-            embed.addField('Usage', data.usage, true);
+            embed.addField('Aliases', this.replaceAll('{prefix}', msg.prefix, data.aliases), true);
+            embed.addField('Information', this.replaceAll('{prefix}', msg.prefix, data.description), true);
+            embed.addField('Description', this.replaceAll('{prefix}', msg.prefix, data.longDescription), true);
+            embed.addField('Usage', this.replaceAll('{prefix}', msg.prefix, data.usage), true);
             embed.addField('More Help', `**Site:** [${data.parent}](https://assistantbot.net/commands/${data.parent})\n**Support:** https://discord.gg/FKTrmsK`, true);
             return msg.channel.send(embed);
         }
+    }
+
+    replaceAll(f, r, str) {
+        return str.split(f).join(r);
     }
 
     async onError(bot, msg, args, Util, emojis) {

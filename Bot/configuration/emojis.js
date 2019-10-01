@@ -15,6 +15,7 @@ module.exports = {
     // NEW
     red_x: '<:red_x:593328642885550109>',
     check: '<:check:593262657243578368>',
+    processing: '<a:processing:628420256418889731>',
     
     empty: '<:empty:593257698963750935>',
     greentick: '<:greentick:593258836895203349>',
