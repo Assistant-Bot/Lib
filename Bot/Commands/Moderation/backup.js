@@ -2,7 +2,7 @@ class Backup {
     constructor() {
         this.name = 'backup',
         this.description = 'Manage backups for servers.',
-        this.aliases = ['bk'];
+        this.aliases = ['back'];
         this.longDescription = 'View, modify and remove backups for servers. You can also restore a backup. Refer to usage below.';
         this.permission = 0,
         this.list = true;
