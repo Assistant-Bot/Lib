@@ -100,12 +100,17 @@ class Database {
         }).exec();
     }
 
-    saveBackup(gID, bk) {
-        console.log(bk);
-        return this.backupSchema.findOneAndUpdate({
+    saveBackup(gID, backupId, bk) {
+        const backup = {
             guildID: gID,
+            data: JSON.stringify(bk),
+            time: new Date()
+        };
+        
+        return this.backupSchema.findOneAndUpdate({
+            backupID: backupId,
         }, {
-            $set: bk,
+            $set: backup,
         }, {
             new: true,
             upsert: true,
@@ -115,6 +120,18 @@ class Database {
     getBackup(gID) {
         return this.backupSchema.findOne({
             guildID: gID,
+        }).exec();
+    }
+
+    getBackupById(id) {
+        return this.backupSchema.findOne({
+            backupID: id,
+        }).exec();
+    }
+
+    deleteBackup(id) {
+        return this.backupSchema.findOneAndDelete({
+            backupID: id,
         }).exec();
     }
 }

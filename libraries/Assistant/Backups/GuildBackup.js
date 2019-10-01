@@ -15,14 +15,17 @@ class GuildBackup {
                 color: r.color,
                 name: r.name,
                 position: r.position,
-                hoist: r.hoist
+                hoist: r.hoist,
+                mentionable: r.mentionable,
+                managed: r.managed,
+                permissions: r.permissions.allow
             }
         });
         this.members = this.guild.members.map(m => {
             return {
                 id: m.id,
                 roles: m.roles,
-                nick: m.nick
+                nick: m.nick,
             }
         });
         this.textChannels = this.guild.channels.map(c => {
@@ -32,15 +35,19 @@ class GuildBackup {
                 topic: c.topic,
                 slowdown: c.rateLimitPerUser,
                 customPerms: c.permissionOverwrites,
-                nsfw: c.nsfw
+                nsfw: c.nsfw,
+                type: c.type,
+                parentID: c.parentID
             }
         });
         this.parentChannels = this.guild.channels.map(c => {
             if (c.type === 4) return {
+                id: c.id,
                 name: c.name,
                 customPerms: c.permissionOverwrites,
                 position: c.position,
-                channels: c.channels.map(ch => ch.id)
+                channels: c.channels.map(ch => ch.id),
+                type: c.type
             }
         });
         this.voiceChannels = this.guild.channels.map(c => {
@@ -49,7 +56,9 @@ class GuildBackup {
                 name: c.name,
                 bitrate: c.bitrate,
                 userLimit: c.userLimit,
-                customPerms: c.permissionOverwrites
+                customPerms: c.permissionOverwrites,
+                type: c.type,
+                parentID: c.parentID
             }
         });
 
@@ -126,20 +135,45 @@ class GuildBackup {
                 region: this.region,
                 afkTimeout: this.afkTimeout,
                 afkChannelID: this.afkChannelID,
-                preferredLocale: this.preferredLocale
+                preferredLocale: this.preferredLocale,
+                time: new Date()
             };
         } else {
             return this.guild;
         }
     }
 
-    saveBackup(db=null) {
-        let database = (!db) ? this.database : db;
-        let stats = {
-            roles: 0
+    getStats() {
+        let bk = this.getBackup();
+        let data = {
+            roles: bk.roles.length,
+            members: bk.members.length,
+            bans: bk.bans.length,
+            channels: bk.textChannels.length + bk.voiceChannels.length + bk.parentChannels.length,
+            guildSettings: '**Name:** ' + bk.name + '\n **Region:** ' + bk.region + 
+            '\n **Content Filter:** ' + bk.explicitContentFilter,
+            iconURL: bk.iconURL,
+            time: bk.time
         }
-        database.saveBackup(this.guild.id, this.getBackup());
+        return data;
+    }
+
+    async saveBackup(db=null) {
+        let database = (!db) ? this.database : db;
+        let backupCode = this.randomBkCode();
+        let stats = this.getStats();
+        stats.backupCode = backupCode;
+        await database.saveBackup(this.guild.id, backupCode, this.getBackup());
         return stats;
+    }
+
+    randomBkCode(amt=20) {
+        let poss = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_+=.';
+        let code = '';
+        for (let i = 0; i < amt; i++) {
+            code += poss[Math.floor(Math.random() * poss.length)];
+        }
+        return code;
     }
 }
 
