@@ -44,7 +44,7 @@ class Backup {
                 m.edit(emojis.processing + ' The server is now being backed up. We recommend to keep guild data the same until this process is finished. This may take a while.');
                 let bk = await bot.backupDb.backup(bot.db, msg.guild);
                 const timeTaken = new Date() - new Date(start);
-                return m.edit(emojis.check + ` The guild is now backed up (Time elapsed: \`${timeTaken / 1000} seconds\`! The backup id is: \`${bk.backupCode}\`. You can use this id to restore and gather information on what we backed up. For more information use the help command.`);
+                return m.edit(emojis.check + ` The guild is now backed up!\nTime elapsed: **${timeTaken / 1000}** seconds\nBackupID: **${bk.backupCode}**\n You can use this id to restore and gather information on what we backed up. For more information use the help command.`);
             } else {
                 return m.edit(emojis.red_x + ' A backup for this server already exists. Try removing that before creating a new one.');
             }
