@@ -75,6 +75,7 @@ class GuildBackup {
         this.afkTimeout = this.guild.afkTimeout;
         this.afkChannelID = this.guild.afkChannelID;
         this.preferredLocale = this.guild.preferredLocale;
+        this.guild = undefined;
         await this.clean();
         return this.getBackup();
     }
