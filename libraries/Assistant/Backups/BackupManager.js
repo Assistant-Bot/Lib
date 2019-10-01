@@ -33,6 +33,15 @@ class BackupManager {
         }
     }
 
+    async deleteBackup(database, id) {
+        const found = await database.getBackupById(id);
+        if (!found) return false;
+        else {
+            database.deleteBackup(id);
+            return true;
+        }
+    }
+
     async restore(backup, guild, opts=null, m=null) {
         if (!opts) {
             let updateIds = {};

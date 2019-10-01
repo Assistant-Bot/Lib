@@ -103,7 +103,7 @@ class Help {
     buildHelp(cmd) {
         let data = {};
         data.parent = cmd.name;
-        data.aliases = (!cmd.aliases || cmd.aliases.length < 1) ? 'No Aliases for this command.' : 'a!' + cmd.aliases.join(', a!');
+        data.aliases = (!cmd.aliases || cmd.aliases.length < 1) ? 'No Aliases for this command.' : '{prefix}' + cmd.aliases.join(', {prefix}');
         data.description = (!cmd.description) ? 'No description for this command.' : cmd.description;
         data.longDescription = (!cmd.longDescription) ? 'No detailed description for this command.' : cmd.longDescription;
         data.usage = (!cmd.usage || typeof cmd.usage !== 'object') ? 'No usage details for this command.' : cmd.usage.join('\n');

@@ -7,9 +7,10 @@ class Backup {
         this.permission = 0,
         this.list = true;
         this.usage = [
-            '**{prefix}backup restore <backupId>** - Restore a backup to the server the command is ran in.',
+            '**{prefix}backup server** - Backup the server in its current state',
             '**{prefix}backup info <backupId>** - Shows information for any given backup id if you have perms to access it.',
-            '**{prefix}backup server** - Backup the server in its current state'
+            '**{prefix}backup delete <backupID>** - Remove a backup from the database (Must be ran in server at which backup was created)',
+            '**{prefix}backup restore <backupId>** - Restore a backup to the server the command is ran in.'
         ];
     }
 
@@ -44,12 +45,22 @@ class Backup {
                 m.edit(emojis.processing + ' The server is now being backed up. We recommend to keep guild data the same until this process is finished. This may take a while.');
                 let bk = await bot.backupDb.backup(bot.db, msg.guild);
                 const timeTaken = new Date() - new Date(start);
-                return m.edit(emojis.check + ` The guild is now backed up!\nTime elapsed: **${timeTaken / 1000}** seconds\nBackupID: **${bk.backupCode}**\n You can use this id to restore and gather information on what we backed up. For more information use the help command.`);
+                return m.edit(emojis.check + ` The guild is now backed up!\nTime Elapsed: **${timeTaken / 1000}** seconds\nBackupID: **${bk.backupCode}**\n You can use this id to restore and gather information on what we backed up. For more information use the help command.`);
             } else {
                 return m.edit(emojis.red_x + ' A backup for this server already exists. Try removing that before creating a new one.');
             }
+        } 
+        if (option === 'delete' || option === 'd') {
+            if (!args[1]) return Util.sendError(msg, emojis, 'custom', 'Missing a backup id.');
+            const backup = await bot.backupDb.getBackupById(bot.db, args[1]);
+            if (!backup) return Util.sendError(msg, emojis, 'custom', 'Sorry but we couldn\'t find a backup with that id.');
+            let start = new Date();
+            m.edit(emojis.processing + ' Deleting backup: **' + args[1] + '**');
+            let bk = await bot.backupDb.deleteBackup(bot.db, args[1]);
+            const timeTaken = new Date() - new Date(start);
+            return m.edit(emojis.check + ` Successfully deleted the backup with the id: **${args[1]}**!\nTime Elapsed: **${timeTaken / 1000}** seconds\n We recommend you backup your server daily to help prevent nuking.`);
         } else {
-            return Util.sendError(msg, emojis, 'custom', 'Option invalid, please use `server` or `info`');
+            return Util.sendError(msg, emojis, 'custom', 'Option invalid, please use `server`, `info` or `delete`');
         }
     }
 

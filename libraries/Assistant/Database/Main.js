@@ -128,6 +128,12 @@ class Database {
             backupID: id,
         }).exec();
     }
+
+    deleteBackup(id) {
+        return this.backupSchema.findOneAndDelete({
+            backupID: id,
+        }).exec();
+    }
 }
 
 module.exports = Database;
