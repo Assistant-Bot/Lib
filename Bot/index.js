@@ -35,5 +35,5 @@ try {
     console.log('An error has occured: ' + e);
     process.exit(403);
 }
-bot.editStatus('dnd', { name: 'Assistant v2 Premium', type: 0});
+bot.editStatus('online', { name: 'Assistant v2', type: 0});
 bot.connect(); //bot.login(config.dev_token); - Eris.JS
