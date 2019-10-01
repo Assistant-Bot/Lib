@@ -15,7 +15,10 @@ class GuildBackup {
                 color: r.color,
                 name: r.name,
                 position: r.position,
-                hoist: r.hoist
+                hoist: r.hoist,
+                mentionable: r.mentionable,
+                managed: r.managed,
+                permissions: r.permissions.allow
             }
         });
         this.members = this.guild.members.map(m => {
@@ -33,11 +36,13 @@ class GuildBackup {
                 slowdown: c.rateLimitPerUser,
                 customPerms: c.permissionOverwrites,
                 nsfw: c.nsfw,
-                type: c.type
+                type: c.type,
+                parentID: c.parentID
             }
         });
         this.parentChannels = this.guild.channels.map(c => {
             if (c.type === 4) return {
+                id: c.id,
                 name: c.name,
                 customPerms: c.permissionOverwrites,
                 position: c.position,
@@ -52,7 +57,8 @@ class GuildBackup {
                 bitrate: c.bitrate,
                 userLimit: c.userLimit,
                 customPerms: c.permissionOverwrites,
-                type: c.type
+                type: c.type,
+                parentID: c.parentID
             }
         });
 

@@ -62,6 +62,17 @@ class Backup {
             await bot.backupDb.deleteBackup(bot.db, args[1]);
             const timeTaken = new Date() - new Date(start);
             return m.edit(emojis.check + ` Successfully deleted the backup with the id: **${args[1]}** in **${timeTaken / 1000}** seconds. We recommend you backup your server daily to help prevent nuking.`);
+        }
+        if (option === 'restore') { 
+            if (!args[1]) return Util.sendError(msg, emojis, 'custom', 'Missing a backup id.');
+            const backup = await bot.backupDb.getBackupById(bot.db, args[1]);
+            if (!backup) return Util.sendError(msg, emojis, 'custom', 'Sorry but we couldn\'t find a backup with that id.');
+            let m = await msg.channel.send(emojis.processing + ' Verifying indexes...');
+            let start = new Date();
+            m.edit(emojis.processing + ' Restoring backup: **' + args[1] + '**. This may take a while. This channel will not be deleted in the process.');
+            await bot.backupDb.restore(bot, backup, msg.guild, m.channel.id);
+            const timeTaken = new Date() - new Date(start);
+            return m.edit(emojis.check + ` Successfully restored the backup with the id: **${args[1]}** in **${timeTaken / 1000}** seconds. Please be patient as discord may be still applying our changes.`);
         } else {
             return Util.sendError(msg, emojis, 'custom', 'Option invalid, please use `server`, `info` or `delete`');
         }
@@ -73,7 +84,7 @@ class Backup {
 
     async onError(bot, msg, args, Util, emojis) {
         Util.logError(bot, msg, args, Util, emojis, this);
-        return Util.sendError(msg, emojis, 'unknown');
+        return Util.sendError(msg, emojis, 'custom', 'If this error persists please join the support server for help.');
     }
 
     async onPermCheck(bot, msg) {
