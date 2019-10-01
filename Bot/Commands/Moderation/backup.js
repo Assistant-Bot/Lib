@@ -42,7 +42,7 @@ class Backup {
             if (!exists) {
                 m.edit(emojis.processing + ' The server is now being backed up. We recommend to keep guild data the same until this process is finished. This may take a while.');
                 let bk = await bot.backupDb.backup(bot.db, msg.guild);
-                return m.edit(emjois.check + ` The guild is now backed up! The backup id is: \`${bk.backupCode}\`. You can use this id to restore and gather information on what we backed up. For more information use the help command.`);
+                return m.edit(emojis.check + ` The guild is now backed up! The backup id is: \`${bk.backupCode}\`. You can use this id to restore and gather information on what we backed up. For more information use the help command.`);
             } else {
                 return m.edit(emojis.red_x + ' A backup for this server already exists. Try removing that before creating a new one.');
             }
