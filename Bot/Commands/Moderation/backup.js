@@ -33,11 +33,12 @@ class Backup {
             em.addField('Roles', backup.getStats().roles, true);
             em.addField('Members', backup.getStats().members, true);
             em.addField('Bans', backup.getStats().bans | 0, true);
+            em.setThumbnail(backup.getStats().iconURL);
             em.setTimestamp(new Date(backup.getStats().time));
             em.setFooter('Powered by Assistant. Backup Created');
             return msg.channel.send(em);
         }
-        if (option === 'server' || option === 's') {
+        if (option === 'server' || option === 's' || option === 'save') {
             let m = await msg.channel.send(emojis.processing + ' Attempting to start, we have to do a few things first though.');
             let exists = await bot.backupDb.getBackup(bot.db, msg.guild);
             if (!exists) {
@@ -45,20 +46,22 @@ class Backup {
                 m.edit(emojis.processing + ' The server is now being backed up. We recommend to keep guild data the same until this process is finished. This may take a while.');
                 let bk = await bot.backupDb.backup(bot.db, msg.guild);
                 const timeTaken = new Date() - new Date(start);
-                return m.edit(emojis.check + ` The guild is now backed up!\nTime Elapsed: **${timeTaken / 1000}** seconds\nBackupID: **${bk.backupCode}**\n You can use this id to restore and gather information on what we backed up. For more information use the help command.`);
+                return m.edit(emojis.check + ` The guild is now backed up with the BackupID of **${bk.backupCode}**. You can use this id to restore and gather information on what we backed up. For more information use the help command. Time Elapsed: **${timeTaken / 1000}** seconds`);
             } else {
-                return m.edit(emojis.red_x + ' A backup for this server already exists. Try removing that before creating a new one.');
+                return m.edit(emojis.red_x + ' A backup for this server already exists with the  BackupID: **' + exists.guild.backupID + '**');
             }
         } 
-        if (option === 'delete' || option === 'd') {
+        if (option === 'delete' || option === 'd' || option === 'del') {
             if (!args[1]) return Util.sendError(msg, emojis, 'custom', 'Missing a backup id.');
             const backup = await bot.backupDb.getBackupById(bot.db, args[1]);
             if (!backup) return Util.sendError(msg, emojis, 'custom', 'Sorry but we couldn\'t find a backup with that id.');
+            if (backup.guild.guildID !== msg.guild.id) return Util.sendError(msg, emojis, 'custom', 'You can not delete backups that are not owned by this server.');
+            let m = await msg.channel.send(emojis.processing + ' Verifying indexes...');
             let start = new Date();
             m.edit(emojis.processing + ' Deleting backup: **' + args[1] + '**');
-            let bk = await bot.backupDb.deleteBackup(bot.db, args[1]);
+            await bot.backupDb.deleteBackup(bot.db, args[1]);
             const timeTaken = new Date() - new Date(start);
-            return m.edit(emojis.check + ` Successfully deleted the backup with the id: **${args[1]}**!\nTime Elapsed: **${timeTaken / 1000}** seconds\n We recommend you backup your server daily to help prevent nuking.`);
+            return m.edit(emojis.check + ` Successfully deleted the backup with the id: **${args[1]}** in **${timeTaken / 1000}** seconds. We recommend you backup your server daily to help prevent nuking.`);
         } else {
             return Util.sendError(msg, emojis, 'custom', 'Option invalid, please use `server`, `info` or `delete`');
         }

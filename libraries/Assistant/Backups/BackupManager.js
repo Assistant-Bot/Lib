@@ -17,6 +17,8 @@ class BackupManager {
         if (!found) return null;
         else {
             let data = JSON.parse(found.data);
+            data.backupID = found.backupID;
+            data.guildID = found.guildID;
             const backup = new GuildBackup(database, data);
             return backup;
         }
@@ -27,6 +29,8 @@ class BackupManager {
         if (!found) return null;
         else {
             let data = JSON.parse(found.data);
+            data.backupID = found.backupID;
+            data.guildID = found.guildID;
             //data.guildID = found.guildID;
             const backup = new GuildBackup(database, data);
             return backup;
