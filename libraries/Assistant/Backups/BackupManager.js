@@ -16,7 +16,6 @@ class BackupManager {
         const found = await database.getBackup(guild.id);
         if (!found) return null;
         else {
-            console.log(found);
             let data = JSON.parse(found.data);
             data.backupID = found.backupID;
             data.guildID = found.guildID;
