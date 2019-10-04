@@ -27,7 +27,7 @@ class BanList {
                     i++;
                 });
 
-                const pages = new Util.Pager(pretty, 40); // 35 per page.
+                const pages = new Util.Pager(pretty, 35); // 35 per page.
                 if (!pages.getPage(page)) return m.edit(`${emojis.red_x} Only **${pages.getTotalPages()}** pages exist.`);
 
                 let em = new Util.SimpleEmbed();
