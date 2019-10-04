@@ -35,8 +35,7 @@ class BanList {
                 em.setAuthor(msg.guild.name, msg.guild.iconURL);
                 em.setTitle(`Banlist - ${bans.length} Total Bans`);
                 em.setDescription(pages.getPage(page).join('\n'));
-                em.setFooter(`Page ${page} of ${pages.getTotalPages()} Pages`);
-
+                em.setFooter(`Page ${page} of ${pages.getTotalPages()} Pages`, bot.avatarURL);
                 m.edit({
                     content: emojis.greentick + ' Found: **' + bans.length + '** bans!',
                     embed: em.embed
@@ -69,8 +68,8 @@ class BanList {
                         em.setAuthor(ban.user.username, Util.resolveAvatar(ban.user));
                         em.setTitle('Showing ban for ' + ban.user.username);
                         em.addField('User', `**Username:** ${ban.user.username}#${ban.user.discriminator}\n**ID:** ${ban.user.id}\n**Avatar:** [Click Here](${Util.resolveAvatar(ban.user)})`, true);
-                        em.addField('Reason', ban.reason);
-                        em.setFooter('Assitant v2', bot.user.avatarURl, true);
+                        em.addField('Reason', (!ban.reason) ? 'No reason provided' : ban.reason);
+                        em.setFooter('Assitant v2', bot.user.avatarURL, true);
                         return msg.channel.send(em);
                     } catch (e) {
                         return Util.sendError(msg, emojis, 'custom', 'I could not find a ban for that userID.');
