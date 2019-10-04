@@ -49,7 +49,7 @@ class Pager {
         if(isNaN(num) == true) return this.error("Page must be a number");
         else {
            let page = this.getPages()[num];
-           if(page === undefined) return this.error("Page does not exist");
+           if(page === undefined) return null;
            return page;
         }
     }
@@ -58,7 +58,7 @@ class Pager {
         if(isNaN(num) == true) return this.error("Page must be a number");
         else {
            let page = this.getPages()[num];
-           if(page === undefined) return this.error("Page does not exist");
+           if(page === undefined) return null;
 
            for (let i = 0; i < page.length; i++) {
                 let val = page[i]

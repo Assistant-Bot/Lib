@@ -8,6 +8,8 @@ exports.CommandHandler = require('./utils/CommandHandler/main');
 exports.CommandHandlerOptions = require('./utils/CommandHandler/Classes/Options');
 exports.AdvancedMap = require('./utils/Classes/AdvancedMap');
 exports.SimpleEmbed = require('./utils/Classes/SimpleEmbed');
+exports.Group = require('./utils/Classes/grouper');
+exports.Pager = require('./modules/pager/pager');
 /* Functions */
 exports.stringPerms = require('./utils/functions/stringPerms');
 exports.getObjectProperties = require('./utils/functions/getObjectProperties');
