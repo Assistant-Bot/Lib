@@ -15,7 +15,8 @@ module.exports = (guild, search) => {
     search = search.toLowerCase();
     let poss = guild.members.find(m => {
         if (!m.user.username) return false;
-        if (m.user.username.toLowerCase().search(search) != -1) return true;
+        let name = m.user.username + '#' + m.user.discriminator;
+        if (name.toLowerCase().search(search) != -1) return true;
         if (!m.nick || m.nick === null) return false;
         if (m.nick.toLowerCase().search(search) != -1) return true;
         else return false;
