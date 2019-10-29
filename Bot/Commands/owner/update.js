@@ -9,11 +9,11 @@ class Update {
 
     async onRun(bot, msg, args, Util, emojis) {
         let m, output;
-        let branch = 'v1';
+        let branch = 'v2';
 
         try {
             if (args[0]) branch = args[0];
-            if (args[0] == 'restart') branch = 'v1';
+            if (args[0] == 'restart') branch = 'v2';
                 m = await msg.channel.send(`${emojis.loading} Attempting to update...`);
                 output = await Util.runCommand('git pull origin ' + branch);
             if (typeof output == 'object') return await m.edit(emojis.redtick + ' Failed to pull from `' + branch + '`');
