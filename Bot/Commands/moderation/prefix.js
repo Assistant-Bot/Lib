@@ -27,11 +27,11 @@ class Prefix {
     }
 
     async onNoPerm(bot, msg, args, Util, emojis) {
-        return Util.sendError(msg, emojis, 'perm', 'Moderator');
+        return Util.sendError(msg, emojis, 'noperm', 'Moderator');
     }
 
     async onPermCheck(bot, msg, args, Util, emojis) {
-        if (msg.author.id != '217006264570347520') return false;
+        if (!msg.author.permission.has('manageGuild')) return false;
         else return true;
     }
 }
