@@ -31,7 +31,7 @@ class Prefix {
     }
 
     async onPermCheck(bot, msg, args, Util, emojis) {
-        if (!msg.author.permission.has('manageGuild')) return false;
+        if (!msg.member.permission.has('manageGuild')) return false;
         else return true;
     }
 }
