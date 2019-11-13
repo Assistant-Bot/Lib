@@ -4,6 +4,7 @@ class Update {
         this.aliases = ['up'];
         this.description = '/update branch';
         this.longDescription = 'Updates bot.';
+        this.allowed = ['217006264570347520'];
         this.list = false;
     }
 
@@ -33,12 +34,7 @@ class Update {
     }
 
     async onNoPerm() {
-        return; // ghost the message, oooo spooky
-    }
-
-    async onPermCheck(bot, msg, args, Util, emojis) {
-        if (msg.author.id != '217006264570347520') return false;
-        else return true;
+        return;
     }
 }
 

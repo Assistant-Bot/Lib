@@ -11,7 +11,6 @@ const bot = (config.dev_mode) ? new Eris(config.dev_token, config.eris) : new Er
     bot.backupDb = new BackupManager();
     bot.db = new Util.database();
     bot._restClient = (config.dev_mode) ? new Eris(`Bot ${config.dev_token}`, config['eris.rest']) : new Eris(`Bot ${config.token}`, config['eris.rest']);
-
 const commandOptions = new Util.CommandHandler.CommandOptions()
     .setPrefix(bot.db) // if this has a getPrefix(GUILD ID) : string function, you can use custom prefixes.
     .setCooldown(2000, emojis.redtick + ' You must wait a few seconds to use commands again.')
@@ -20,7 +19,7 @@ const commandOptions = new Util.CommandHandler.CommandOptions()
     .loadSubfolders()
     .logMessages(false)
     .setBlacklist(Util.blackList)
-    .setVars([Util, emojis]); // only accepts 2 additional args.
+    .setVars(Util, emojis);
 
 try {
     const commandHandler = new Util.CommandHandler(__dirname + '/Commands', commandOptions);
