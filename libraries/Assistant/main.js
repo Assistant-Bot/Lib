@@ -11,6 +11,8 @@ exports.SimpleEmbed = require('./utils/Classes/SimpleEmbed');
 exports.Group = require('./utils/Classes/grouper');
 exports.Pager = require('./modules/pager/pager');
 /* Functions */
+exports.Loader = require('./utils/functions/Loader');
+exports.loader = this.Loader;
 exports.stringPerms = require('./utils/functions/stringPerms');
 exports.getObjectProperties = require('./utils/functions/getObjectProperties');
 exports.ObjectFilter = require('./utils/functions/objectFilter');
