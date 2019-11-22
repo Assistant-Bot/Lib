@@ -67,6 +67,9 @@ class Backup {
             if (!args[1]) return Util.sendError(msg, emojis, 'custom', 'Missing a backup id.');
             const backup = await bot.backupDb.getBackupById(bot.db, args[1]);
             if (!backup) return Util.sendError(msg, emojis, 'custom', 'Sorry but we couldn\'t find a backup with that id.');
+            if (backup.locked) {
+                
+            }
             let m = await msg.channel.send(emojis.processing + ' Verifying indexes...');
             let start = new Date();
             m.edit(emojis.processing + ' Restoring backup: **' + args[1] + '**. This may take a while. This channel will not be deleted in the process.');
