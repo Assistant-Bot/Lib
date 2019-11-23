@@ -17,7 +17,7 @@ class Invite {
         embed.setColor('#' + Util.getColor('assistant').split('0x')[1]);
         embed.addField('Recommended Invite', '[Admin Permissions](' + link + ')', true);
         embed.addField('Alternative Invite', '[Working Permissions]('+ link2 + ')', true);
-        embed.addField('Main Bot Invite', '[All Permissions](' + main + ')', true);
+        // embed.addField('Main Bot Invite', '[All Permissions](' + main + ')', true);
         return msg.channel.send(embed);
     }
 
