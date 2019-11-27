@@ -5,7 +5,7 @@ class Restart {
         this.description = '/reload [command]';
         this.longDescription = 'Reload commands on the bot.';
         this.list = false;
-        this.permission = 1;
+        this.permission = 10;
     }
 
     async onRun(bot, msg, args, Util, emojis) {
