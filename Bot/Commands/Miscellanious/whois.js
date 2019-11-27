@@ -88,7 +88,7 @@ class whois {
             em.addField('Joined Server', joinedAt, true);
             em.addField('Nickname', nick, true);
             em.addField('Nitro Boosting', 'Since ' + nitroBooster, true);
-            em.addField('Highest Role', (!highestrole) ? 'No highest role' : highestrole.name + ` <@&${highestrole.id}>`, true);
+            em.addField('Highest Role', (!highestrole) ? 'No highest role' : `<@&${highestrole.id}>`, true);
             em.addField('User Roles', (roles === 'None') ? roles : roles.slice(0, 30).join(', '), false);
             em.addField('User Permissions', permissions, false);
             return msg.channel.send(em);
