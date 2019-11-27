@@ -72,7 +72,7 @@ class whois {
                 return a.position > b.position ? -1 : b.position > a.position ? 1 : 0;
             });
 
-            let highestrole = color;
+            let highestrole = color[0];
 
             if (!color[0]) color = 0;
             else color = color[0].color;
@@ -88,7 +88,7 @@ class whois {
             em.addField('Joined Server', joinedAt, true);
             em.addField('Nickname', nick, true);
             em.addField('Nitro Boosting', 'Since ' + nitroBooster, true);
-            em.addField('Highest Role', (!highestrole.name) ? 'No roles' : highestrole.name + `(\`${highestrole.id}\`)`, true)
+            em.addField('Highest Role', (!highestrole) ? 'No roles' : highestrole.name + `(\`${highestrole.id}\`)`, true)
             em.addField('User Roles', (roles === 'None') ? roles : roles.slice(0, 30).join(', '), false);
             em.addField('User Permissions', permissions, false);
             return msg.channel.send(em);
