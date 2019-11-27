@@ -45,7 +45,7 @@ class serverinfo {
             idle: members.filter((m) => {return (m.status === 'idle')}).length,
             offline: members.filter((m) => {return (m.status === 'offline')}).length
         };
-        let emojis_m = Util.cutString(g_emojis.map(e => `<:${e.name}:${e.id}>`).join(', '), 1024);
+        let emojis_m = Util.cutString(g_emojis.map(e => ((!e.animated) ? '<:' : '<a:') + `${e.name}:${e.id}>`).join(' '), 1023, true);
         let rolesInfos = '';// roles.map(rl => `${rl.name} (\`${rl.id}\`)`).join(', ');
         let em = new Util.SimpleEmbed()
             .setAuthor(guild.name, icon)
