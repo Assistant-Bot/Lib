@@ -45,6 +45,13 @@ class serverinfo {
             idle: members.filter((m) => {return (m.status === 'idle')}).length,
             offline: members.filter((m) => {return (m.status === 'offline')}).length
         };
+        let g_channels = {
+            voice: channels.filter((c) => {return (c.type === 2)}).length,
+            category: channels.filter((c) => {return (c.type === 4)}).length,
+            text: channels.filter((c) => {return (c.type === 0)}).length,
+            news: channels.filter((c) => {return (c.type === 5)}).length,
+            store: channels.filter((c) => {return (c.type === 6)}).length
+        }
         let emojis_m = Util.cutString(g_emojis.map(e => ((!e.animated) ? '<:' : '<a:') + `${e.name}:${e.id}>`).join(' '), 1023, true);
         let rolesInfos = '';// roles.map(rl => `${rl.name} (\`${rl.id}\`)`).join(', ');
         let em = new Util.SimpleEmbed()
@@ -60,8 +67,8 @@ class serverinfo {
             .addField('AFK Time', afk_timeout, true)
             .addField('Verification', verification, true)
             .addField('NSFW Filter', explicitContent, true)
-            .addField(`Members [${members.length}]`, `**Online:** ${mems.online}\n**Dnd:** ${mems.dnd}\n**Idle:** ${mems.idle}\n**Offline:** ${mems.offline}`, true)
-            .addField(`Channels [${channels.length}]`, `owo`, true)
+            .addField(`Members [${members.length}]`, `${emojis.online} ${mems.online}\n${emojis.dnd} ${mems.dnd}\n${emojis.idle} ${mems.idle}\n${emojis.offline} ${mems.offline}`, true)
+            .addField(`Channels [${channels.length}]`, `:notepad_spiral: ${g_channels.text}\n:speaking_head: ${g_channels.voice}\n:file_folder: ${g_channels.category}\n:newspaper: ${g_channels.news}\n:shopping_cart: ${g_channels.store}`, true)
             .addField(`Emojis [${g_emojis.length}]`, emojis_m, false)
             .addField(`Roles [${roles.length}]`, rolesInfos, false)
             .setColor('#26d1ff');
