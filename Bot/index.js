@@ -20,7 +20,7 @@ const bot = (config.dev_mode) ? new Eris(config.dev_token, config.eris) : new Er
     bot.db = new Util.database();
     bot._restClient = (config.dev_mode) ? new Eris(`Bot ${config.dev_token}`, config['eris.rest']) : new Eris(`Bot ${config.token}`, config['eris.rest']);
 const commandOptions = new Util.CommandHandler.CommandOptions()
-    .setPrefix((config.dev_mode === true) ? 'a?' : bot.db) // if this has a getPrefix(GUILD ID) : string function, you can use custom prefixes.
+    .setPrefix(bot.db) // if this has a getPrefix(GUILD ID) : string function, you can use custom prefixes.
     .setCooldown(2000, emojis.redtick + ' You must wait a few seconds to use commands again.')
     .unknownCommands(true, emojis.redtick + ' Command, `{COMMAND}` does not exist.')
     .setClient(bot)
