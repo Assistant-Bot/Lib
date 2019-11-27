@@ -52,7 +52,7 @@ class whois {
             let status = (emojis[user.status]) ? emojis[user.status] : user.status;
             let nick = (!user.nick) ? 'None' : user.nick;
             let mention = user.mention;
-            let game = user.game;
+            let game = (!user.game) ? 'None' : user.game.name;
             let roles = msg.guild.roles.filter(r => {
                 if (user.roles.includes(r.id)) return r;
             }).sort(function (a, b) {
@@ -72,13 +72,15 @@ class whois {
                 return a.position > b.position ? -1 : b.position > a.position ? 1 : 0;
             });
 
+            let highestrole = color;
+
             if (!color[0]) color = 0;
             else color = color[0].color;
             let em = new Util.SimpleEmbed();
             em.setColor(color);
             em.setAuthor(username, avatar);
             em.setThumbnail(user.avatarURL);
-            em.addField('Username', user.username, true);
+            em.addField('Username', user.username + '#' + user.discriminator, true);
             em.addField('User ID', user.id, true);
             em.addField('User Mention', mention, true);
             em.addField('User Status', `${status} ${game}`, true);
@@ -86,8 +88,9 @@ class whois {
             em.addField('Joined Server', joinedAt, true);
             em.addField('Nickname', nick, true);
             em.addField('Nitro Boosting', 'Since ' + nitroBooster, true);
-            em.addField('User Roles', (roles === 'None') ? roles : roles.slice(0, 30).join(', '), true);
-            em.addField('User Permissions', permissions, true);
+            em.addField('Highest Role', (!highestrole.name) ? 'No roles' : highestrole.name + `(\`${highestrole.id}\`)`, true)
+            em.addField('User Roles', (roles === 'None') ? roles : roles.slice(0, 30).join(', '), false);
+            em.addField('User Permissions', permissions, false);
             return msg.channel.send(em);
         }
 
