@@ -18,12 +18,12 @@ class PermissionManager {
         if (!permission instanceof Permission) throw 'Permission must be an instanceof Permission class.';
         else {
             if (this.permissions.has(permission.permission)) throw 'Permission' + permission.permission + 'already exists.';
-            this.permissions.add(permission.permission, permission);
+            this.permissions.set(permission.permission, permission);
         }
     }
 
     unregister(permission) {
-        if (typeof permission == 'string') {
+        if (typeof permission == 'string' || typeof permission == 'number') {
             return this.permissions.delete(permission);
         }
 
@@ -32,6 +32,9 @@ class PermissionManager {
         } else {
             throw 'Invalid permission scope.'
         }
+    }
+    getPermission(permission) {
+        return this.permissions.get(permission);
     }
 }
 

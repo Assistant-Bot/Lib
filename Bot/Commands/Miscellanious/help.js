@@ -33,8 +33,14 @@ class Help {
         if (!args[0]) {
             let parents = bot.commandHandler.commands.find((c, cmd) => {
                 if (c !== cmd.name) return false;
-                if (!cmd.list) return false; 
-                else return true;
+                if (cmd.list === undefined) return false; 
+                if (typeof cmd.list === 'boolean') return cmd.list;
+                if (cmd.list.ifPerm) {
+                    const perm = bot.commandHandler.permissionManager.getPermission(cmd.permission).execute(msg);
+                    return perm;
+                } else {
+                    return (!cmd.list.bool) ? false : cmd.list.bool;
+                }
             }).map(c => c[1]);
 
             let categories = this.unDupe(parents.map(c => c.category));
@@ -64,7 +70,10 @@ class Help {
             // Get the permission for the command
             const data = this.buildHelp(command);
             const embed = new Util.SimpleEmbed();
-
+            if (command.permission) {
+                const perm = bot.commandHandler.permissionManager.getPermission(command.permission).execute(msg);
+                if (!perm) return Util.sendError(msg, emojis, 'custom', 'Sorry! But that command is non-existant, or you don\'t have permission to view it.');
+            }
             if (command.onPermCheck) {
                 if (!command.onPermCheck(bot, msg, args, Util, emojis)) {
                     return Util.sendError(msg, emojis, 'custom', 'Sorry! But that command is non-existant, or you don\'t have permission to view it.');

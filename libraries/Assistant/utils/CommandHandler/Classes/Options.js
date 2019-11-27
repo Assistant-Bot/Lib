@@ -9,6 +9,7 @@ class Options {
         this.blacklistFunction = (id) => {return false;}
         this.os = 1;
         this.caching = false;
+        this.permissionManager = null;
         this.defaults = {
             helpMenu: {
                 embed: true, // Embed all help messages?
@@ -131,7 +132,7 @@ class Options {
      * @param {Array} arr - Array of options to pass through each command. 
      * @description - 2 max, (Support for more later)
      */
-    setVars(arr) {
+    setVars(...arr) {
         this.vars = arr;
         return this;
     }
@@ -142,6 +143,15 @@ class Options {
     setCustomHandler(func) {
         if(typeof func !== 'function') throw 'Must be a function';
         this.customHandler = func;
+        return this;
+    }
+
+    /**
+     * @param {PermissionManager} permissionManager 
+     */
+
+    setPermissionManager(permissionManager) {
+        this.permissionManager = permissionManager;
         return this;
     }
 

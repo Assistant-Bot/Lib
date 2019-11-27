@@ -32,6 +32,9 @@ class BackupManager {
             let data = JSON.parse(found.data);
             data.backupID = found.backupID;
             data.guildID = found.guildID;
+            data.owner = found.owner;
+            data.locked = found.locked;
+            data.password = found.password;
             //data.guildID = found.guildID;
             const backup = new GuildBackup(database, data);
             return backup;

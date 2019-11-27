@@ -37,7 +37,7 @@ class Ban {
     }
 
     async onNoPerm(bot, msg, args, Util, emojis) {
-        return msg.channel.send(emojis.redtick + ' You require `Administrator` permissions to use this command.');
+        return msg.channel.send(emojis.redtick + ' You require `Moderator` permissions to use this command.');
     }
 
     async onError(bot, msg, args, Util, emojis) {
@@ -46,8 +46,7 @@ class Ban {
     }
 
     async onPermCheck(bot, msg) {
-        if (!msg.member.hasPermission('ADMINISTRATOR')) return false;
-        else return true;
+        return msg.member.permission.has('banMembers');
     }
 }
 

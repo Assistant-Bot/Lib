@@ -25,16 +25,19 @@ class CommandHandler {
      */
     constructor (dir, options) {
 
-        if (!this.resolvable(dir)) throw '[COMMAND-HANDLER]: Could not find directory: ' + dir;
-        else this.dir = dir;
+        if (!this.resolvable(dir)) {
+            throw '[COMMAND-HANDLER]: Could not find directory: ' + dir;
+        } else {
+            this.dir = dir;
+        }
         if (!options instanceof Options) throw '[COMMAND-HANDLER]: Invalid options';
         if (!options.token && options.client === false) throw '[COMMAND-HANDLER]: You must provide a token if you don\'t pass a client'; 
         if (options.client == false) {
             this.client = new Discord.Client(options.token);
             this.clientType = 0;
-        } else 
+        } else {
             this.detectClient(options.client);
-
+        }
         if (!options.prefix) throw '[COMMAND-HANDLER]: Invalid prefix';
         if (typeof options.prefix !== 'string') this.database = options.prefix;
         if (this.database) {
@@ -48,10 +51,18 @@ class CommandHandler {
                 } else {
                     throw '[COMMAND-HANDLER]: Database could not check output because an object was returned when fetching the prefix.';
                 }
-            } else if (typeof response !== 'string' && typeof response !== 'boolean') throw '[COMMAND-HANDLER]: Database must return false, null, or string.';
-            else console.log('[COMMAND-HANDLER]: Database loaded.');
+            } else if (typeof response !== 'string' && typeof response !== 'boolean') {
+                throw '[COMMAND-HANDLER]: Database must return false, null, or string.';
+            } else {
+                console.log('[COMMAND-HANDLER]: Database loaded.');
+            }
+        }
+        if (options.permissionManager !== null) {
+            if (!options.permissionManager instanceof PermissionManager) throw '[COMMAND-HANDLER]: Permission handler invalid';
+            else console.log('[COMMAND-HANDLER]: A permission manager has been loaded.');
         }
         this.options = options;
+        this.permissionManager = options.permissionManager;
         this.commands = new CommandCollection();
         this.load = this.start;
         this.clientTypes = {
@@ -437,13 +448,47 @@ class CommandHandler {
                  else return;
              } else {
                  let cmd = cc.commands.get(command);
-                 if (!cmd.onPermCheck) await cmd.onRun(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1]);
-                 else if (!await cmd.onPermCheck(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1])) {
-                     if (!cmd.onNoPerm) await cmd.onError(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1]);
-                     else await cmd.onNoPerm(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1]);
-                 }
-                 else await cmd.onRun(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1]);
-                 return;
+                 if (cmd.allowed) {
+                     if(cmd.allowed.includes(msg.author.id)) {
+                         await cmd.onRun.apply(cmd, [cc.client, msg, args].concat(cc.options.vars));
+                         return;
+                     } else {
+                         return;
+                     }
+                }
+                if (cc.permissionManager !== null) {
+                    if (cmd.permission) {
+                        const permission = cc.permissionManager.getPermission(cmd.permission);
+                        if (!permission) throw `${cmd.name} requires an unregistered permission.`;
+                        if (!permission.execute(msg)) {
+                            if (!cmd.onNoPerm) {
+                                await cmd.onError(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1]);
+                                return;
+                            } else {
+                                await cmd.onNoPerm(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1]);
+                                return;
+                            }
+                        } else {
+                            await cmd.onRun.apply(cmd, [cc.client, msg, args].concat(cc.options.vars));
+                            return;
+                        }
+                    }
+                }
+                if (!cmd.onPermCheck) {
+                    await cmd.onRun.apply(cmd, [cc.client, msg, args].concat(cc.options.vars));
+                    return;
+                } else if (!await cmd.onPermCheck(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1])) {
+                    if (!cmd.onNoPerm) {
+                        await cmd.onError(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1]);
+                        return;
+                    } else {
+                        await cmd.onNoPerm(cc.client, msg, args, cc.options.vars[0], cc.options.vars[1]);
+                        return;
+                    }
+                } else {
+                    await cmd.onRun.apply(cmd, [cc.client, msg, args].concat(cc.options.vars));
+                    return;
+                }
              }
          } catch (e) {
              console.log(`[COMMAND-HANDLER]: Command ${command} ran into the error: ${e}`);
@@ -457,7 +502,7 @@ class CommandHandler {
 }
 
 /* Node js static variables when :sob: ;c im actually sad about it lmao */
-CommandHandler.PermissionOptions = PermissionOptions;
+CommandHandler.Permission = Permission;
 CommandHandler.PermissionManager = PermissionManager;
 CommandHandler.CommandOptions = Options;
 

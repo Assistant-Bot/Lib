@@ -16,7 +16,11 @@ module.exports = {
     red_x: '<:red_x:593328642885550109>',
     check: '<:check:593262657243578368>',
     processing: '<a:processing:628420256418889731>',
-    
+    online: '<:online:649166603585454090>',
+    idle: '<:idle:649166527014240256>',
+    dnd: '<:dnd:649166036846772234>',
+    offline: '<:offline:649165973621964811>',
+
     empty: '<:empty:593257698963750935>',
     greentick: '<:greentick:593258836895203349>',
     redtick: '<:redtick:593258975521407015>',
