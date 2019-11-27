@@ -33,7 +33,7 @@ class Backup {
             em.addField('Roles', backup.getStats().roles, true);
             em.addField('Members', backup.getStats().members, true);
             em.addField('Bans', backup.getStats().bans | 0, true);
-            em.setThumbnail(backup.getStats().iconURL);
+            em.setThumbnail((!backup.getStats().iconURL) ? bot.user.avatarURL : backup.getStats().iconURL);
             em.setTimestamp(new Date(backup.getStats().time));
             em.setFooter('Powered by Assistant. Backup Created');
             return msg.channel.send(em);
@@ -51,7 +51,7 @@ class Backup {
                 return m.edit(emojis.red_x + ' A backup for this server already exists with the  BackupID: **' + exists.guild.backupID + '**');
             }
         } 
-        if (option === 'delete' || option === 'd' || option === 'del') {
+        if (option === 'delete' || option === 'd' || option === 'del' || option === 'remove') {
             if (!args[1]) return Util.sendError(msg, emojis, 'custom', 'Missing a backup id.');
             const backup = await bot.backupDb.getBackupById(bot.db, args[1]);
             if (!backup) return Util.sendError(msg, emojis, 'custom', 'Sorry but we couldn\'t find a backup with that id.');

@@ -11,6 +11,8 @@ exports.SimpleEmbed = require('./utils/Classes/SimpleEmbed');
 exports.Group = require('./utils/Classes/grouper');
 exports.Pager = require('./modules/pager/pager');
 /* Functions */
+exports.cutString = require('./utils/functions/cutString');
+exports.resolveRegionEmoji = require('./utils/functions/resolveRegionEmoji');
 exports.Loader = require('./utils/functions/Loader');
 exports.loader = this.Loader;
 exports.stringPerms = require('./utils/functions/stringPerms');

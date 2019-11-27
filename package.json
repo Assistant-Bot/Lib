@@ -2,7 +2,7 @@
   "name": "assistant",
   "version": "1.0.0",
   "description": "",
-  "main": "./Bot/main.js",
+  "main": "./main.js",
   "dependencies": {
     "advanced-string": "^1.0.2",
     "btoa": "^1.2.1",

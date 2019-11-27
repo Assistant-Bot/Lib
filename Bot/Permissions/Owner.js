@@ -1,4 +1,4 @@
-const Util = require('../../libraries/Assistant/main.js');
+const Util = require('../../libraries/Assistant/modules.js');
 const CommandPermission = Util.CommandHandler.Permission;
 const Owners = ['217006264570347520'];
 module.exports = new CommandPermission('Owner', 10, (msg) => {

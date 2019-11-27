@@ -1,4 +1,4 @@
-const Util = require('../../main');
+const Util = require('../../modules');
 module.exports = (color) => {
     let colors = {
         assistant: '0x26d1ff',

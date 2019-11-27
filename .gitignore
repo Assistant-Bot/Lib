@@ -12,3 +12,6 @@ build/patch-version.json
 package-lock.json
 package-lock.json
 package-lock.json
+
+# Development
+responses/*
