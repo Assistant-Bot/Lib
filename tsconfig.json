@@ -26,6 +26,7 @@
          "noStrictGenericChecks": false,
          "noUnusedLocals": false,
          "noUnusedParameters": false,
+         "importsNotUsedAsValues": "error",
          "preserveConstEnums": false,
          "removeComments": false,
          "resolveJsonModule": true,

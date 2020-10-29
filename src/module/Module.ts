@@ -13,6 +13,14 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
+import type Command from '../command/Command';
+import type Permission from '../command/permission/Permission';
+
 class Module {
-    
+    public name: string;
+    public commands: Command[];
+    public permissions: Permission[];
+    public enabled: boolean;
 }
+
+export default Module;

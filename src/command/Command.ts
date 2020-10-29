@@ -20,7 +20,7 @@ export type CommandEvents = 'execute' | 'error' | 'cooldown' | 'permission' | 'n
 
 export interface CommandArgOptions {
     api: 1 | 2 | 3;
-    // Whether or not to match args wrapped in qoutations as a signle argument "anything between qoutations"
+    // Whether or not to match args wrapped in qoutations as a single argument "anything between qoutations"
     wrap: boolean; // api 2 and 3 only
     matches?: RegExp; // api 3 only
     resolve?: RegExp; // api 3 only
@@ -34,14 +34,14 @@ export interface CommandOptions {
 }
 
 abstract class Command {
-    protected name: string;
-    protected label: string;
-    protected description: string;
-    protected commandOpts: CommandOptions;
-    protected aliases?: string[];
-    protected usage?: string[];
-    protected permissions?: Array<string|number|Permission>;
-    protected module?: string;
+    public name: string;
+    public label: string;
+    public description: string;
+    public commandOpts: CommandOptions;
+    public aliases?: string[];
+    public usage?: string[];
+    public permissions?: Array<string|number|Permission>;
+    public module?: string;
 
     /**
      * Called when the command is executed.

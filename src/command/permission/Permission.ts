@@ -16,8 +16,8 @@
 import type Eris from "eris";
 
 abstract class Permission {
-    protected name: string;
-    protected match?: RegExp;
+    public name: string;
+    public match?: RegExp;
     #id: number;
 
     public constructor(name: string, id: number, match?: RegExp) {
@@ -40,6 +40,10 @@ abstract class Permission {
         } else {
             return this.can(msg, user);
         }
+    }
+
+    public get id(): number {
+        return this.#id;
     }
 }
 export default Permission;
