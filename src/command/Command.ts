@@ -14,7 +14,7 @@
  * to remove this software from your device immediately.
  */
 import type { Client, Message } from 'eris';
-import Permission from './permission/Permission';
+import type Permission from './permission/Permission';
 
 export type CommandEvents = 'execute' | 'error' | 'cooldown' | 'permission' | 'nopermission';
 
@@ -34,10 +34,10 @@ export interface CommandOptions {
 }
 
 abstract class Command {
-    public name: string;
-    public label: string;
-    public description: string;
-    public commandOpts: CommandOptions;
+    public name!: string;
+    public label!: string;
+    public description!: string;
+    public commandOpts!: CommandOptions;
     public aliases?: string[];
     public usage?: string[];
     public permissions?: Array<string|number|Permission>;

@@ -13,9 +13,9 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import Eris from 'eris';
+import type * as Eris from 'eris';
 import type Module from '../module/Module';
-import Command from './Command';
+import type Command from './Command';
 import Permission from './permission/Permission';
 import PermissionManager from './permission/PermissionManager';
 
@@ -36,12 +36,13 @@ export default class CommandHandler {
     public options: CommandHandlerOptions;
     #modules: Module[];
 
-    public constructor(client, options: CommandHandlerOptions) {
+    public constructor(client: Eris.Client, options: CommandHandlerOptions) {
         const defaults: CommandHandlerOptions = CommandHandler.getDefaults();
+        this.#modules = [];
         
         for (let option of Object.keys(defaults)) {
-            if (!options[option]) {
-                options[option] = defaults[option];
+            if (!(options as any)[option]) {
+                (options as any)[option] = (defaults as any)[option];
             }
         }
         
@@ -59,13 +60,14 @@ export default class CommandHandler {
         if (this.options.allowMention) {
             const reg: RegExp = new RegExp(`^(?:<(@|@!)${this.client.user.id}(>|> ))`);
             if (reg.test(msg.content)) {
-                prefix = msg.content.match(reg)[0];
+                prefix = (msg.content.match(reg) as RegExpMatchArray)[0];
             }
         }
 
         let args: string[] = msg.content.slice(0, prefix.length).trim().split(/ +/g);
-        let commandString: string = args.shift().toLowerCase();
+        let commandString: string|undefined = args.shift()?.toLowerCase();
 
+        if (!commandString) return;
         if (msg.content.indexOf(prefix) !== 0) return;
         if (this.options.allowBots === false && msg.author.bot) return;
         

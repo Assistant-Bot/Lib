@@ -13,7 +13,7 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import Eris from "eris";
+import type { Message } from "eris";
 import Permission from "./Permission";
 
 export type PermissionResolvable = Permission | number | string;
@@ -56,7 +56,7 @@ class PermissionManager {
         return false;
     }
 
-    public static testExecution(msg: Eris.Message, permissions: PermissionResolvable[]): Permission|null {
+    public static testExecution(msg: Message, permissions: PermissionResolvable[]): Permission|number {
         for (let permission of permissions) {
             if (permission instanceof Permission) {
                 if (!permission.resolve(msg, msg.member)) {
@@ -65,7 +65,7 @@ class PermissionManager {
             } else if (typeof permission === 'number') {
                 const perm: Permission|undefined = PermissionManager.getById(permission);
                 if (!perm) {
-                    return perm;
+                    return -1;
                 } else {
                     if (!perm.resolve(msg, msg.member)) {
                         return perm;
@@ -74,7 +74,7 @@ class PermissionManager {
             } else {
                 const perm: Permission|undefined = PermissionManager.getByName(permission);
                 if (!perm) {
-                    return perm;
+                    return -1;
                 } else {
                     if (!perm.resolve(msg, msg.member)) {
                         return perm;
@@ -83,7 +83,7 @@ class PermissionManager {
             }
         }
 
-        return null;
+        return 0;
     }
 
     public static get permissions(): Permission[] {
