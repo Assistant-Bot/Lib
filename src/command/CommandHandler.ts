@@ -64,7 +64,6 @@ export default class CommandHandler {
      * @todo Make this handle custom interfaces.
      */
     public async start() {
-
         this.client.on('messageCreate', this.processMessage);
     }
 

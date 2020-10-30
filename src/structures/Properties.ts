@@ -17,7 +17,7 @@ import type * as Eris from "eris";
 import type { EmbedField } from "eris";
 import type Embed from "../util/Embed";
 
-type FunctionStringResponse = (...args: any[]) => Promise<string>;
+export type FunctionStringResponse = (...args: any[]) => Promise<string>;
 
 export type DJSMsgType = "DEFAULT"
     | "RECIPIENT_ADD"
