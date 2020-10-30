@@ -1,7 +1,3 @@
-import type * as Eris from "eris";
-import type { EmbedField } from "eris";
-import type Embed from "../util/Embed";
-
 /***
  *                    _     _              _
  *      /\           (_)   | |            | |  
@@ -17,6 +13,10 @@ import type Embed from "../util/Embed";
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
+import type * as Eris from "eris";
+import type { EmbedField } from "eris";
+import type Embed from "../util/Embed";
+
 type FunctionStringResponse = (...args: any[]) => string;
 
 export type DJSMsgType = "DEFAULT"

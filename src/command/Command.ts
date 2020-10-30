@@ -30,8 +30,16 @@ export interface CommandArgOptions {
     api: 1 | 2 | 3;
     // Whether or not to match args wrapped in qoutations as a single argument "anything between qoutations"
     wrap: boolean; // api 2 and 3 only
-    matches?: RegExp; // api 3 only
-    resolve?: RegExp; // api 3 only
+    /**
+     * @var matches
+     * @description [API 3] A test to check for arguments, if this is true, the command is allowed.
+     */
+    matches?: RegExp;
+    /**
+     * @var resolve
+     * @description [API 3] Resolve arguments based on custom regex.
+     */
+    resolve?: RegExp;
     permissions?: Array<string | number | Permission>[]; // api 3 only
 }
 

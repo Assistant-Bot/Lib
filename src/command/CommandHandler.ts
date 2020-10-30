@@ -15,10 +15,11 @@
  */
 import type * as Eris from 'eris';
 import type Module from '../module/Module';
-import Message from '../structures/Message';
 import type { MemberProps, MessageProps } from '../structures/Properties';
+import type { CommandArgOptions } from './Command';
 import type Command from './Command';
 import type Permission from './permission/Permission';
+import Message from '../structures/Message';
 import PermissionManager, { PermissionResolvable, PermissionTestResolvable } from './permission/PermissionManager';
 
 export type PrefixResolveFunction = (msg: Message<MessageProps>) => Promise<string>;
@@ -90,11 +91,28 @@ export default class CommandHandler {
         if (msg.content.indexOf(prefix) !== 0) return;
         if (this.options.allowBots === false && msg.author.bot) return;
         
+        
         // get the command.
         const command: Command|undefined = this.commands.filter(c => c.label === commandString)[0];
-
-        if (!command) return; // not found :(
         
+        if (!command) return; // not found :(
+            
+        // handle argument api v3
+        if (command.argumentApi === 3) {
+            const argOpts: CommandArgOptions = command.commandOpts.argOptions;
+            if (argOpts.matches) {
+                if (!argOpts.matches.test(args.join(' '))) {
+                    this.capsulateError(command, new Error("Argument did not match argument resolver"), this.client, msg);
+                    return;
+                }
+            }
+            if (argOpts.resolve) {
+                args = [ ...args.join(' ').split(argOpts.resolve) ];
+            } else if (argOpts.wrap) {
+                args = [ ...args.join(' ').split(/\"*+\"/g)];
+            }
+        }
+
         // test permissions
         let results: PermissionTestResolvable[] = [
             PermissionManager.testExecution(msg, command.permissions || []),
