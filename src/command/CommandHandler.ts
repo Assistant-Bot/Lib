@@ -56,15 +56,17 @@ export default class CommandHandler {
         this.prefix = options.prefix;
         this.options = options;
         this.processMessage = this.processMessage.bind(this); // little hack to let us to access the command class
+        this.client.on('messageCreate', this.processMessage);
     }
 
     /**
      * Start the command handler
      * 
+     * @deprecated
      * @todo Make this handle custom interfaces.
      */
     public async start() {
-        this.client.on('messageCreate', this.processMessage);
+        // doesnt do anything
     }
 
     public async processMessage(libMessage: MessageProps): Promise<void> {
@@ -83,15 +85,13 @@ export default class CommandHandler {
             }
         }
 
-        let args: string[] = msg.content.slice(0, prefix.length).trim().split(/ +/g);
+        let args: string[] = msg.content.slice(prefix.length).trim().split(/ +/g);
         let commandString: string|undefined = args.shift()?.toLowerCase();
 
         if (!commandString) return;
         if (msg.content.indexOf(prefix) !== 0) return;
         if (this.options.allowBots === false && msg.author.bot) return;
         
-        
-        // get the command.
         const command: Command|undefined = this.commands.filter(c => c.label === commandString)[0];
         
         if (!command) return; // not found :(
@@ -108,7 +108,7 @@ export default class CommandHandler {
             if (argOpts.resolve) {
                 args = [ ...args.join(' ').split(argOpts.resolve) ];
             } else if (argOpts.wrap) {
-                args = [ ...args.join(' ').split(/\"*+\"/g)];
+                args = [ ...args.join(' ').split(/\"[a-zA-Z0-9]+\"/g)];
             }
         }
 
@@ -135,7 +135,8 @@ export default class CommandHandler {
 
         // Run the command
         try {
-            return command.onRun(this.client, msg, args, ...this.options.additionalArgs || []);
+            command.onRun(this.client, msg, args, ...this.options.additionalArgs || []);
+            return;
         } catch (e) {
             return this.capsulateError(command, e, this.client, msg);
         }
@@ -158,6 +159,12 @@ export default class CommandHandler {
             additionalArgs: [],
             debug: false
         }
+    }
+
+    public registerModule(mod: Module): boolean {
+        if (!!this.#modules.filter(m => m.name === mod.name)[0]) return false;
+        this.#modules.push(mod);
+        return true;
     }
 
     public unregisterCommand(command: Command): boolean {

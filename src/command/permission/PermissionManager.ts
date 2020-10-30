@@ -58,6 +58,14 @@ class PermissionManager {
         return false;
     }
 
+    public static registerAll(...permissions: Permission[]): boolean[] {
+        const response: boolean[] = [];
+        for (let perm of permissions) {
+            response.push(this.register(perm));
+        }
+        return response;
+    }
+
     /**
      * Tests whether a permission can use a permission or not.
      */
