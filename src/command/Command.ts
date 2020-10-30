@@ -74,7 +74,9 @@ abstract class Command {
 			.setTitle('Command Error')
 			.setColor(0xc80000)
 			.setDescription(`**Message:**\n${error.message}`)
-			.setFooter('Error Code is Speci@lC0de', client.user.avatarURL);
+			.setFooter('Error Code is Speci@lC0de', client.user.avatarURL); 
+			// Note this is probably very stupid to hardcode
+			// and we should probably impl. a seperate error handler
 		if (additional) {
 			e.addField('**Additional Info:**', additional.join('\n'));
 		}
