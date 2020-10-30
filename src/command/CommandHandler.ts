@@ -161,6 +161,16 @@ export default class CommandHandler {
         }
     }
 
+    public unregisterCommand(command: Command): boolean {
+        for (let mod of this.#modules) {
+            if (mod.hasCommand(command)) {
+                mod.unregisterCommand(command);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public get commands(): Command[] {
         // if this has proven to defect performance,
         // I will change it

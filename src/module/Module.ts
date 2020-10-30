@@ -18,9 +18,34 @@ import type Permission from '../command/permission/Permission';
 
 class Module {
     public name!: string;
-    public commands!: Command[];
-    public permissions!: Permission[];
+    public commands: Command[] = [];
+    public permissions: Permission[] = [];
     public enabled!: boolean;
+
+    public registerCommand(command: Command): boolean {
+        if (this.commands.filter(c => c.label === command.label)[0]) return false;
+        // forcefully set the module
+        command.module = this.name;
+        this.commands.push(command);
+        return true;
+    }
+
+    public unregisterCommand(command: Command): boolean {
+        for (let i = 0; i < this.commands.length; i++) {
+            const cmd: Command = this.commands[i];
+            
+            if (cmd.label == command.label) {
+                this.commands.splice(i, 1);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public hasCommand(command: Command): boolean {
+        return !!this.commands.filter(c => c.label === command.label)[0];
+    }
 }
 
 export default Module;

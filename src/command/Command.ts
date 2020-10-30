@@ -54,16 +54,20 @@ abstract class Command {
     public label: string;
     public description: string;
     public commandOpts: CommandOptions;
-    public aliases?: string[];
-    public usage?: string[];
-    public permissions?: Array<string | number | Permission>;
-    public module?: string;
+    public aliases: string[];
+    public usage: string[];
+    public permissions: Array<string | number | Permission>;
+    public module: string;
 
     public constructor(name: string, label: string, description: string, options: CommandOptions) {
         this.name = name;
         this.label = label;
         this.description = description;
         this.commandOpts = options;
+        this.aliases = [];
+        this.usage = [];
+        this.permissions = [];
+        this.module = 'Generic Module';
     }
 
     /**
