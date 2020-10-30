@@ -13,7 +13,9 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import type Eris from "eris";
+import type * as Eris from "eris";
+import type Message from "../../structures/Message";
+import type { MemberProps, MessageProps } from "../../structures/Properties";
 
 abstract class Permission {
     public name: string;
@@ -30,11 +32,9 @@ abstract class Permission {
      * Whether or not the user passes this permission.
      * You should change this
      */
-    public can(msg: Eris.Message, user: Eris.Member): boolean {
-        return true;
-    }
+    public abstract can(msg: Message<MessageProps>, user: MemberProps | Eris.Member): boolean;
 
-    public resolve(msg: Eris.Message, user: Eris.Member): boolean {
+    public resolve(msg: Message<MessageProps>, user: MemberProps | Eris.Member): boolean {
         if (this.match) {
             return this.match.test(user.id);
         } else {

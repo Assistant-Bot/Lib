@@ -13,9 +13,11 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import type { Client, Message } from 'eris';
-import Embed from '../util/Embed';
+import type * as Eris from 'eris';
+import type { Client } from 'eris';
+import type Message from '../structures/Message';
 import type Permission from './permission/Permission';
+import type { PermissionResolvable } from './permission/PermissionManager';
 
 export type CommandEvents =
     | 'execute'
@@ -40,36 +42,43 @@ export interface CommandOptions {
 }
 
 abstract class Command {
-    public name!: string;
-    public label!: string;
-    public description!: string;
-    public commandOpts!: CommandOptions;
+    public name: string;
+    public label: string;
+    public description: string;
+    public commandOpts: CommandOptions;
     public aliases?: string[];
     public usage?: string[];
     public permissions?: Array<string | number | Permission>;
     public module?: string;
 
+    public constructor(name: string, label: string, description: string, options: CommandOptions) {
+        this.name = name;
+        this.label = label;
+        this.description = description;
+        this.commandOpts = options;
+    }
+
     /**
      * Called when the command is executed.
      */
-    public abstract async onRun(client: Client, msg: Message, args: string[], ...additional: unknown[]): Promise<void>;
+    public abstract async onRun(client: Client, msg: Message<Eris.Message>, args: string[], ...additional: unknown[]): Promise<void>;
 
     /**
      * Called when execution fails
      * 
      * If this errors, it is supressed, and the command is disabled.
      */
-    public async onError(error: Error, client: Client, msg: Message, ...additional: unknown[]): Promise<void> { }
+    public async onError(error: Error, client: Client, msg: Message<Eris.Message>, ...additional: unknown[]): Promise<void> { }
 
     /**
      * Called when a user is on cooldown.
      */
-    public async onCooldown(client: Client, msg: Message, timeLeft: number, ...additional: unknown[]): Promise<void> { }
+    public async onCooldown(client: Client, msg: Message<Eris.Message>, timeLeft: number, ...additional: unknown[]): Promise<void> { }
 
     /**
      * Called if the user is missing permission.
      */
-    public async onMissingPermission(client: Client, msg: Message, permission: Permission, ...additional: unknown[]): Promise<void> { }
+    public async onMissingPermission(client: Client, msg: Message<Eris.Message>, permission: Permission, ...additional: unknown[]): Promise<void> { }
 
     /**
      * Gets the argument api version.
@@ -77,8 +86,12 @@ abstract class Command {
     public get argumentApi(): number {
         return this.commandOpts.argOptions.api;
     }
+
+    /**
+     * Gets an array of argument permissions. (without indexes)
+     */
+    public get argPermissions(): PermissionResolvable[] {
+        return this.commandOpts.argOptions.permissions?.map(perm => perm[1]) || [];
+    }
 }
 export default Command;
-
-// default regex
-/\"[a-zA-Z]+\"/g;

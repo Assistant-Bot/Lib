@@ -13,10 +13,12 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import type { Message } from "eris";
+import type * as Eris from 'eris';
+import type Message from '../../structures/Message';
 import Permission from "./Permission";
 
 export type PermissionResolvable = Permission | number | string;
+export type PermissionTestResolvable = PermissionResolvable | null;
 
 class PermissionManager {
     public static _permissions: Permission[] = [];
@@ -56,7 +58,11 @@ class PermissionManager {
         return false;
     }
 
-    public static testExecution(msg: Message, permissions: PermissionResolvable[]): Permission|number {
+    /**
+     * Tests whether a permission can use a permission or not.
+     */
+    public static testExecution(msg: Message<Eris.Message>, permissions: PermissionResolvable[]): PermissionResolvable|null {
+        if (!msg.member) return -1;
         for (let permission of permissions) {
             if (permission instanceof Permission) {
                 if (!permission.resolve(msg, msg.member)) {
@@ -65,7 +71,7 @@ class PermissionManager {
             } else if (typeof permission === 'number') {
                 const perm: Permission|undefined = PermissionManager.getById(permission);
                 if (!perm) {
-                    return -1;
+                    return permission;
                 } else {
                     if (!perm.resolve(msg, msg.member)) {
                         return perm;
@@ -74,7 +80,7 @@ class PermissionManager {
             } else {
                 const perm: Permission|undefined = PermissionManager.getByName(permission);
                 if (!perm) {
-                    return -1;
+                    return permission;
                 } else {
                     if (!perm.resolve(msg, msg.member)) {
                         return perm;
@@ -83,7 +89,7 @@ class PermissionManager {
             }
         }
 
-        return 0;
+        return null;
     }
 
     public static get permissions(): Permission[] {
@@ -96,6 +102,24 @@ class PermissionManager {
 
     public static getById(id: number): Permission | undefined {
         return this._permissions.filter(p => p.id === id)[0];
+    }
+
+    public static resolvePermission(perm: PermissionTestResolvable): Permission {
+        if (perm instanceof Permission) return perm;
+
+        let permission: Permission | undefined;
+
+        if (perm === null) throw new Error('Can not resolve permission on null');
+
+        if (typeof perm === 'number') {
+            permission = this.getById(perm);
+        } else if (typeof perm === 'string') {
+            permission = this.getByName(perm);
+        }
+
+        if (!permission) throw new Error('Can not resolve permission on undefined.');
+
+        return permission;
     }
 }
 
