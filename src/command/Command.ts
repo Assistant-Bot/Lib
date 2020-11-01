@@ -40,7 +40,7 @@ export interface CommandArgOptions {
      * @description [API 3] Resolve arguments based on custom regex.
      */
     resolve?: RegExp;
-    permissions?: Array<string | number | Permission>[]; // api 3 only
+    permissions?: [number, PermissionResolvable][]; // api 3 only
 }
 
 export interface CommandOptions {
@@ -100,17 +100,10 @@ abstract class Command {
     }
 
     /**
-     * Gets an array of argument permissions. (without indexes)
+     * Gets an array of argument permissions.
      */
-    public get argPermissions(): PermissionResolvable[] {
-        return this.commandOpts.argOptions.permissions?.map(perm => perm[1]) || [];
-    }
-
-    /**
-     * Get an array of argument permissions. (with indexes)
-     */
-    public get argPermissionsIdx(): [number, PermissionResolvable][] {
-        return this.commandOpts.argOptions.permissions?.map((perm, idx) => [idx, perm[1]]) || [];
+    public get argPermissions(): [number, PermissionResolvable][] {
+        return this.commandOpts.argOptions.permissions || [];
     }
 }
 export default Command;

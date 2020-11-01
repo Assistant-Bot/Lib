@@ -112,35 +112,19 @@ export default class CommandHandler {
             }
         }
 
-        // test permissions
-        // The solution with including the indexes
-        // at it's current state is very stupid
-        // I will definitely make this feature better
+        // todo: Explore using a better permission executioner. (I'll do this cadet)
         let results = [
-            PermissionManager.testExecution(msg, command.permissions || []), // This should ONLY be a `PermissionResolvable`
-            PermissionManager.testArgumentExecution(msg, command.argPermissionsIdx || []) // This should be [idx, PermissionResolvable]
+            PermissionManager.testExecution(msg, command.permissions || []),
+            PermissionManager.testExecution(msg, command.argPermissions.map(p => p[1]) || [])
         ];
 
 
 
         let failed = results.filter(test => test !== null);
 
-
-
-
         if (failed.length > 0) {
             try {
-                let res: PermissionResolvable;
-                if(failed[0] instanceof Array) {
-                    if(!args[failed[0][0]]) { // Check if the failed argument even exists
-                        return;
-                    }
-                    res = failed[0][1]
-                } else {
-                    // @ts-ignore
-                    res = failed[0]
-                }
-                const perm: Permission = PermissionManager.resolvePermission(res); // has to be a permission
+                const perm: Permission = PermissionManager.resolvePermission(failed[0]);
                 command.onMissingPermission(this.client, msg, perm, ...this.options.additionalArgs || []);
                 return;
             } catch (e) {
@@ -148,10 +132,6 @@ export default class CommandHandler {
             }
         }
 
-        // assuming everything is ok
-        // however we should add cooldown before permission checks.
-
-        // Run the command
         try {
             command.onRun(this.client, msg, args, ...this.options.additionalArgs || []);
             return;
