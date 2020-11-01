@@ -105,5 +105,12 @@ abstract class Command {
     public get argPermissions(): PermissionResolvable[] {
         return this.commandOpts.argOptions.permissions?.map(perm => perm[1]) || [];
     }
+
+    /**
+     * Get an array of argument permissions. (with indexes)
+     */
+    public get argPermissionsIdx(): [number, PermissionResolvable][] {
+        return this.commandOpts.argOptions.permissions?.map((perm, idx) => [idx, perm[1]]) || [];
+    }
 }
 export default Command;
