@@ -113,16 +113,36 @@ export default class CommandHandler {
         }
 
         // test permissions
-        let results: PermissionTestResolvable[] = [
-            PermissionManager.testExecution(msg, command.permissions || []),
-            PermissionManager.testExecution(msg, command.argPermissions || [])
+        // The solution with including the indexes
+        // at it's current state is very stupid
+        // I will definitely make this feature better
+        let results = [
+            PermissionManager.testExecution(msg, command.permissions || []), // This should ONLY be a `PermissionResolvable`
+            PermissionManager.testArgumentExecution(msg, command.argPermissionsIdx || []) // This should be [idx, PermissionResolvable]
         ];
+
+
 
         let failed = results.filter(test => test !== null);
 
+
+
+
         if (failed.length > 0) {
             try {
-                const perm: Permission = PermissionManager.resolvePermission(failed[0]); // has to be a permission
+                let res: PermissionResolvable;
+                if(failed[0] instanceof Array) {
+                    if(!args[failed[0][0]]) { // Check if the failed argument even exists
+                        return;
+                    }
+                    res = failed[0][1]
+                    console.log(res)
+                } else {
+                    // @ts-ignore
+                    res = failed[0]
+                    console.log(res)
+                }
+                const perm: Permission = PermissionManager.resolvePermission(res); // has to be a permission
                 command.onMissingPermission(this.client, msg, perm, ...this.options.additionalArgs || []);
                 return;
             } catch (e) {
