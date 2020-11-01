@@ -136,11 +136,9 @@ export default class CommandHandler {
                         return;
                     }
                     res = failed[0][1]
-                    console.log(res)
                 } else {
                     // @ts-ignore
                     res = failed[0]
-                    console.log(res)
                 }
                 const perm: Permission = PermissionManager.resolvePermission(res); // has to be a permission
                 command.onMissingPermission(this.client, msg, perm, ...this.options.additionalArgs || []);
