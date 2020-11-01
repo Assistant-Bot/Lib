@@ -39,6 +39,12 @@
          "suppressExcessPropertyErrors": false,
          "suppressImplicitAnyIndexErrors": false,
          "useDefineForClassFields": false,
-         "outDir": "./dist"
+         "outDir": "./dist",
+         "baseUrl": "."
+         "paths": {
+            "assistant": [
+                "src/mod.ts"
+            ]
+        }
     }
 }
