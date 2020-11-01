@@ -4,7 +4,7 @@
   "description": "",
   "main": "./dist/tests/lib.js",
   "scripts": {
-      "start": "tsc && node ./dist/tests/lib.js",
+      "start": "tsc -d && tsc && node ./dist/tests/lib.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
