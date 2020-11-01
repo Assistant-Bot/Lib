@@ -2,9 +2,9 @@
   "name": "assistant",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/tests/lib.js",
+  "main": "./dist/src/mod.js",
   "scripts": {
-      "start": "tsc -d && tsc && node ./dist/tests/lib.js",
+    "start": "tsc -d && tsc && node ./dist/tests/lib.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
