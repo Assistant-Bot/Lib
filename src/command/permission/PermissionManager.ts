@@ -100,6 +100,37 @@ class PermissionManager {
         return null;
     }
 
+    public static testArgumentExecution(msg: Message<Eris.Message>, permissions: [idx: number, permission: PermissionResolvable][]): [idx: number, permission: PermissionResolvable]|null {
+        if (!msg.member) return null;
+        for (let permission of permissions) {
+            if (permission[1] instanceof Permission) {
+                if (!permission[1].resolve(msg, msg.member)) {
+                    return permission;
+                }
+            } else if (typeof permission[1] === 'number') {
+                const perm: Permission|undefined = PermissionManager.getById(permission[1]);
+                if (!perm) {
+                    return permission;
+                } else {
+                    if (!perm.resolve(msg, msg.member)) {
+                        return [permission[0], perm];
+                    }
+                }
+            } else {
+                const perm: Permission|undefined = PermissionManager.getByName(permission[1]);
+                if (!perm) {
+                    return permission;
+                } else {
+                    if (!perm.resolve(msg, msg.member)) {
+                        return [permission[0], perm];
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
     public static get permissions(): Permission[] {
         return this._permissions;
     }
