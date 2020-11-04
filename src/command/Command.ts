@@ -73,24 +73,26 @@ abstract class Command {
     /**
      * Called when the command is executed.
      */
-    public abstract async onRun(client: Client, msg: Message<Eris.Message>, args: string[], ...additional: unknown[]): Promise<void>;
+    public abstract async onRun(client: Client, msg: Eris.Message, args: string[], ...additional: unknown[]): Promise<void>;
 
     /**
      * Called when execution fails
      * 
      * If this errors, it is supressed, and the command is disabled.
      */
-    public async onError(error: Error, client: Client, msg: Message<Eris.Message>, ...additional: unknown[]): Promise<void> { }
+    public async onError(error: Error, client: Client, msg: Eris.Message, ...additional: unknown[]): Promise<void> { }
 
     /**
      * Called when a user is on cooldown.
      */
-    public async onCooldown(client: Client, msg: Message<Eris.Message>, timeLeft: number, ...additional: unknown[]): Promise<void> { }
+    public async onCooldown(client: Client, msg: Eris.Message, timeLeft: number, ...additional: unknown[]): Promise<void> { }
 
     /**
      * Called if the user is missing permission.
      */
-    public async onMissingPermission(client: Client, msg: Message<Eris.Message>, permission: Permission, ...additional: unknown[]): Promise<void> { }
+    public async onMissingPermission(client: Client, msg: Eris.Message, permission: Permission, ...additional: unknown[]): Promise<void> {
+
+    }
 
     /**
      * Gets the argument api version.

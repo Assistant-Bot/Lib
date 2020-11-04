@@ -69,7 +69,7 @@ class PermissionManager {
     /**
      * Tests whether a permission can use a permission or not.
      */
-    public static testExecution(msg: Message<Eris.Message>, permissions: PermissionResolvable[]): PermissionResolvable|null {
+    public static testExecution(msg: Eris.Message, permissions: PermissionResolvable[]): PermissionResolvable|null {
         if (!msg.member) return -1;
         for (let permission of permissions) {
             if (permission instanceof Permission) {

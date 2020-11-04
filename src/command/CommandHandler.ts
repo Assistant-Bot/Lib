@@ -22,11 +22,11 @@ import type Permission from './permission/Permission';
 import Message from '../structures/Message';
 import PermissionManager, { PermissionResolvable, PermissionTestResolvable } from './permission/PermissionManager';
 
-export type PrefixResolveFunction = (msg: Message<MessageProps>) => Promise<string>;
+export type PrefixResolveFunction = (msg: Eris.Message) => Promise<string>;
 
 export interface CommandHandlerOptions {
     prefix: PrefixResolveFunction|string;
-    processor?: (msg: Message<MessageProps>) => Promise<void>;
+    processor?: (msg: Eris.Message) => Promise<void>;
     allowBots?: boolean;
     allowMention?: boolean;
     additionalArgs?: any[];
@@ -69,9 +69,8 @@ export default class CommandHandler {
         // doesnt do anything
     }
 
-    public async processMessage(libMessage: MessageProps): Promise<void> {
+    public async processMessage(msg: Eris.Message): Promise<void> {
         // create the message
-        const msg: Message<MessageProps> = new Message<MessageProps>(libMessage);
         let prefix: string = (this.prefix instanceof Function) 
             ? await this.prefix(msg)
             : this.prefix;
@@ -140,7 +139,7 @@ export default class CommandHandler {
         }
     }
 
-    private capsulateError(command: Command, error: Error, client: Eris.Client, msg: Message<MessageProps>) {
+    private capsulateError(command: Command, error: Error, client: Eris.Client, msg: Eris.Message) {
         try {
             command.onError(error, client, msg);
         } catch {

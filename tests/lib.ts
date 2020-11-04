@@ -6,8 +6,8 @@ class AdminPermission extends Assistant.Permission {
         super('Admin', 10);
     }
 
-    public can(msg: Assistant.Message<Eris.Message>): boolean {
-        return msg.member?.permissions.has('administrator');
+    public can(msg: Eris.Message): boolean {
+        return !!msg.member?.permissions?.has('administrator');
     }
 }
 
@@ -16,7 +16,7 @@ class Everyone extends Assistant.Permission {
         super('Everyone', 0);
     }
 
-    public can(msg: Assistant.Message<Eris.Message>): boolean {
+    public can(msg: Eris.Message): boolean {
         return true;
     }
 }
@@ -26,7 +26,7 @@ class Owner extends Assistant.Permission {
         super('Owner', 100);
     }
 
-    public can(msg: Assistant.Message<Eris.Message>): boolean {
+    public can(msg: Eris.Message): boolean {
         return msg.member?.guild.ownerID === msg.member?.id
     }
 }
@@ -47,11 +47,10 @@ class PingCommand extends Assistant.Command {
         ];
     }
 
-    public async onRun(client: Eris.Client, msg: Assistant.Message<Eris.Message>, args: string[]): Promise<void> {
+    public async onRun(client: Eris.Client, msg: Eris.Message, args: string[]): Promise<void> {
         const m = await msg.channel.createMessage('Pinging...');
         const diff = Math.floor(m.timestamp - (msg?.timestamp || Date.now()));
-        m.edit(`Pong! \`${diff}ms\n\`API Pong! \`${msg.channel.guild.shard.latency}ms\``)
-
+        m.edit(`Pong! \`${diff}ms\n\`API Pong! \`0 ms\``)
     };
 }
 
@@ -74,9 +73,8 @@ class TestCommand extends Assistant.Command {
         ];
     }
 
-    public async onRun(client: Eris.Client, msg: Assistant.Message<Eris.Message>, args: string[]): Promise<void> {
+    public async onRun(client: Eris.Client, msg: Eris.Message, args: string[]): Promise<void> {
         console.log('Owner only command!')
-
     };
 }
 
@@ -96,5 +94,4 @@ const handler = new Assistant.CommandHandler(client, {
     allowMention: true
 });
 handler.registerModule(new Assistant.Module('Generic', [ new PingCommand, new TestCommand ]));
-handler.start();
 client.connect();

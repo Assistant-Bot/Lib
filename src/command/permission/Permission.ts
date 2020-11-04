@@ -32,9 +32,9 @@ abstract class Permission {
      * Whether or not the user passes this permission.
      * You should change this
      */
-    public abstract can(msg: Message<MessageProps>, user: MemberProps | Eris.Member): boolean;
+    public abstract can(msg: Eris.Message, user: MemberProps | Eris.Member): boolean;
 
-    public resolve(msg: Message<MessageProps>, user: MemberProps | Eris.Member): boolean {
+    public resolve(msg: Eris.Message, user: MemberProps | Eris.Member): boolean {
         if (this.match) {
             return this.match.test(user.id);
         } else {
