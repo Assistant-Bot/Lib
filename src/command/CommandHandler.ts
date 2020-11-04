@@ -29,7 +29,7 @@ export interface CommandHandlerOptions {
     processor?: (msg: Eris.Message) => Promise<void>;
     allowBots?: boolean;
     allowMention?: boolean;
-    additionalArgs?: any[];
+    additionalArgs?: any;
     debug?: boolean;
 }
 
@@ -124,7 +124,7 @@ export default class CommandHandler {
         if (failed.length > 0) {
             try {
                 const perm: Permission = PermissionManager.resolvePermission(failed[0]);
-                command.onMissingPermission(this.client, msg, perm, ...this.options.additionalArgs || []);
+                command.onMissingPermission(this.client, msg, perm, this.options.additionalArgs || {});
                 return;
             } catch (e) {
                 return this.capsulateError(command, e, this.client, msg);
@@ -132,7 +132,7 @@ export default class CommandHandler {
         }
 
         try {
-            command.onRun(this.client, msg, args, ...this.options.additionalArgs || []);
+            command.onRun(this.client, msg, args, this.options.additionalArgs || []);
             return;
         } catch (e) {
             return this.capsulateError(command, e, this.client, msg);
