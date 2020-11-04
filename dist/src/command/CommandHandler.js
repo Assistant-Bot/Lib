@@ -14,7 +14,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _modules;
 Object.defineProperty(exports, "__esModule", { value: true });
-const Message_1 = require("../structures/Message");
+require("../structures/Message");
 const PermissionManager_1 = require("./permission/PermissionManager");
 /**
  * @todo Add module support.
@@ -44,9 +44,8 @@ class CommandHandler {
     async start() {
         // doesnt do anything
     }
-    async processMessage(libMessage) {
+    async processMessage(msg) {
         // create the message
-        const msg = new Message_1.default(libMessage);
         let prefix = (this.prefix instanceof Function)
             ? await this.prefix(msg)
             : this.prefix;
@@ -85,27 +84,24 @@ class CommandHandler {
                 args = [...args.join(' ').split(/\"[a-zA-Z0-9]+\"/g)];
             }
         }
-        // test permissions
+        // todo: Explore using a better permission executioner. (I'll do this cadet)
         let results = [
             PermissionManager_1.default.testExecution(msg, command.permissions || []),
-            PermissionManager_1.default.testExecution(msg, command.argPermissions || [])
+            PermissionManager_1.default.testExecution(msg, command.argPermissions.map(p => p[1]) || [])
         ];
         let failed = results.filter(test => test !== null);
         if (failed.length > 0) {
             try {
-                const perm = PermissionManager_1.default.resolvePermission(failed[0]); // has to be a permission
-                command.onMissingPermission(this.client, msg, perm, ...this.options.additionalArgs || []);
+                const perm = PermissionManager_1.default.resolvePermission(failed[0]);
+                command.onMissingPermission(this.client, msg, perm, this.options.additionalArgs || {});
                 return;
             }
             catch (e) {
                 return this.capsulateError(command, e, this.client, msg);
             }
         }
-        // assuming everything is ok
-        // however we should add cooldown before permission checks.
-        // Run the command
         try {
-            command.onRun(this.client, msg, args, ...this.options.additionalArgs || []);
+            command.onRun(this.client, msg, args, this.options.additionalArgs || []);
             return;
         }
         catch (e) {

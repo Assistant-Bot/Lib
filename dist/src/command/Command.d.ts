@@ -15,7 +15,6 @@
  */
 import type * as Eris from 'eris';
 import type { Client } from 'eris';
-import type Message from '../structures/Message';
 import type Permission from './permission/Permission';
 import type { PermissionResolvable } from './permission/PermissionManager';
 export declare type CommandEvents = 'execute' | 'error' | 'cooldown' | 'permission' | 'nopermission';
@@ -32,7 +31,7 @@ export interface CommandArgOptions {
      * @description [API 3] Resolve arguments based on custom regex.
      */
     resolve?: RegExp;
-    permissions?: Array<string | number | Permission>[];
+    permissions?: [number, PermissionResolvable][];
 }
 export interface CommandOptions {
     cooldown: number;
@@ -52,28 +51,28 @@ declare abstract class Command {
     /**
      * Called when the command is executed.
      */
-    abstract onRun(client: Client, msg: Message<Eris.Message>, args: string[], ...additional: unknown[]): Promise<void>;
+    abstract onRun(client: Client, msg: Eris.Message, args: string[], additional?: any): Promise<void>;
     /**
      * Called when execution fails
      *
      * If this errors, it is supressed, and the command is disabled.
      */
-    onError(error: Error, client: Client, msg: Message<Eris.Message>, ...additional: unknown[]): Promise<void>;
+    onError(error: Error, client: Client, msg: Eris.Message, additional?: any): Promise<void>;
     /**
      * Called when a user is on cooldown.
      */
-    onCooldown(client: Client, msg: Message<Eris.Message>, timeLeft: number, ...additional: unknown[]): Promise<void>;
+    onCooldown(client: Client, msg: Eris.Message, timeLeft: number, additional?: any): Promise<void>;
     /**
      * Called if the user is missing permission.
      */
-    onMissingPermission(client: Client, msg: Message<Eris.Message>, permission: Permission, ...additional: unknown[]): Promise<void>;
+    onMissingPermission(client: Client, msg: Eris.Message, permission: Permission, additional?: any): Promise<void>;
     /**
      * Gets the argument api version.
      */
     get argumentApi(): number;
     /**
-     * Gets an array of argument permissions. (without indexes)
+     * Gets an array of argument permissions.
      */
-    get argPermissions(): PermissionResolvable[];
+    get argPermissions(): [number, PermissionResolvable][];
 }
 export default Command;

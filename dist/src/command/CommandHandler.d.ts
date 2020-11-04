@@ -15,16 +15,14 @@
  */
 import type * as Eris from 'eris';
 import type Module from '../module/Module';
-import type { MessageProps } from '../structures/Properties';
 import type Command from './Command';
-import Message from '../structures/Message';
-export declare type PrefixResolveFunction = (msg: Message<MessageProps>) => Promise<string>;
+export declare type PrefixResolveFunction = (msg: Eris.Message) => Promise<string>;
 export interface CommandHandlerOptions {
     prefix: PrefixResolveFunction | string;
-    processor?: (msg: Message<MessageProps>) => Promise<void>;
+    processor?: (msg: Eris.Message) => Promise<void>;
     allowBots?: boolean;
     allowMention?: boolean;
-    additionalArgs?: any[];
+    additionalArgs?: any;
     debug?: boolean;
 }
 /**
@@ -43,7 +41,7 @@ export default class CommandHandler {
      * @todo Make this handle custom interfaces.
      */
     start(): Promise<void>;
-    processMessage(libMessage: MessageProps): Promise<void>;
+    processMessage(msg: Eris.Message): Promise<void>;
     private capsulateError;
     static getDefaults(): CommandHandlerOptions;
     registerModule(mod: Module): boolean;

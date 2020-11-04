@@ -18,7 +18,6 @@ import type { Client } from 'eris';
 import type Message from '../structures/Message';
 import type Permission from './permission/Permission';
 import type { PermissionResolvable } from './permission/PermissionManager';
-import { Embed } from 'src/mod';
 
 export type CommandEvents =
     | 'execute'

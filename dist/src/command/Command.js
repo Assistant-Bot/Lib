@@ -16,15 +16,16 @@ class Command {
      *
      * If this errors, it is supressed, and the command is disabled.
      */
-    async onError(error, client, msg, ...additional) { }
+    async onError(error, client, msg, additional) { }
     /**
      * Called when a user is on cooldown.
      */
-    async onCooldown(client, msg, timeLeft, ...additional) { }
+    async onCooldown(client, msg, timeLeft, additional) { }
     /**
      * Called if the user is missing permission.
      */
-    async onMissingPermission(client, msg, permission, ...additional) { }
+    async onMissingPermission(client, msg, permission, additional) {
+    }
     /**
      * Gets the argument api version.
      */
@@ -32,10 +33,10 @@ class Command {
         return this.commandOpts.argOptions.api;
     }
     /**
-     * Gets an array of argument permissions. (without indexes)
+     * Gets an array of argument permissions.
      */
     get argPermissions() {
-        return this.commandOpts.argOptions.permissions?.map(perm => perm[1]) || [];
+        return this.commandOpts.argOptions.permissions || [];
     }
 }
 exports.default = Command;

@@ -14,8 +14,7 @@
  * to remove this software from your device immediately.
  */
 import type * as Eris from "eris";
-import type Message from "../../structures/Message";
-import type { MemberProps, MessageProps } from "../../structures/Properties";
+import type { MemberProps } from "../../structures/Properties";
 declare abstract class Permission {
     #private;
     name: string;
@@ -25,8 +24,8 @@ declare abstract class Permission {
      * Whether or not the user passes this permission.
      * You should change this
      */
-    abstract can(msg: Message<MessageProps>, user: MemberProps | Eris.Member): boolean;
-    resolve(msg: Message<MessageProps>, user: MemberProps | Eris.Member): boolean;
+    abstract can(msg: Eris.Message, user: MemberProps | Eris.Member): boolean;
+    resolve(msg: Eris.Message, user: MemberProps | Eris.Member): boolean;
     get id(): number;
 }
 export default Permission;

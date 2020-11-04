@@ -14,7 +14,6 @@
  * to remove this software from your device immediately.
  */
 import type * as Eris from 'eris';
-import type Message from '../../structures/Message';
 import Permission from "./Permission";
 export declare type PermissionResolvable = Permission | number | string;
 export declare type PermissionTestResolvable = PermissionResolvable | null;
@@ -35,7 +34,7 @@ declare class PermissionManager {
     /**
      * Tests whether a permission can use a permission or not.
      */
-    static testExecution(msg: Message<Eris.Message>, permissions: PermissionResolvable[]): PermissionResolvable | null;
+    static testExecution(msg: Eris.Message, permissions: PermissionResolvable[]): PermissionResolvable | null;
     static get permissions(): Permission[];
     static getByName(name: string): Permission | undefined;
     static getById(id: number): Permission | undefined;
