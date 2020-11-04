@@ -15,11 +15,14 @@
  */
 import type Command from '../command/Command';
 import type Permission from '../command/permission/Permission';
+export declare type GenericFunction = (...args: any[]) => any;
+export declare type Event = [string, GenericFunction];
 declare class Module {
     name: string;
     commands: Command[];
     permissions: Permission[];
     enabled: boolean;
+    events: Event[];
     constructor(name: string, commands: Command[], permissions?: Permission[], enabled?: boolean);
     registerCommand(command: Command): boolean;
     unregisterCommand(command: Command): boolean;

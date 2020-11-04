@@ -16,17 +16,22 @@
 import type Command from '../command/Command';
 import type Permission from '../command/permission/Permission';
 
+export type GenericFunction = (...args: any[]) => any;
+export type Event = [string, GenericFunction]; 
+
 class Module {
     public name: string;
     public commands: Command[];
     public permissions: Permission[];
     public enabled: boolean;
+    public events: Event[];
 
     public constructor(name: string, commands: Command[], permissions: Permission[] = [], enabled: boolean = true) {
         this.name = name;
         this.commands = commands;
         this.permissions = permissions;
         this.enabled = enabled;
+        this.events = [];
     }
 
     public registerCommand(command: Command): boolean {

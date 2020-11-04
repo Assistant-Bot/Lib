@@ -6,6 +6,7 @@ class Module {
         this.commands = commands;
         this.permissions = permissions;
         this.enabled = enabled;
+        this.events = [];
     }
     registerCommand(command) {
         if (this.commands.filter(c => c.label === command.label)[0])

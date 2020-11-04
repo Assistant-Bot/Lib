@@ -33,7 +33,6 @@ class CommandHandler {
         this.prefix = options.prefix;
         this.options = options;
         this.processMessage = this.processMessage.bind(this); // little hack to let us to access the command class
-        this.client.on('messageCreate', this.processMessage);
     }
     /**
      * Start the command handler
@@ -42,7 +41,12 @@ class CommandHandler {
      * @todo Make this handle custom interfaces.
      */
     async start() {
-        // doesnt do anything
+        this.client.on('messageCreate', this.processMessage);
+        for (const mod of this.modules) {
+            for (const event of mod.events) {
+                this.client.on(event[0], event[1]);
+            }
+        }
     }
     async processMessage(msg) {
         // create the message

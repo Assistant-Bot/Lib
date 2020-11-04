@@ -56,7 +56,6 @@ export default class CommandHandler {
         this.prefix = options.prefix;
         this.options = options;
         this.processMessage = this.processMessage.bind(this); // little hack to let us to access the command class
-        this.client.on('messageCreate', this.processMessage);
     }
 
     /**
@@ -66,7 +65,12 @@ export default class CommandHandler {
      * @todo Make this handle custom interfaces.
      */
     public async start() {
-        // doesnt do anything
+        this.client.on('messageCreate', this.processMessage);
+        for (const mod of this.modules) {
+            for (const event of mod.events) {
+                this.client.on(event[0], event[1]);
+            }
+        }
     }
 
     public async processMessage(msg: Eris.Message): Promise<void> {
