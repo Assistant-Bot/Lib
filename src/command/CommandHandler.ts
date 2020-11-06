@@ -95,7 +95,7 @@ export default class CommandHandler {
         if (msg.content.indexOf(prefix) !== 0) return;
         if (this.options.allowBots === false && msg.author.bot) return;
         
-        const command: Command|undefined = this.commands.filter(c => c.label === commandString)[0];
+        const command: Command|undefined = this.commands.filter(c => c.label === commandString || c.aliases.includes(commandString as string))[0];
         
         if (!command) return; // not found :(
             

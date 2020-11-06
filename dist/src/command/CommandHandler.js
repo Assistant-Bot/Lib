@@ -69,7 +69,7 @@ class CommandHandler {
             return;
         if (this.options.allowBots === false && msg.author.bot)
             return;
-        const command = this.commands.filter(c => c.label === commandString)[0];
+        const command = this.commands.filter(c => c.label === commandString || c.aliases.includes(commandString))[0];
         if (!command)
             return; // not found :(
         // handle argument api v3

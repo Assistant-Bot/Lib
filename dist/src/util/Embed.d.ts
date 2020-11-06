@@ -13,32 +13,33 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
+export declare type ColorResolvable = number | string;
 export default class Embed {
     embed: any;
     content?: string;
     constructor();
     /**
      * Creates a field on the embed
-     * @param title - Title of field
-     * @param description - Description of field
-     * @param inline - Whether to inline
+     * @param title - Short, bold text of embed
+     * @param description - Large text of embed
+     * @param inline - Should discord try to "stack" fields?
      */
-    addField(title: string, description?: string, inline?: boolean): this;
+    addField(title: string, description: string, inline?: boolean): this;
     /**
      * Sets the main title of the embed
      * @param title - The title of the embed
      */
     setTitle(title: string): this;
     /**
-     * The main description of the embed
-     * @param description - The description of the embed;
+     * Sets the main title of the embed
+     * @param title - The title of the embed
      */
     setDescription(description: string): this;
     /**
      * Sets the color of the embed
-     * @param resolveable - A resolvable hex color or string.
+     * @param resolvable - A resolvable hex color or string.
      */
-    setColor(resolveable?: number | string): this;
+    setColor(resolvable: ColorResolvable): this;
     /**
      * Sets the image for the embed.
      * @param url - Url of the image
@@ -71,7 +72,7 @@ export default class Embed {
      * @param iconUrl - Image of author
      * @param url - Link of author
      */
-    setAuthor(name: string, iconUrl: string, url: string): this;
+    setAuthor(name: string, iconUrl?: string, url?: string, proxyurl?: string): this;
     /**
      * Sets the URL to the title of the embed.
      * @param url
@@ -82,7 +83,7 @@ export default class Embed {
      * @param text - Footer text
      * @param iconUrl - Image
      */
-    setFooter(text: string, iconUrl: string): this;
+    setFooter(text: string, iconUrl?: string): this;
     /**
      * The content of the message
      * @param message - Message

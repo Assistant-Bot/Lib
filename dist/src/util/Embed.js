@@ -1,35 +1,32 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-/***
- *                    _     _              _
- *      /\           (_)   | |            | |
- *     /  \   ___ ___ _ ___| |_ __ _ _ __ | |_
- *    / /\ \ / __/ __| / __| __/ _` | '_ \| __|
- *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
- *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
- *
- * Copyright (C) 2020 John Bergman
- *
- * This is private software, you cannot redistribute and/or modify it in any way
- * unless given explicit permission to do so. If you have not been given explicit
- * permission to view or modify this software you should take the appropriate actions
- * to remove this software from your device immediately.
- */
 class Embed {
     constructor() {
         this.embed = {};
     }
     /**
      * Creates a field on the embed
-     * @param title - Title of field
-     * @param description - Description of field
-     * @param inline - Whether to inline
+     * @param title - Short, bold text of embed
+     * @param description - Large text of embed
+     * @param inline - Should discord try to "stack" fields?
      */
-    addField(title, description = '', inline = false) {
-        title = title.length >= 256 ? title.split('').slice(0, 255).join('') : title;
-        description = description.length >= 2048 ? description.split('').slice(0, 2047).join('') : description;
-        this.embed.fields = this.embed.fields || [];
-        this.embed.fields.push({ name: title, value: description, inline: inline });
+    addField(title, description, inline = false) {
+        if (!title)
+            title = 'No title provided';
+        if (!description)
+            description = 'No description provided';
+        if (title.length >= 256)
+            throw 'You need a shorter title';
+        if (description.length >= 1024)
+            throw 'You need a shorter description';
+        let temp = {
+            name: title,
+            value: description,
+            inline: inline
+        };
+        if (!this.embed.fields)
+            this.embed.fields = [];
+        this.embed.fields.push(temp);
         return this;
     }
     /**
@@ -37,12 +34,18 @@ class Embed {
      * @param title - The title of the embed
      */
     setTitle(title) {
-        this.embed.title = title.length >= 256 ? title.split('').slice(0, 255).join('') : title;
+        if (typeof title !== 'string')
+            throw 'Title must be a string';
+        if (!title)
+            return this;
+        if (title.length >= 256)
+            throw 'You need a shorter title.';
+        this.embed.title = title;
         return this;
     }
     /**
-     * The main description of the embed
-     * @param description - The description of the embed;
+     * Sets the main title of the embed
+     * @param title - The title of the embed
      */
     setDescription(description) {
         this.embed.description = description.length >= 2048 ? description.split('').slice(0, 2047).join('') : description;
@@ -50,20 +53,20 @@ class Embed {
     }
     /**
      * Sets the color of the embed
-     * @param resolveable - A resolvable hex color or string.
+     * @param resolvable - A resolvable hex color or string.
      */
-    setColor(resolveable = 0xffffff) {
-        if (typeof resolveable === 'string') {
-            resolveable = resolveable.replace('#', '');
-            if (resolveable.length < 3 || resolveable.length > 10) {
+    setColor(resolvable) {
+        if (typeof resolvable === 'string') {
+            resolvable = resolvable.replace('#', '');
+            if (resolvable.length < 3 || resolvable.length > 10) {
                 this.embed.color = 0xffffff;
             }
             else {
-                this.embed.color = parseInt('0x' + resolveable);
+                this.embed.color = parseInt('0x' + resolvable);
             }
         }
         else {
-            this.embed.color = resolveable;
+            this.embed.color = resolvable;
         }
         return this;
     }
@@ -123,11 +126,12 @@ class Embed {
      * @param iconUrl - Image of author
      * @param url - Link of author
      */
-    setAuthor(name, iconUrl, url) {
+    setAuthor(name, iconUrl, url, proxyurl) {
         this.embed.author = {
             name: name,
             url: url,
             icon_url: iconUrl,
+            proxy_icon_url: proxyurl
         };
         return this;
     }

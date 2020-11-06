@@ -13,60 +13,75 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
+export type ColorResolvable = number | string;
 export default class Embed {
-    public embed : any;
+    public embed: any;
     public content?: string;
 
-    constructor() {
+    public constructor() {
         this.embed = {};
     }
 
     /**
      * Creates a field on the embed
-     * @param title - Title of field
-     * @param description - Description of field
-     * @param inline - Whether to inline
+     * @param title - Short, bold text of embed
+     * @param description - Large text of embed
+     * @param inline - Should discord try to "stack" fields?
      */
-    public addField(title : string, description : string = '', inline : boolean = false): this {
-        title = title.length >= 256 ? title.split('').slice(0, 255).join('') : title;
-        description = description.length >= 2048 ? description.split('').slice(0, 2047).join('') : description;
-        this.embed.fields = this.embed.fields || [];
-        this.embed.fields.push({name: title, value: description, inline: inline});
+    public addField(title: string, description: string, inline: boolean = false): this {
+        if (!title) title = 'No title provided';
+        if (!description) description = 'No description provided';
+        if (title.length >= 256) throw 'You need a shorter title';
+        if (description.length >= 1024) throw 'You need a shorter description';
+
+        let temp = {
+            name: title,
+            value: description,
+            inline: inline
+        };
+
+        if (!this.embed.fields) this.embed.fields = [];
+        this.embed.fields.push(temp);
         return this;
     }
+
 
     /**
      * Sets the main title of the embed
      * @param title - The title of the embed
      */
-    public setTitle(title : string): this {
-        this.embed.title = title.length >= 256 ? title.split('').slice(0, 255).join('') : title;
+    public setTitle(title: string): this {
+        if (typeof title !== 'string') throw 'Title must be a string';
+        if (!title) return this;
+        if (title.length >= 256) throw 'You need a shorter title.';
+        this.embed.title = title;
         return this;
     }
 
+
     /**
-     * The main description of the embed
-     * @param description - The description of the embed;
+     * Sets the main title of the embed
+     * @param title - The title of the embed
      */
-    public setDescription(description : string): this {
+    public setDescription(description: string): this {
         this.embed.description = description.length >= 2048 ? description.split('').slice(0, 2047).join('') : description;
         return this;
     }
 
     /**
      * Sets the color of the embed
-     * @param resolveable - A resolvable hex color or string.
+     * @param resolvable - A resolvable hex color or string.
      */
-    public setColor(resolveable : number | string = 0xffffff): this {
-        if (typeof resolveable === 'string') {
-            resolveable = resolveable.replace('#', '');
-            if (resolveable.length < 3 || resolveable.length > 10) {
+    public setColor(resolvable: ColorResolvable): this {
+        if (typeof resolvable === 'string') {
+            resolvable = resolvable.replace('#', '');
+            if (resolvable.length < 3 || resolvable.length > 10) {
                 this.embed.color = 0xffffff;
             } else {
-                this.embed.color = parseInt('0x' + resolveable);
+                this.embed.color = parseInt('0x' + resolvable);
             }
         } else {
-            this.embed.color = resolveable;
+            this.embed.color = resolvable;
         }
         return this;
     }
@@ -77,7 +92,7 @@ export default class Embed {
      * @param height - Height of the image
      * @param width - Width of the image
      */
-    public setImage(url : string, height : number, width : number): this {
+    public setImage(url: string, height: number, width: number): this {
         this.embed.image = {
             url: url,
             height: height,
@@ -92,7 +107,7 @@ export default class Embed {
      * @param height - Height of the video
      * @param width - Width of the video
      */
-    public setVideo(url : string, height : number, width : number): this {
+    public setVideo(url: string, height: number, width: number): this {
         this.embed.video = {
             url: url,
             height: height,
@@ -107,7 +122,7 @@ export default class Embed {
      * @param height - Height of the thumbnail
      * @param width - Width of the thumbnail
      */
-    public setThumbnail(url : string, height : number, width : number): this {
+    public setThumbnail(url: string, height: number, width: number): this {
         this.embed.thumbnail = {
             url: url,
             height: height,
@@ -120,7 +135,7 @@ export default class Embed {
      * Sets the timestamp on the embed
      * @param date - Date of timestamp
      */
-    public setTimestamp(date : Date): this {
+    public setTimestamp(date: Date): this {
         this.embed.timestamp = date || Date.now();
         return this;
     }
@@ -131,12 +146,12 @@ export default class Embed {
      * @param iconUrl - Image of author
      * @param url - Link of author
      */
-    public setAuthor(name : string, iconUrl : string, url : string): this {
+    public setAuthor(name: string, iconUrl?: string, url?: string, proxyurl?: string): this {
         this.embed.author = {
             name: name,
             url: url,
             icon_url: iconUrl,
-            // proxy_icon_url: proxystring
+            proxy_icon_url: proxyurl
         };
         return this;
     }
@@ -145,7 +160,7 @@ export default class Embed {
      * Sets the URL to the title of the embed.
      * @param url
      */
-    public setUrl(url : string): this {
+    public setUrl(url: string): this {
         this.embed.url = url;
         return this;
     }
@@ -155,7 +170,7 @@ export default class Embed {
      * @param text - Footer text
      * @param iconUrl - Image
      */
-    public setFooter(text : string, iconUrl : string): this {
+    public setFooter(text: string, iconUrl?: string): this {
         this.embed.footer = {
             text: text.length > 2048 ? text.split('').slice(0, 2047).join('') : text,
             icon_url: iconUrl
