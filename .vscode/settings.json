@@ -2,4 +2,6 @@
      "editor.tabSize": 4,
      "editor.detectIndentation": false,
      "editor.insertSpaces": true,
+     "deno.enable": true,
+     "deno.unstable": true
 }
