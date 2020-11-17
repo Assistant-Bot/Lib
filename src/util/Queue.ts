@@ -24,18 +24,30 @@ class Queue {
         this.#maxSize = 2048;
     }
 
+    /**
+     * Size of the queue
+     */
     public get size(): number {
         return this.elements.length;
     }
 
+    /**
+     * Retrieves the first element of the queue
+     */
     public first(): any {
         return this.elements[0];
     }
 
+    /**
+     * Dequeue a element of 
+     */
     public dequeue(): any {
         return this.elements.shift();
     }
 
+    /**
+     * Queue 
+     */
     public queue(element: any, replace: boolean = false): boolean {
         if (this.#maxSize && this.elements.length === this.#maxSize) {
             if (replace) {
