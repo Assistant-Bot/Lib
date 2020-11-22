@@ -1,5 +1,3 @@
-import { Connector } from "./Connector.ts";
-
 /***
  *                    _     _              _
  *      /\           (_)   | |            | |
@@ -15,9 +13,19 @@ import { Connector } from "./Connector.ts";
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-class Shard extends Connector {
-    public async wsMessage(ev: MessageEvent): Promise<void> {
+import Client from "../../../Client.ts";
+import { Connector } from "../Connector.ts";
 
+export default class Shard extends Connector {
+    #client: Client;
+
+    public constructor(client: Client) {
+        super();
+        this.#client = client;
+    }
+
+    public async wsMessage(ev: MessageEvent): Promise<void> {
+        // TO-DO
     }
 
     public async wsError(ev: Event | ErrorEvent): Promise<void> {
