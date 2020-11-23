@@ -15,8 +15,11 @@
  */
 import Client from "../../../Client.ts";
 import { Connector } from "../Connector.ts";
+import EventPacket from "../packet/EventPacket.ts";
+import { Payload } from "../packet/Packet.ts";
 
 export default class Generic extends Connector {
+    public sequence: number = 0;
     #client: Client;
 
     public constructor(client: Client) {
@@ -28,8 +31,14 @@ export default class Generic extends Connector {
         }
     }
 
-    public async wsMessage(ev: MessageEvent): Promise<void> {
-        
+    public async wsPacket(payload: Payload): Promise<void> {
+        const packet: EventPacket = EventPacket.from(payload);
+
+        if (this.#client.options.connection.emitPayloads) {
+            this.#client.emit('ws', payload);
+        }
+
+        // todo: Check the client data provider, and update based on that
     }
 
     public async wsError(ev: Event | ErrorEvent): Promise<void> {
