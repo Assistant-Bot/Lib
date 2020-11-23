@@ -1,9 +1,9 @@
 /***
  *                    _     _              _
  *      /\           (_)   | |            | |
- *     /  \   ___ ___ _ ___| |_ __ _ _ __ | |_
+ *     /  \   ___ ___ _ ___| |_ __ _ _ __ | |
  *    / /\ \ / __/ __| / __| __/ _` | '_ \| __|
- *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
+ *   / ____ \\__ \__ \ \__ \ || (_| | | | | |
  *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
  *
  * Copyright (C) 2020 John Bergman
@@ -13,17 +13,8 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-export type Snowflake<Length> = string & {
-    length: Length
-};
-
-export type GatewayResponseBot = {
-    url: string,
-    shards: number,
-    session_start_limit: {
-        total: number,
-        remaining: number,
-        reset_after: number,
-        max_concurrency: number
-    }
+export default async function Sleep(time: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+        setTimeout(resolve, time);
+    })
 }

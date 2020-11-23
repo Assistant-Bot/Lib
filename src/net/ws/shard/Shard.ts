@@ -15,16 +15,17 @@
  */
 import Client from "../../../Client.ts";
 import { Connector } from "../Connector.ts";
+import Packet, { Payload } from "../packet/Packet.ts";
 
 export default class Shard extends Connector {
     #client: Client;
 
-    public constructor(client: Client) {
-        super();
+    public constructor(client: Client, gateway: string) {
+        super(gateway);
         this.#client = client;
     }
 
-    public async wsMessage(ev: MessageEvent): Promise<void> {
+    public async wsPacket(pk: Payload): Promise<void> {
         // TO-DO
     }
 

@@ -22,11 +22,11 @@ export default class Generic extends Connector {
     public sequence: number = 0;
     #client: Client;
 
-    public constructor(client: Client) {
-        super();
+    public constructor(client: Client, gateway: string) {
+        super(gateway);
         this.#client = client;
 
-        if (client.clientGuildMode !== 'Nodes') {
+        if (client.shardMode !== 'Nodes') {
             throw new Error('Generic connector does not support any mode other than "Nodes"');
         }
     }

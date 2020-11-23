@@ -26,13 +26,15 @@ export abstract class Connector {
     public ws!: WebSocket;
     public sequence: number;
     public sessionId: string;
+    #gateway: string;
     #token!: string;
     #lastSeq: number;
     #lastAck: number;
     #state: ConnectionStates;
     #heartInterval?: number;
 
-    public constructor() {
+    public constructor(gateway: string) {
+        this.#gateway = gateway;
         this.sequence = 0;
         this.sessionId = 'INITIALIZED';
         this.#lastSeq = 0;
@@ -48,7 +50,7 @@ export abstract class Connector {
         this.#token = token;
         this.#state = 'CONNECTING';
         this.#lastSeq = 0;
-        this.ws = new WebSocket(this.getGateway(token));
+        this.ws = new WebSocket(this.#gateway);
         this.ws.onmessage = this.wsMessage.bind(this);
         this.ws.onerror = this.wsError.bind(this);
         this.ws.onopen = () => {
@@ -56,18 +58,6 @@ export abstract class Connector {
         }
         this.ws.onclose = () => {
             this.#state = 'DISCONNECTED';
-        }
-    }
-
-    /**
-     * Gets the gateway for the specified token.
-     * @param token
-     */
-    public getGateway(token: string): string {
-        if (token.startsWith('Bot')) {
-            return BASE_URL + GATEWAY + '/bot';
-        } else {
-            return BASE_URL + GATEWAY;
         }
     }
 

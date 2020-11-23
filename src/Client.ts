@@ -14,6 +14,11 @@
  * to remove this software from your device immediately.
  */
 import { EventEmitter, GenericFunction, WrappedFunction } from 'https://deno.land/std@0.78.0/node/events.ts';
+import { GatewayResponseBot } from "./net/common/Types.ts";
+import Endpoints, { GATEWAY_URL } from "./net/rest/Endpoints.ts";
+import RequestHandler, { RequestHandlerOptions } from "./net/rest/RequestHandler.ts";
+import { Connector } from "./net/ws/Connector.ts";
+import Generic from "./net/ws/generic/Generic.ts";
 
 /**
  * Events emitted when recieved from the websocket.
@@ -96,6 +101,7 @@ export interface ClientOptions {
 
         /**
          * Whether or not to respect discord response to connecting through the bot gateway.
+         * This should be "true" if you want to shard, or cluster
          */
         respectDiscordGateway: boolean;
 
@@ -125,7 +131,8 @@ export interface ClientOptions {
          * Whether or not to use discord recommended Sharding and Cluster count.
          */
         useDiscord: boolean;
-    }
+    },
+    rest: RequestHandlerOptions
 }
 
 /**
@@ -135,11 +142,17 @@ export type Partial<T> = {
     [P in keyof T]?: T[P];
 }
 
-export type ClientGuildMode = 'Nodes' | 'Shards' | 'Clusters';
+/**
+ * Shard mode that the client is in.
+ */
+export type ClientShardMode = 'Nodes' | 'Shards' | 'Clusters';
 
 export default class Client extends EventEmitter {
     public readonly options: ClientOptions;
-    #guildMode: ClientGuildMode | 'Unknown' = 'Unknown';
+    public requestHandler!: RequestHandler;
+
+    #wsManager!: Connector;
+    #shardMode: ClientShardMode | 'Unknown' = 'Unknown';
 
     public constructor(opts: Partial<ClientOptions> = {}) {
         super();
@@ -160,6 +173,10 @@ export default class Client extends EventEmitter {
             },
             sharding: {
                 useDiscord: false
+            },
+            rest: {
+                attempts: 0,
+                userAgent: 'Discord Bot (https://github.com/Bavfalcon9/Assistant) v3'
             }
         }
 
@@ -171,11 +188,26 @@ export default class Client extends EventEmitter {
      * @param token
      */
     public async connect(token: string): Promise<void> {
-        // refactor this
-        const req = new Request('https://discord.com/api/v8/gateway/bot');
-        req.headers.set('Authorization', token);
-        const res = await (await fetch(req)).json();
-        console.log(res);
+        this.requestHandler = new RequestHandler(this, this.options.rest, [
+            { name: 'Authorization', value: 'Bot ' + token }
+        ]);
+
+        if (this.options.connection.respectDiscordGateway) {
+            const res: GatewayResponseBot = await this.getGatewayInfo();
+            if (res.shards === 1) {
+                this.#shardMode = 'Nodes';
+                this.#wsManager = new Generic(this, GATEWAY_URL);
+            } else if (res.shards >= 250000) {
+                this.#shardMode = 'Clusters'
+                throw new Error('Clusters are not supported yet.');
+            } else {
+                this.#shardMode = 'Shards'
+                throw new Error('Shards are not supported yet.');
+            }
+        } else {
+            this.#shardMode = 'Nodes'
+            this.#wsManager = new Generic(this, GATEWAY_URL);
+        }
     }
 
     public on(event: ClientEvents, listener: GenericFunction | WrappedFunction): any {
@@ -197,15 +229,31 @@ export default class Client extends EventEmitter {
      *  - Shards
      *  - Generic
      */
-    public get clientGuildMode(): ClientGuildMode | 'Unknown' {
-        return this.#guildMode;
+    public get shardMode(): ClientShardMode | 'Unknown' {
+        return this.#shardMode;
     }
 
-    public set clientGuildMode(mode: ClientGuildMode | 'Unknown') {
-        this.#guildMode = mode;
-    }
+    /**
+     * Gets the gateway information from discord.
+     */
+    private async getGatewayInfo(): Promise<GatewayResponseBot> {
+        const req: Request = new Request(Endpoints.rest_gateway(true));
+        const res = await this.requestHandler.request(req) as Response;
+        const json = await res.json();
 
-    private async getGatewayInfo(): Promise<void> {
-        
+        if (res.status === 202 || res.status === 200) {
+            return json as GatewayResponseBot;
+        } else {
+            return {
+                url: GATEWAY_URL,
+                shards: 1,
+                session_start_limit: {
+                    total: 1000,
+                    remaining: 1000,
+                    reset_after: 0,
+                    max_concurrency: 1
+                }
+            }
+        }
     }
 }
