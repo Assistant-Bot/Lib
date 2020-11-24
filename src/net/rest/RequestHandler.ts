@@ -1,7 +1,3 @@
-import Client from "../../Client.ts";
-import Queue from "../../util/Queue.ts";
-import Sleep from "../../util/Sleep.ts";
-
 /***
  *                    _     _              _
  *      /\           (_)   | |            | |
@@ -17,6 +13,9 @@ import Sleep from "../../util/Sleep.ts";
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
+import Client from "../../Client.ts";
+import Sleep from "../../util/Sleep.ts";
+
 export interface RequestHandlerOptions {
     /**
      * The maximum amount of times to attempt a request
@@ -24,14 +23,29 @@ export interface RequestHandlerOptions {
     attempts: number;
 
     /**
+     * How many time to attempt a request that is ratelimited.
+     * @default 3
+     */
+    attemptsRatelimit: number;
+
+    /**
      * The useragent to use
      */
     userAgent: string;
 }
 
-export interface ResponseError {
-    reason: string;
-    d: any;
+/**
+ * Class for interfacing with errors during responses.
+ */
+export class ResponseError extends Error {
+    public response: Response;
+    public data: any;
+
+    public constructor(message: string, response: Response, data?: any) {
+        super(message);
+        this.response = response;
+        this.data = data;
+    }
 }
 
 export interface Header {
@@ -39,54 +53,19 @@ export interface Header {
     value: string;
 }
 
-export const ErrorCodes = [
-    400,
-    401,
-    402,
-    403,
-    404,
-    405,
-    406,
-    407,
-    408,
-    409,
-    410,
-    411,
-    412,
-    413,
-    414,
-    415,
-    416,
-    417,
-    418,
-    421,
-    422,
-    425,
-    426,
-    428,
-    429,
-    431,
-    451,
-    500,
-    501,
-    502,
-    503,
-    504,
-    505,
-    506,
-    511
-];
-
 export default class RequestHandler {
     #options: RequestHandlerOptions;
-    #client: Client;
     #headers: Header[];
     #rateLimits: { [key: string]: number };
     #globalBlock: boolean | number;
 
-    public constructor(client: Client, opts: RequestHandlerOptions, specialHeaders: Header[]) {
-        this.#options = opts;
-        this.#client = client;
+    public constructor(opts: Partial<RequestHandlerOptions>, specialHeaders: Header[]) {
+        const defaults: RequestHandlerOptions = {
+            attempts: 10,
+            attemptsRatelimit: 3,
+            userAgent: 'Discord Bot (https://github.com/Bavfalcon9/Assistant) v3'
+        }
+        this.#options = Object.assign(defaults, opts);
         this.#headers = specialHeaders;
         this.#rateLimits = {};
         this.#globalBlock = false;
@@ -97,90 +76,92 @@ export default class RequestHandler {
      * Please note this does not handle responses.
      * @param req
      * @param immediate
+     * @throws {ResponseError|Error}
      */
-    public request(req: Request, immediate: boolean = false): Promise<Response | Array<ResponseError | Error>> {
+    public request(req: Request, immediate: boolean = false): Promise<Response> {
         // queues this promise until it's resolved.
-        const errors: Array<ResponseError|Error> = [];
+        return new Promise((resolve, reject) => {
+            try {
+                (async () => {
+                    let attempts: number = 0;
+                    let wait: number = 0;
+                    let res: Response;
+                    let lastError: ResponseError | Error = new Error();
 
-        return new Promise(async (resolve, reject) => {
-            let attempts: number = 0;
-            let wait: number = 0;
-
-            for (let header of this.#headers) {
-                req.headers.set(header.name, header.value);
-            }
-
-            req.headers.set('User-Agent', this.#options.userAgent);
-            req.headers.set('X-RateLimit-Precision', 'millisecond');
-
-            if (this.#globalBlock !== false) {
-                await Sleep(this.#globalBlock as number);
-            }
-
-            if (immediate) {
-                return resolve(await fetch(req));
-            }
-
-            while (attempts < this.#options.attempts) {
-                attempts++;
-
-                if (wait) {
-                    await Sleep(wait);
-                }
-
-                try {
-                    const res: Response = await fetch(req);
-                    const json: any = await res.json();
-
-                    const ratelimit = {
-                        remaining: parseFloat(res.headers.get('X-RateLimit-Remaining') || 'NaN') || false,
-                        limit: parseFloat(res.headers.get('X-RateLimit-Limit') || 'NaN') || false,
-                        reset: parseFloat(res.headers.get('X-RateLimit-Reset') || 'NaN') || false,
-                        resetAfter: parseFloat(res.headers.get('X-RateLimit-Reset-After') || 'NaN') || false,
-                        global: res.headers.get('X-RateLimit-Global') || null
+                    for (let header of this.#headers) {
+                        req.headers.set(header.name, header.value);
                     }
 
-                    if (ratelimit.limit) {
-                        this.#rateLimits[req.url] = ratelimit.limit as number;
-                    }
+                    req.headers.set('User-Agent', this.#options.userAgent);
 
-                    if (ratelimit.global != null && ratelimit.resetAfter) {
-                        this.#globalBlock = Date.now();
-                    }
-
-                    if (ratelimit.resetAfter) {
-                        wait = ratelimit.resetAfter as number;
-                        errors.push({ reason: 'RateLimited', d: wait });
-                        continue;
-                    }
-
-                    if (res.status === 403 || res.status === 401) {
-                        return resolve([ new Error('Unauthorized or Forbidden.') ]);
-                    }
-
-                    if (res.status === 405) {
-                        return resolve([ new Error('Method requested not allowed.') ]);
-                    }
-
-                    if (res.status === 502 && attempts < 3) {
-                        setTimeout(() => {
-                            this.request(req, immediate).then(resolve).catch(reject);
-                        }, Math.floor(Math.random() * 3000 + 100));
+                    if (immediate) {
+                        fetch(req).then(resolve).catch(reject);
                         return;
                     }
 
-                    if (ErrorCodes.includes(res.status)) {
-                        errors.push({ reason: res.statusText, d: res });
-                        continue;
+                    for (; attempts < this.#options.attempts + 1; attempts++) {
+                        if (attempts >= this.#options.attempts) {
+                            return reject(lastError);
+                        }
+
+                        if (typeof this.#globalBlock === 'number') {
+                            await Sleep(this.#globalBlock);
+                            this.#globalBlock = false;
+                        }
+
+                        if (wait) {
+                            await Sleep(wait);
+                        }
+
+                        res = await fetch(req);
+                        const ratelimit = {
+                            remaining: parseFloat(res.headers.get('x-ratelimit-remaining') || 'NaN') || false,
+                            limit: parseFloat(res.headers.get('x-ratelimit-limit') || 'NaN') || false,
+                            reset: parseFloat(res.headers.get('x-ratelimit-reset') || 'NaN') || false,
+                            resetAfter: parseFloat(res.headers.get('x-ratelimit-reset-after') || 'NaN') || false,
+                            global: res.headers.get('x-ratelimit-global') || null
+                        }
+
+                        if (ratelimit.limit) {
+                            this.#rateLimits[req.url] = ratelimit.limit as number * 1000;
+                        }
+
+                        if (ratelimit.global != null && ratelimit.resetAfter) {
+                            this.#globalBlock = ratelimit.resetAfter as number * 1000;
+                            continue;
+                        }
+
+                        if (ratelimit.resetAfter) {
+                            wait = ratelimit.resetAfter as number * 1000;
+                            lastError = new ResponseError('RateLimited', res, { reason: 'RateLimited', d: wait * 1000 });
+                        }
+
+                        if (res.status === 400) {
+                            throw new ResponseError('Bad Request', res);
+                        }
+
+                        if (res.status === 403 || res.status === 401) {
+                            throw new ResponseError('Unauthorized or Forbidden.', res);
+                        }
+
+                        if (res.status === 405) {
+                            throw new ResponseError('Method requested not allowed.', res);
+                        }
+
+                        if (res.status === 502 && attempts < 3) {
+                            await Sleep(Math.floor(Math.random() * 3000 + 100));
+                        }
+
+                        if ((res.status - 200) > 100) {
+                            lastError = new ResponseError(res.statusText, res, { reason: res.statusText, d: res });
+                        } else {
+                            return resolve(res);
+                        }
                     }
-
-                    return resolve(res);
-                } catch (e) {
-                    errors.push(e);
-                }
+                })();
+            } catch (e) {
+                reject(e);
             }
-
-            return resolve(errors);
         });
     }
 }

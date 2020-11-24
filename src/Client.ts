@@ -132,7 +132,7 @@ export interface ClientOptions {
          */
         useDiscord: boolean;
     },
-    rest: RequestHandlerOptions
+    rest?: RequestHandlerOptions
 }
 
 /**
@@ -173,10 +173,6 @@ export default class Client extends EventEmitter {
             },
             sharding: {
                 useDiscord: false
-            },
-            rest: {
-                attempts: 0,
-                userAgent: 'Discord Bot (https://github.com/Bavfalcon9/Assistant) v3'
             }
         }
 
@@ -188,7 +184,7 @@ export default class Client extends EventEmitter {
      * @param token
      */
     public async connect(token: string): Promise<void> {
-        this.requestHandler = new RequestHandler(this, this.options.rest, [
+        this.requestHandler = new RequestHandler(this.options.rest || {}, [
             { name: 'Authorization', value: 'Bot ' + token }
         ]);
 
