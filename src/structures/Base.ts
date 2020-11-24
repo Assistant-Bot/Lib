@@ -14,6 +14,8 @@
  * to remove this software from your device immediately.
  */
 import Client from "../Client.ts";
+import EventPacket from "../net/ws/packet/EventPacket.ts";
+import { Payload } from "../net/ws/packet/Packet.ts";
 
 export default abstract class Base {
     protected client: Client;
@@ -30,4 +32,11 @@ export default abstract class Base {
     public get createdAt() {
         return Math.floor(parseInt(this.id) / 4194304) + 1420070400000;
     }
+
+    /**
+     * Called by assistant to update structure data.
+     * This should be similar, if not equal to creating a new structure.
+     * @param data - The data to update the structure
+     */
+    public abstract update(data: Payload | EventPacket): any;
 }
