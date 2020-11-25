@@ -56,12 +56,12 @@ export default class Guild extends Base {
     public locale!: string;
     public publicUpdatesChannelID?: string;
     public maxVideoChannelUsers?: number;
-	public channels!: Collection<string, GuildChannel>;
-	public roles!: Collection<string, Role>;
-	public members!: Collection<string, Member>;
-	public emojis!: Collection<string, Emoji>;
+    public channels!: Collection<string, GuildChannel>;
+    public roles!: Collection<string, Role>;
+    public members!: Collection<string, Member>;
+    public emojis!: Collection<string, Emoji>;
 
-	public constructor(client: Client, data: GuildData) {
+    public constructor(client: Client, data: GuildData) {
         super(client, data.id);
         this.update(data);
     }
@@ -79,7 +79,7 @@ export default class Guild extends Base {
         this.verificationLevel = data.verification_level;
         this.defaultMessageNotifications = data.default_message_notifications;
         this.systemChannelID = data.system_channel_id;
-        this.systemChannelFlags =  data.system_channel_flags
+        this.systemChannelFlags = data.system_channel_flags
         this.explicitContentFilter = data.explicit_content_filter;
         this.features = data.features;
         this.mfaLevel = data.mfa_level;
@@ -93,33 +93,33 @@ export default class Guild extends Base {
         this.vanityURLCode = data.vanity_url_code;
         this.description = data.description;
         this.banner = data.banner;
-        this.premiumTier   = data.premium_tier;
+        this.premiumTier = data.premium_tier;
         this.subscriptionCount = data.premium_subscription_count;
         this.maxVideoChannelUsers = data.max_video_channel_users;
 
-        if(data.channels) {
-            for(let _ of data.channels) {
+        if (data.channels) {
+            for (let _ of data.channels) {
                 const ch = new GuildChannel(this.client, _);
                 this.channels.set(ch.id, ch);
             }
         }
 
-        if(data.roles) {
-            for(let _ of data.roles) {
+        if (data.roles) {
+            for (let _ of data.roles) {
                 const r = new Role(this.client, _);
                 this.roles.set(r.id, r);
             }
         }
 
-        if(data.members) {
-            for(let _ of data.members) {
+        if (data.members) {
+            for (let _ of data.members) {
                 const m = new Member(this.client, _);
                 this.members.set(m.id, m)
             }
         }
 
-        if(data.emojis) {
-            for(let _ of data.emojis) {
+        if (data.emojis) {
+            for (let _ of data.emojis) {
                 const e = new Emoji(this.client, _);
                 this.emojis.set(e.id, e);
             }

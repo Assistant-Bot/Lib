@@ -18,24 +18,24 @@ import { EmojiData } from "../../net/common/Types.ts";
 import Base from "../Base.ts";
 
 export default class Emoji extends Base {
-	public roles?: string[];
-	public requireColons?: boolean;
-	public name!: string | null;
-	public managed?: boolean;
-	public available?: boolean;
-	public animated?: boolean;
+    public roles?: string[];
+    public requireColons?: boolean;
+    public name!: string | null;
+    public managed?: boolean;
+    public available?: boolean;
+    public animated?: boolean;
 
-	public constructor(client: Client, data: EmojiData) {
+    public constructor(client: Client, data: EmojiData) {
         super(client, data.id || '');
         this.update(data);
     }
 
     public update(data: EmojiData) {
         this.roles = data.roles;
-		this.requireColons = data.require_colons;
-		this.name = data.name;
-		this.managed = data.managed;
-		this.available = data.available;
-		this.animated = data.animated;
+        this.requireColons = data.require_colons;
+        this.name = data.name;
+        this.managed = data.managed;
+        this.available = data.available;
+        this.animated = data.animated;
     }
 }
