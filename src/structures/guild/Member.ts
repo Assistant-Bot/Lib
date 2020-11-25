@@ -32,7 +32,6 @@ export default class Member extends Base {
 	public constructor(client: Client, data: MemberData, ) {
         super(client, data.id);
         this.update(data);
-
     }
 
     public update(data: MemberData) {

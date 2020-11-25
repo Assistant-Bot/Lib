@@ -18,7 +18,6 @@ import { RoleData } from "../../net/common/Types.ts";
 import Base from "../Base.ts";
 
 export default class Role extends Base {
-	// public guild: Guild; // Do we want a circular ref here?
     public name!: string;
 	public permissions: any;
 	public position!: number;
@@ -29,9 +28,8 @@ export default class Role extends Base {
 	public constructor(client: Client, data: RoleData) {
         super(client, data.id);
         this.update(data)
-
     }
-    
+
     public update(data: RoleData) {
         this.name = data.name;
 		this.permissions = data.permissions;

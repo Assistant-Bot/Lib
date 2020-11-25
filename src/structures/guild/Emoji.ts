@@ -26,10 +26,10 @@ export default class Emoji extends Base {
 	public animated?: boolean;
 
 	public constructor(client: Client, data: EmojiData) {
-        super(client, data.id || '')
-        this.update(data)
+        super(client, data.id || '');
+        this.update(data);
     }
-    
+
     public update(data: EmojiData) {
         this.roles = data.roles;
 		this.requireColons = data.require_colons;
