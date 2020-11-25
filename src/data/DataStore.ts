@@ -13,8 +13,63 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-abstract class DataStore {
+
+import { Payload } from "../net/ws/packet/Packet.ts";
+
+export default abstract class DataStore {
+    /**
+     * Get a structure based on it's id
+     * This should return the structure.
+     * @param id
+     */
+    public abstract get(id: string): any;
+
+    /**
+     * Update a structure in the datastore with a new payload.
+     * Should create a structure if it does not exist.
+     * @param id
+     * @param data
+     */
+    public abstract update(id: string, data: Payload): any;
+
+    /**
+     * Deletes a structure in the datastore based on it's id.
+     * @param id
+     */
+    public abstract delete(id: string): Promise<boolean> | boolean;
+
+    /**
+     * Get all channels stored within the store.
+     */
+    public abstract get channels(): any;
+
+    /**
+     * Gets all the emoijs stored within the store.
+     */
+    public abstract get emoijs(): any;
+
+    /**
+     * Get all guidls stored within the store.
+     */
     public abstract get guilds(): any;
 
-    public abstract get(id: string): any;
+    /**
+     * Get all messages stored within the store.
+     */
+    public abstract get messages(): any;
+
+    /**
+     * Gets all the users stored within the store.
+     */
+    public abstract get users(): any;
+
+    /**
+     * Gets all the reactions stored within the store.
+     */
+    public abstract get reactions(): any;
+
+    /**
+     * Gets all the roles stored within the store.
+     */
+    public abstract get roles(): any;
 }

@@ -14,6 +14,7 @@
  * to remove this software from your device immediately.
  */
 import { EventEmitter, GenericFunction, WrappedFunction } from 'https://deno.land/std@0.78.0/node/events.ts';
+import DataStore from "./data/DataStore.ts";
 import { GatewayResponseBot } from "./net/common/Types.ts";
 import Endpoints, { GATEWAY_URL } from "./net/rest/Endpoints.ts";
 import RequestHandler, { RequestHandlerOptions } from "./net/rest/RequestHandler.ts";
@@ -151,10 +152,11 @@ export default class Client extends EventEmitter {
     public readonly options: ClientOptions;
     public requestHandler!: RequestHandler;
 
+    #dataStore?: DataStore;
     #wsManager!: Connector;
     #shardMode: ClientShardMode | 'Unknown' = 'Unknown';
 
-    public constructor(opts: Partial<ClientOptions> = {}) {
+    public constructor(opts: Partial<ClientOptions> = {}, customStore?: DataStore) {
         super();
         const defaults: ClientOptions = {
             connection: {
@@ -177,6 +179,10 @@ export default class Client extends EventEmitter {
         }
 
         this.options = Object.assign(defaults, opts);
+
+        if (customStore) {
+            this.#dataStore = customStore;
+        }
     }
 
     /**
@@ -249,6 +255,24 @@ export default class Client extends EventEmitter {
                     reset_after: 0,
                     max_concurrency: 1
                 }
+            }
+        }
+    }
+
+    /**
+     * Gets the data store.
+     */
+    public get dataStore(): DataStore | null {
+        return this.#dataStore || null;
+    }
+
+    /**
+     * Sets the data store (once).
+     */
+    public set dataStore(store: DataStore | null) {
+        if (store instanceof DataStore) {
+            if (!this.#dataStore) {
+                this.#dataStore = store;
             }
         }
     }
