@@ -14,6 +14,7 @@
  * to remove this software from your device immediately.
  */
 import Client from "../../../Client.ts";
+import RuntimeStore from "../../../data/RuntimeStore.ts";
 import { Connector } from "../Connector.ts";
 import EventPacket from "../packet/EventPacket.ts";
 import { Payload } from "../packet/Packet.ts";
@@ -28,6 +29,10 @@ export default class Generic extends Connector {
 
         if (client.shardMode !== 'Nodes') {
             throw new Error('Generic connector does not support any mode other than "Nodes"');
+        }
+
+        if (!client.dataStore) {
+            client.dataStore = new RuntimeStore();
         }
     }
 

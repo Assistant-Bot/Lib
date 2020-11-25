@@ -67,9 +67,4 @@ export default abstract class DataStore {
      * Gets all the reactions stored within the store.
      */
     public abstract get reactions(): any;
-
-    /**
-     * Gets all the roles stored within the store.
-     */
-    public abstract get roles(): any;
 }
