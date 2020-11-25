@@ -18,24 +18,24 @@ import type { RoleData } from "../../net/common/Types.ts";
 import Base from "../Base.ts";
 
 export default class Role extends Base {
-    public name!: string;
-    public permissions: any;
-    public position!: number;
-    public color!: number;
-    public hoist!: boolean;
-    public mentionable!: boolean;
+	public name!: string;
+	public permissions: any;
+	public position!: number;
+	public color!: number;
+	public hoist!: boolean;
+	public mentionable!: boolean;
 
-    public constructor(client: Client, data: RoleData) {
-        super(client, data.id);
-        this.update(data)
-    }
+	public constructor(client: Client, data: RoleData) {
+		super(client, data.id);
+		this.update(data)
+	}
 
-    public update(data: RoleData): void {
-        this.name = data.name;
-        this.permissions = data.permissions;
-        this.position = data.position;
-        this.color = data.color;
-        this.hoist = data.hoist;
-        this.mentionable = data.mentionable;
-    }
+	public update(data: RoleData): void {
+		this.name = data.name;
+		this.permissions = data.permissions;
+		this.position = data.position;
+		this.color = data.color;
+		this.hoist = data.hoist;
+		this.mentionable = data.mentionable;
+	}
 }

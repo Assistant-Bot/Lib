@@ -19,28 +19,28 @@ import Base from "../Base.ts";
 import User from "../User.ts";
 
 export default class Member extends Base {
-    public user!: User;
-    public owner!: boolean;
-    public roles!: string[];
-    public premiumSince?: string;
-    public nick?: string;
-    public mute!: boolean;
-    public joinedAt!: string;
-    public deaf!: boolean;
+	public user!: User;
+	public owner!: boolean;
+	public roles!: string[];
+	public premiumSince?: string;
+	public nick?: string;
+	public mute!: boolean;
+	public joinedAt!: string;
+	public deaf!: boolean;
 
-    public constructor(client: Client, data: MemberData,) {
-        super(client, data.id);
-        this.update(data);
-    }
+	public constructor(client: Client, data: MemberData,) {
+		super(client, data.id);
+		this.update(data);
+	}
 
-    public update(data: MemberData): void {
-        this.user = new User(this.client, data.user || { id: '000000000000000000' as Snowflake<18>, username: 'Unavailable', discriminator: '6969' });
-        // Possible solution if this is null?
-        this.roles = data.roles;
-        this.premiumSince = data.premium_since;
-        this.nick = data.nick;
-        this.mute = data.mute;
-        this.joinedAt = data.joined_at;
-        this.deaf = data.deaf;
-    }
+	public update(data: MemberData): void {
+		this.user = new User(this.client, data.user || { id: '000000000000000000' as Snowflake<18>, username: 'Unavailable', discriminator: '6969' });
+		// Possible solution if this is null?
+		this.roles = data.roles;
+		this.premiumSince = data.premium_since;
+		this.nick = data.nick;
+		this.mute = data.mute;
+		this.joinedAt = data.joined_at;
+		this.deaf = data.deaf;
+	}
 }

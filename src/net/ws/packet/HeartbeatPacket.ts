@@ -16,18 +16,18 @@
 import Packet, { OPCode, Payload } from "./Packet.ts";
 
 export default class HeartBeatPacket extends Packet {
-    public interval: number;
+	public interval: number;
 
-    public static from(p: Payload): HeartBeatPacket {
-        return new this(p.d.heartbeat_interval || 45000);
-    }
+	public static from(p: Payload): HeartBeatPacket {
+		return new this(p.d.heartbeat_interval || 45000);
+	}
 
-    public constructor(interval: number) {
-        super(OPCode.HEARTBEAT);
-        this.interval = interval;
-    }
+	public constructor(interval: number) {
+		super(OPCode.HEARTBEAT);
+		this.interval = interval;
+	}
 
-    protected encodeData(): void {
-        this.data = this.interval;
-    }
+	protected encodeData(): void {
+		this.data = this.interval;
+	}
 }

@@ -21,38 +21,38 @@ import Message, { MessageContent } from "../Message.ts";
 import Guild from "./Guild.ts";
 
 export default class GuildChannel extends Channel {
-    public name!: string;
-    public guild!: Guild;
-    public position!: number;
-    public permissions!: any;
+	public name!: string;
+	public guild!: Guild;
+	public position!: number;
+	public permissions!: any;
 
-    public constructor(client: Client, data: ChannelData) {
-        super(client, data);
-        this.update(data);
-    }
+	public constructor(client: Client, data: ChannelData) {
+		super(client, data);
+		this.update(data);
+	}
 
-    public update(data: ChannelData): void {
-        this.name = data.name || '';
-        this.guild = this.client.dataStore?.guilds.get(data.guild_id) || data.guild_id;
-        this.position = data.position || -1;
-        this.permissions = data.permission_overwrites;
-    }
+	public update(data: ChannelData): void {
+		this.name = data.name || '';
+		this.guild = this.client.dataStore?.guilds.get(data.guild_id) || data.guild_id;
+		this.position = data.position || -1;
+		this.permissions = data.permission_overwrites;
+	}
 
-    public async send(content: MessageContent): Promise<Message> {
-        // @ts-ignore
-        return new Message(this.client, {});
-    }
+	public async send(content: MessageContent): Promise<Message> {
+		// @ts-ignore
+		return new Message(this.client, {});
+	}
 
-    public async delete(): Promise<boolean> {
-        try {
-            const res: Response = await this.client.requestHandler.makeAndSend(Endpoints.channel(this.id), "DELETE");
-            if (res.status === 200) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (e) {
-            throw e;
-        }
-    }
+	public async delete(): Promise<boolean> {
+		try {
+			const res: Response = await this.client.requestHandler.makeAndSend(Endpoints.channel(this.id), "DELETE");
+			if (res.status === 200) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (e) {
+			throw e;
+		}
+	}
 }

@@ -18,43 +18,43 @@ import type { UserData } from "../net/common/Types.ts";
 import Base from "./Base.ts";
 
 export default class User extends Base {
-    public bot!: boolean;
-    public username!: string;
-    public discriminator!: string;
-    public avatar!: string;
-    public system!: boolean;
+	public bot!: boolean;
+	public username!: string;
+	public discriminator!: string;
+	public avatar!: string;
+	public system!: boolean;
 
-    public constructor(client: Client, data: UserData) {
-        super(client, data.id);
-        this.update(data);
-    }
+	public constructor(client: Client, data: UserData) {
+		super(client, data.id);
+		this.update(data);
+	}
 
-    public update(data: UserData): void {
-        this.bot = !!data.bot;
-        this.username = data.username;
-        this.discriminator = data.discriminator;
-        this.avatar = data.avatar || '';
-        this.system = !!data.system;
-    }
+	public update(data: UserData): void {
+		this.bot = !!data.bot;
+		this.username = data.username;
+		this.discriminator = data.discriminator;
+		this.avatar = data.avatar || '';
+		this.system = !!data.system;
+	}
 
-    /**
-     * Get the default avatar the user should have.
-     */
-    public get defaultAvatar(): number {
-        return parseInt(this.discriminator) % 5;
-    }
+	/**
+	 * Get the default avatar the user should have.
+	 */
+	public get defaultAvatar(): number {
+		return parseInt(this.discriminator) % 5;
+	}
 
-    /**
-     * Mention the user
-     */
-    public get mention(): string {
-        return `<@${this.id}>`;
-    }
+	/**
+	 * Mention the user
+	 */
+	public get mention(): string {
+		return `<@${this.id}>`;
+	}
 
-    /**
-     * The users username and discriminator combined.
-     */
-    public get tag(): string {
-        return this.username + '#' + this.discriminator;
-    }
+	/**
+	 * The users username and discriminator combined.
+	 */
+	public get tag(): string {
+		return this.username + '#' + this.discriminator;
+	}
 }

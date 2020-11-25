@@ -16,26 +16,26 @@
 import Packet, { OPCode, Payload } from "./Packet.ts";
 
 export default class ResumePacket extends Packet {
-    public token?: string;
-    public sessionId?: string;
-    public lastSequence?: number;
+	public token?: string;
+	public sessionId?: string;
+	public lastSequence?: number;
 
-    public static from(data: Payload): ResumePacket {
-        return new this(data.d.token, data.d.session_id, data.d.seq);
-    }
+	public static from(data: Payload): ResumePacket {
+		return new this(data.d.token, data.d.session_id, data.d.seq);
+	}
 
-    constructor(token?: string, sessionId?: string, lastSequence?: number) {
-        super(OPCode.RESUME);
-        this.token = token;
-        this.sessionId = sessionId;
-        this.lastSequence = lastSequence;
-    }
+	constructor(token?: string, sessionId?: string, lastSequence?: number) {
+		super(OPCode.RESUME);
+		this.token = token;
+		this.sessionId = sessionId;
+		this.lastSequence = lastSequence;
+	}
 
-    protected encodeData(): void {
-        this.data = {
-            token: this.token,
-            session_id: this.sessionId,
-            seq: this.lastSequence,
-        };
-    }
+	protected encodeData(): void {
+		this.data = {
+			token: this.token,
+			session_id: this.sessionId,
+			seq: this.lastSequence,
+		};
+	}
 }

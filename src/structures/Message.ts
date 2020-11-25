@@ -19,34 +19,34 @@ import Base from "./Base.ts";
 import User from "./User.ts";
 
 export type MessageContent = string | {
-    embeds?: EmbedData[];
-    content?: string;
-    tts?: boolean;
-    allowed_mentions?: {
-        roles?: string[],
-        users?: string[],
-        replied_user?: boolean;
-    };
-    message_reference?: {
-        message_id?: string;
-        channel_id?: string;
-        guild_id?: string;
-    };
-    file?: Uint8Array;
+	embeds?: EmbedData[];
+	content?: string;
+	tts?: boolean;
+	allowed_mentions?: {
+		roles?: string[],
+		users?: string[],
+		replied_user?: boolean;
+	};
+	message_reference?: {
+		message_id?: string;
+		channel_id?: string;
+		guild_id?: string;
+	};
+	file?: Uint8Array;
 }
 
 export default class Message extends Base {
-    public channel!: ChannelData;
-    public guild?: any;
-    public author!: User;
-    public content!: string;
+	public channel!: ChannelData;
+	public guild?: any;
+	public author!: User;
+	public content!: string;
 
-    public constructor(client: Client, data: MessageData) {
-        super(client, data.id);
-        this.update(data);
-    }
+	public constructor(client: Client, data: MessageData) {
+		super(client, data.id);
+		this.update(data);
+	}
 
-    public update(data: MessageData): void {
+	public update(data: MessageData): void {
 
-    }
+	}
 }

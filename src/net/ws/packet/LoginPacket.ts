@@ -16,34 +16,34 @@
 import Packet, { OPCode, Payload } from "./Packet.ts";
 
 export default class LoginPacket extends Packet {
-    public token: string;
-    public compress: boolean;
-    public intents: number;
-    #user: boolean;
+	public token: string;
+	public compress: boolean;
+	public intents: number;
+	#user: boolean;
 
-    public static from(p: Payload, intents: number): LoginPacket {
-        return new this(p.d.token, p.d.compress, intents);
-    }
+	public static from(p: Payload, intents: number): LoginPacket {
+		return new this(p.d.token, p.d.compress, intents);
+	}
 
-    public constructor(token: string, compress: boolean = false, intents: number = 0, user: boolean = false) {
-        super(OPCode.IDENTIFY);
-        this.token = token;
-        this.compress = compress;
-        this.intents = intents;
-        this.#user = user;
-    }
+	public constructor(token: string, compress: boolean = false, intents: number = 0, user: boolean = false) {
+		super(OPCode.IDENTIFY);
+		this.token = token;
+		this.compress = compress;
+		this.intents = intents;
+		this.#user = user;
+	}
 
-    protected encodeData(): void {
-        this.data = {
-            token: this.token,
-            v: 6,
-            compress: this.compress,
-            intents: this.intents,
-            properties: {
-                os: Deno.build.os,
-                browser: this.#user ? 'Firefox' : 'Assistant-v3',
-                device: this.#user ? '' : 'Assistant-v3'
-            },
-        }
-    }
+	protected encodeData(): void {
+		this.data = {
+			token: this.token,
+			v: 6,
+			compress: this.compress,
+			intents: this.intents,
+			properties: {
+				os: Deno.build.os,
+				browser: this.#user ? 'Firefox' : 'Assistant-v3',
+				device: this.#user ? '' : 'Assistant-v3'
+			},
+		}
+	}
 }

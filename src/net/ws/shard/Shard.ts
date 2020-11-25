@@ -18,18 +18,18 @@ import { Connector } from "../Connector.ts";
 import Packet, { Payload } from "../packet/Packet.ts";
 
 export default class Shard extends Connector {
-    #client: Client;
+	#client: Client;
 
-    public constructor(client: Client, gateway: string) {
-        super(gateway);
-        this.#client = client;
-    }
+	public constructor(client: Client, gateway: string) {
+		super(gateway);
+		this.#client = client;
+	}
 
-    public async wsPacket(pk: Payload): Promise<void> {
-        // TO-DO
-    }
+	public async wsPacket(pk: Payload): Promise<void> {
+		// TO-DO
+	}
 
-    public async wsError(ev: Event | ErrorEvent): Promise<void> {
+	public async wsError(ev: Event | ErrorEvent): Promise<void> {
 
-    }
+	}
 }

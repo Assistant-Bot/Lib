@@ -23,106 +23,106 @@ import Member from "./Member.ts";
 import Role from "./Role.ts";
 
 export default class Guild extends Base {
-    public name!: string;
-    public icon!: string;
-    public splash?: string;
-    public discoverySplash?: string;
-    public ownerID!: string;
-    public region: any;
-    public afkChannelID?: string;
-    public afkTimeout!: number;
-    public widgetEnabled?: boolean;
-    public widgetChannelID?: string;
-    public verificationLevel!: number;
-    public defaultMessageNotifications!: number;
-    public explicitContentFilter!: number;
-    public features!: any[];
-    public mfaLevel!: number;
-    public systemChannelID?: string;
-    public systemChannelFlags?: number;
-    public joinedAt?: string;
-    public large?: boolean;
-    public unavailable?: boolean;
-    public memberCount?: number;
-    public voiceStates?: any[];
-    public presences?: any[];
-    public maxPresences?: number;
-    public maxMembers?: number;
-    public vanityURLCode?: string;
-    public description?: string;
-    public banner?: string;
-    public premiumTier!: number;
-    public subscriptionCount!: number;
-    public locale!: string;
-    public publicUpdatesChannelID?: string;
-    public maxVideoChannelUsers?: number;
-    public channels!: Collection<string, GuildChannel>;
-    public roles!: Collection<string, Role>;
-    public members!: Collection<string, Member>;
-    public emojis!: Collection<string, Emoji>;
+	public name!: string;
+	public icon!: string;
+	public splash?: string;
+	public discoverySplash?: string;
+	public ownerID!: string;
+	public region: any;
+	public afkChannelID?: string;
+	public afkTimeout!: number;
+	public widgetEnabled?: boolean;
+	public widgetChannelID?: string;
+	public verificationLevel!: number;
+	public defaultMessageNotifications!: number;
+	public explicitContentFilter!: number;
+	public features!: any[];
+	public mfaLevel!: number;
+	public systemChannelID?: string;
+	public systemChannelFlags?: number;
+	public joinedAt?: string;
+	public large?: boolean;
+	public unavailable?: boolean;
+	public memberCount?: number;
+	public voiceStates?: any[];
+	public presences?: any[];
+	public maxPresences?: number;
+	public maxMembers?: number;
+	public vanityURLCode?: string;
+	public description?: string;
+	public banner?: string;
+	public premiumTier!: number;
+	public subscriptionCount!: number;
+	public locale!: string;
+	public publicUpdatesChannelID?: string;
+	public maxVideoChannelUsers?: number;
+	public channels!: Collection<string, GuildChannel>;
+	public roles!: Collection<string, Role>;
+	public members!: Collection<string, Member>;
+	public emojis!: Collection<string, Emoji>;
 
-    public constructor(client: Client, data: GuildData) {
-        super(client, data.id);
-        this.update(data);
-    }
+	public constructor(client: Client, data: GuildData) {
+		super(client, data.id);
+		this.update(data);
+	}
 
-    public update(data: GuildData): void {
-        this.name = data.name;
-        this.icon = data.icon;
-        this.splash = data.splash;
-        this.discoverySplash = data.discovery_splash;
-        this.region = data.region;
-        this.ownerID = data.owner_id;
-        this.memberCount = data.member_count;
-        this.afkChannelID = data.afk_channel_id
-        this.afkTimeout = data.afk_timeout
-        this.verificationLevel = data.verification_level;
-        this.defaultMessageNotifications = data.default_message_notifications;
-        this.systemChannelID = data.system_channel_id;
-        this.systemChannelFlags = data.system_channel_flags
-        this.explicitContentFilter = data.explicit_content_filter;
-        this.features = data.features;
-        this.mfaLevel = data.mfa_level;
-        this.joinedAt = data.joined_at;
-        this.large = data.large;
-        this.voiceStates = data.voice_states;
-        this.presences = data.presences;
-        this.memberCount = data.member_count;
-        this.maxMembers = data.max_members;
-        this.maxPresences = data.max_presences;
-        this.vanityURLCode = data.vanity_url_code;
-        this.description = data.description;
-        this.banner = data.banner;
-        this.premiumTier = data.premium_tier;
-        this.subscriptionCount = data.premium_subscription_count;
-        this.maxVideoChannelUsers = data.max_video_channel_users;
+	public update(data: GuildData): void {
+		this.name = data.name;
+		this.icon = data.icon;
+		this.splash = data.splash;
+		this.discoverySplash = data.discovery_splash;
+		this.region = data.region;
+		this.ownerID = data.owner_id;
+		this.memberCount = data.member_count;
+		this.afkChannelID = data.afk_channel_id
+		this.afkTimeout = data.afk_timeout
+		this.verificationLevel = data.verification_level;
+		this.defaultMessageNotifications = data.default_message_notifications;
+		this.systemChannelID = data.system_channel_id;
+		this.systemChannelFlags = data.system_channel_flags
+		this.explicitContentFilter = data.explicit_content_filter;
+		this.features = data.features;
+		this.mfaLevel = data.mfa_level;
+		this.joinedAt = data.joined_at;
+		this.large = data.large;
+		this.voiceStates = data.voice_states;
+		this.presences = data.presences;
+		this.memberCount = data.member_count;
+		this.maxMembers = data.max_members;
+		this.maxPresences = data.max_presences;
+		this.vanityURLCode = data.vanity_url_code;
+		this.description = data.description;
+		this.banner = data.banner;
+		this.premiumTier = data.premium_tier;
+		this.subscriptionCount = data.premium_subscription_count;
+		this.maxVideoChannelUsers = data.max_video_channel_users;
 
-        if (data.channels) {
-            for (let _ of data.channels) {
-                const ch = new GuildChannel(this.client, _);
-                this.channels.set(ch.id, ch);
-            }
-        }
+		if (data.channels) {
+			for (let _ of data.channels) {
+				const ch = new GuildChannel(this.client, _);
+				this.channels.set(ch.id, ch);
+			}
+		}
 
-        if (data.roles) {
-            for (let _ of data.roles) {
-                const r = new Role(this.client, _);
-                this.roles.set(r.id, r);
-            }
-        }
+		if (data.roles) {
+			for (let _ of data.roles) {
+				const r = new Role(this.client, _);
+				this.roles.set(r.id, r);
+			}
+		}
 
-        if (data.members) {
-            for (let _ of data.members) {
-                const m = new Member(this.client, _);
-                this.members.set(m.id, m)
-            }
-        }
+		if (data.members) {
+			for (let _ of data.members) {
+				const m = new Member(this.client, _);
+				this.members.set(m.id, m)
+			}
+		}
 
-        if (data.emojis) {
-            for (let _ of data.emojis) {
-                const e = new Emoji(this.client, _);
-                this.emojis.set(e.id, e);
-            }
-        }
-    }
+		if (data.emojis) {
+			for (let _ of data.emojis) {
+				const e = new Emoji(this.client, _);
+				this.emojis.set(e.id, e);
+			}
+		}
+	}
 }

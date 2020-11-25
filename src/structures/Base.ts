@@ -17,25 +17,25 @@ import type Client from "../Client.ts";
 import type { AnyStructureData } from "../net/common/Types.ts";
 
 export default abstract class Base {
-    protected client: Client;
-    public id: string;
+	protected client: Client;
+	public id: string;
 
-    public constructor(client: Client, id: string) {
-        this.id = id;
-        this.client = client;
-    }
+	public constructor(client: Client, id: string) {
+		this.id = id;
+		this.client = client;
+	}
 
-    /**
-     * Calculated date that a structure was created using 1420070400000 as EPOCH
-     */
-    public get createdAt() {
-        return Math.floor(parseInt(this.id) / 4194304) + 1420070400000;
-    }
+	/**
+	 * Calculated date that a structure was created using 1420070400000 as EPOCH
+	 */
+	public get createdAt() {
+		return Math.floor(parseInt(this.id) / 4194304) + 1420070400000;
+	}
 
-    /**
-     * Called by assistant to update structure data.
-     * This should be similar, if not equal to creating a new structure.
-     * @param data - The data to update the structure
-     */
-    public abstract update(data: AnyStructureData): any;
+	/**
+	 * Called by assistant to update structure data.
+	 * This should be similar, if not equal to creating a new structure.
+	 * @param data - The data to update the structure
+	 */
+	public abstract update(data: AnyStructureData): any;
 }

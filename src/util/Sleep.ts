@@ -14,7 +14,7 @@
  * to remove this software from your device immediately.
  */
 export default async function Sleep(time: number): Promise<void> {
-    return new Promise((resolve, reject) => {
-        setTimeout(resolve, time);
-    })
+	return new Promise((resolve, reject) => {
+		setTimeout(resolve, time);
+	})
 }

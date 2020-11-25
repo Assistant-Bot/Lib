@@ -18,35 +18,35 @@ import type { ChannelData, ChannelTypes, ChannelTypesNumeric } from "../net/comm
 import Base from './Base.ts';
 
 export default class Channel extends Base {
-    public typeNumeric!: ChannelTypesNumeric;
+	public typeNumeric!: ChannelTypesNumeric;
 
-    public constructor(client: Client, data: ChannelData) {
-        super(client, data.id);
-        this.update(data);
-    }
+	public constructor(client: Client, data: ChannelData) {
+		super(client, data.id);
+		this.update(data);
+	}
 
-    public update(data: ChannelData): void {
-        this.typeNumeric = data.type;
-    }
+	public update(data: ChannelData): void {
+		this.typeNumeric = data.type;
+	}
 
-    public get type(): ChannelTypes {
-        switch (this.typeNumeric) {
-            case 0:
-                return 'Text';
-            case 1:
-                return 'DM';
-            case 2:
-                return 'Voice';
-            case 3:
-                return 'Group';
-            case 4:
-                return 'Category';
-            case 5:
-                return 'News';
-            case 6:
-                return 'Store';
-            default:
-                return 'Unknown';
-        }
-    }
+	public get type(): ChannelTypes {
+		switch (this.typeNumeric) {
+			case 0:
+				return 'Text';
+			case 1:
+				return 'DM';
+			case 2:
+				return 'Voice';
+			case 3:
+				return 'Group';
+			case 4:
+				return 'Category';
+			case 5:
+				return 'News';
+			case 6:
+				return 'Store';
+			default:
+				return 'Unknown';
+		}
+	}
 }
