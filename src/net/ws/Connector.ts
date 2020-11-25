@@ -132,7 +132,7 @@ export abstract class Connector {
                 } else {
                     this.#heartInterval = setInterval(() => {
                         // @ts-ignore
-                        this.sendPacket(packet.interval);
+                        this.sendPacket(packet);
                     }, packet.interval);
                 }
                 this.sendPacket(new LoginPacket(this.#token, false, 0, false));

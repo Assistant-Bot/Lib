@@ -18,7 +18,7 @@ import { Snowflake } from "../common/Types.ts";
 export const REST_VERSION: string = 'v8';
 export const GATEWAY: string = '/gateway'
 export const BASE_URL: string = 'https://discord.com/api/' + REST_VERSION;
-export const GATEWAY_URL: string = 'wss://discord.gg/?v=8&encoding=json';
+export const GATEWAY_URL: string = 'wss://gateway.discord.gg/?v=8&encoding=json';
 
 export default class Endpoints {
     public static channel(id: Snowflake<18>): string {
@@ -54,6 +54,6 @@ export default class Endpoints {
     }
 
     public static rest_gateway(bot: boolean): string {
-        return BASE_URL + GATEWAY + (bot) ? '/bot' : '';
+        return BASE_URL + GATEWAY + ((bot) ? '/bot' : '');
     }
 }

@@ -15,7 +15,7 @@
  */
 import { EventEmitter, GenericFunction, WrappedFunction } from 'https://deno.land/std@0.78.0/node/events.ts';
 import DataStore from "./data/DataStore.ts";
-import { GatewayResponseBot } from "./net/common/Types.ts";
+import { GatewayResponseBot, MessageData } from "./net/common/Types.ts";
 import Endpoints, { GATEWAY_URL } from "./net/rest/Endpoints.ts";
 import RequestHandler, { RequestHandlerOptions } from "./net/rest/RequestHandler.ts";
 import { Connector } from "./net/ws/Connector.ts";
@@ -207,11 +207,16 @@ export default class Client extends EventEmitter {
                 throw new Error('Shards are not supported yet.');
             }
         } else {
-            this.#shardMode = 'Nodes'
+            this.#shardMode = 'Nodes';
             this.#wsManager = new Generic(this, GATEWAY_URL);
         }
+
+        this.#wsManager.connect(token);
     }
 
+    public on(event: "message" | "messageCreate", listener: (message: MessageData) => any): any;
+    public on(event: "messageDelete", listener: (message: Partial<MessageData> | MessageData) => any): any;
+    public on(event: "ready", listener: (session_id: string, shard: number[] | null, version: number) => any): any;
     public on(event: ClientEvents, listener: GenericFunction | WrappedFunction): any {
         return super.on(event, listener);
     }

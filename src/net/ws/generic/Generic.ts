@@ -47,6 +47,6 @@ export default class Generic extends Connector {
     }
 
     public async wsError(ev: Event | ErrorEvent): Promise<void> {
-
+        console.error(ev);
     }
 }
