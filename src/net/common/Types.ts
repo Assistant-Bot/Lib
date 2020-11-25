@@ -74,7 +74,9 @@ export interface UserData extends BaseData {
 /**
  * Guilds
  */
-export type ChannelTypes = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+export type ChannelTypesNumeric = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+export type ChannelTypes = "Text" | "DM" | "Voice" | "Group" | "Category" | "News" | "Store" | "Unknown";
+
 
 /** Channels */
 export interface PermissionOverwrites extends BaseData {
@@ -84,11 +86,13 @@ export interface PermissionOverwrites extends BaseData {
 }
 
 export interface PartialChannelData extends BaseData {
-    type: ChannelTypes;
+    type: ChannelTypesNumeric;
     name?: string;
 }
 
 export interface ChannelData extends BaseData {
+    type: 0 | 1 | 3 | 4 | 5 | 6;
+    name?: string;
     guild_id?: string;
     position?: number;
     permission_overwrites?: PermissionOverwrites[];

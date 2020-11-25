@@ -13,10 +13,8 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import Client from "../Client.ts";
-import { AnyStructureData } from "../net/common/Types.ts";
-import EventPacket from "../net/ws/packet/EventPacket.ts";
-import { Payload } from "../net/ws/packet/Packet.ts";
+import type Client from "../Client.ts";
+import type { AnyStructureData } from "../net/common/Types.ts";
 
 export default abstract class Base {
     protected client: Client;

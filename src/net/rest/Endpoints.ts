@@ -21,35 +21,35 @@ export const BASE_URL: string = 'https://discord.com/api/' + REST_VERSION;
 export const GATEWAY_URL: string = 'wss://gateway.discord.gg/?v=8&encoding=json';
 
 export default class Endpoints {
-    public static channel(id: Snowflake<18>): string {
+    public static channel(id: string): string {
         return '/channels/' + id;
     }
 
-    public static channel_purge(id: Snowflake<18>): string {
+    public static channel_purge(id: string): string {
         return this.channel(id) + '/messages/bulk-delete';
     }
 
-    public static channel_ring(id: Snowflake<18>): string {
+    public static channel_ring(id: string): string {
         return this.channel(id) + '/call/ring';
     }
 
-    public static channel_crosspost(id: Snowflake<18>, messageId: Snowflake<18>): string {
+    public static channel_crosspost(id: string, messageId: string): string {
         return this.channel(id) + '/messages/' + messageId + '/crosspost';
     }
 
-    public static channel_resolve(id: Snowflake<18>, ...additional: string[]): string {
+    public static channel_resolve(id: string, ...additional: string[]): string {
         return this.channel(id) + '/' + additional.join('/');
     }
 
-    public static channel_messages(id: Snowflake<18>): string {
+    public static channel_messages(id: string): string {
         return this.channel(id) + '/messages'
     }
 
-    public static guild(id: Snowflake<18>): string {
+    public static guild(id: string): string {
         return '/guilds/' + id;
     }
 
-    public static guild_resolve(id: Snowflake<18>, ...additional: string[]): string {
+    public static guild_resolve(id: string, ...additional: string[]): string {
         return this.channel(id) + '/' + additional.join('/');
     }
 

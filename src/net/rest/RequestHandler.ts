@@ -13,7 +13,6 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import Client from "../../Client.ts";
 import Sleep from "../../util/Sleep.ts";
 
 export interface RequestHandlerOptions {
@@ -69,6 +68,16 @@ export default class RequestHandler {
         this.#headers = specialHeaders;
         this.#rateLimits = {};
         this.#globalBlock = false;
+    }
+
+    public makeAndSend(url: string, method: string = "GET", headers: Header[] = [], body: any = {}, immediate: boolean = false): Promise<Response> {
+        const request: Request = new Request(url, { body: JSON.stringify(body) });
+
+        for (let header of headers) {
+            request.headers.set(header.name, header.value);
+        }
+
+        return this.request(request, immediate);
     }
 
     /**
