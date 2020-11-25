@@ -30,7 +30,7 @@ export default class Emoji extends Base {
         this.update(data);
     }
 
-    public update(data: EmojiData) {
+    public update(data: EmojiData): void {
         this.roles = data.roles;
         this.requireColons = data.require_colons;
         this.name = data.name;

@@ -66,7 +66,7 @@ export default class Guild extends Base {
         this.update(data);
     }
 
-    public update(data: GuildData) {
+    public update(data: GuildData): void {
         this.name = data.name;
         this.icon = data.icon;
         this.splash = data.splash;

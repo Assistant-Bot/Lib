@@ -33,7 +33,7 @@ export default class Member extends Base {
         this.update(data);
     }
 
-    public update(data: MemberData) {
+    public update(data: MemberData): void {
         this.user = new User(this.client, data.user || { id: '000000000000000000' as Snowflake<18>, username: 'Unavailable', discriminator: '6969' });
         // Possible solution if this is null?
         this.roles = data.roles;

@@ -30,7 +30,7 @@ export default class Role extends Base {
         this.update(data)
     }
 
-    public update(data: RoleData) {
+    public update(data: RoleData): void {
         this.name = data.name;
         this.permissions = data.permissions;
         this.position = data.position;

@@ -29,7 +29,7 @@ export default class User extends Base {
         this.update(data);
     }
 
-    public update(data: UserData) {
+    public update(data: UserData): void {
         this.bot = !!data.bot;
         this.username = data.username;
         this.discriminator = data.discriminator;
