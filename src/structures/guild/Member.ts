@@ -13,11 +13,10 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import Client from "../../Client.ts";
-import { MemberData, Snowflake } from "../../net/common/Types.ts";
+import type Client from "../../Client.ts";
+import type { MemberData, Snowflake } from "../../net/common/Types.ts";
 import Base from "../Base.ts";
 import User from "../User.ts";
-import Guild from "./Guild.ts";
 
 export default class Member extends Base {
     public user!: User;

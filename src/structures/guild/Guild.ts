@@ -13,8 +13,8 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import Client from "../../Client.ts";
-import { GuildData } from "../../net/common/Types.ts";
+import type Client from "../../Client.ts";
+import type { GuildData } from "../../net/common/Types.ts";
 import Collection from "../../util/Collection.ts";
 import Base from "../Base.ts";
 import GuildChannel from "../guild/GuildChannel.ts";

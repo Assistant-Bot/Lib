@@ -14,12 +14,12 @@
  * to remove this software from your device immediately.
  */
 
-import { Payload } from "../net/ws/packet/Packet.ts";
-import Channel from "../structures/Channel.ts";
-import Emoji from "../structures/guild/Emoji.ts";
-import Guild from "../structures/guild/Guild.ts";
-import Message from "../structures/Message.ts";
-import User from "../structures/User.ts";
+import type { Payload } from "../net/ws/packet/Packet.ts";
+import type Channel from "../structures/Channel.ts";
+import type Emoji from "../structures/guild/Emoji.ts";
+import type Guild from "../structures/guild/Guild.ts";
+import type Message from "../structures/Message.ts";
+import type User from "../structures/User.ts";
 import Collection from '../util/Collection.ts';
 import DataStore from "./DataStore.ts";
 

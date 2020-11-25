@@ -13,8 +13,8 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import Client from "../../Client.ts";
-import { RoleData } from "../../net/common/Types.ts";
+import type Client from "../../Client.ts";
+import type { RoleData } from "../../net/common/Types.ts";
 import Base from "../Base.ts";
 
 export default class Role extends Base {
