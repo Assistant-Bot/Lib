@@ -17,6 +17,11 @@ import Client from "../src/Client.ts";
 import { MessageData } from "../src/net/common/Types.ts";
 import Endpoints from "../src/net/rest/Endpoints.ts";
 
-const client = new Client();
+const client = new Client({sharding: {useDiscord: true}, connection: {emitPayloads: true, autoReconnect: true, compress: false, maxReconnectTries: 1, maxResumeTries: 1, respectDiscordGateway: true, timeout: 1000}});
 
-client.connect(JSON.parse(new TextDecoder().decode(Deno.readFileSync('./tests/config.json'))).token);
+
+await client.connect(JSON.parse(new TextDecoder().decode(Deno.readFileSync('./tests/config.json'))).token);
+
+client.on('ws', (data) => {
+    console.log(data.d)
+});

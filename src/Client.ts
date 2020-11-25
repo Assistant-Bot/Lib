@@ -20,6 +20,7 @@ import Endpoints, { GATEWAY_URL } from "./net/rest/Endpoints.ts";
 import RequestHandler, { RequestHandlerOptions } from "./net/rest/RequestHandler.ts";
 import { Connector } from "./net/ws/Connector.ts";
 import Generic from "./net/ws/generic/Generic.ts";
+import { Payload } from "./net/ws/packet/Packet.ts";
 
 /**
  * Events emitted when recieved from the websocket.
@@ -214,18 +215,19 @@ export default class Client extends EventEmitter {
         this.#wsManager.connect(token);
     }
 
-    public on(event: "message" | "messageCreate", listener: (message: MessageData) => any): any;
-    public on(event: "messageDelete", listener: (message: Partial<MessageData> | MessageData) => any): any;
-    public on(event: "ready", listener: (session_id: string, shard: number[] | null, version: number) => any): any;
+    public on(event: "message" | "messageCreate", listener: (message: MessageData) => any): this;
+    public on(event: "messageDelete", listener: (message: Partial<MessageData> | MessageData) => any): this;
+    public on(event: "ready", listener: (session_id: string, shard: number[] | null, version: number) => any): this;
+    public on(event: "ws", listener: (ev: Payload) => any): this
     public on(event: ClientEvents, listener: GenericFunction | WrappedFunction): any {
         return super.on(event, listener);
     }
 
-    public once(event: ClientEvents, listener: GenericFunction): any {
+    public once(event: ClientEvents, listener: GenericFunction): this {
         return super.once(event, listener);
     }
 
-    public emit(event: ClientEvents, ...args: any[]): any {
+    public emit(event: ClientEvents, ...args: any[]): boolean {
         return super.emit(event, ...args);
     }
 
