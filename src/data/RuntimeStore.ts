@@ -15,15 +15,19 @@
  */
 
 import { Payload } from "../net/ws/packet/Packet.ts";
+import Channel from "../structures/Channel.ts";
+import Emoji from "../structures/guild/Emoji.ts";
+import Guild from "../structures/guild/Guild.ts";
+import Message from "../structures/Message.ts";
 import User from "../structures/User.ts";
 import Collection from '../util/Collection.ts';
 import DataStore from "./DataStore.ts";
 
 export default class RuntimeStore extends DataStore {
-    #channels: Collection<string, any> = new Collection();
-    #emojis: Collection<string, any> = new Collection();
-    #guilds: Collection<string, any> = new Collection();
-    #messages: Collection<string, any> = new Collection();
+    #channels: Collection<string, Channel> = new Collection();
+    #emojis: Collection<string, Emoji> = new Collection();
+    #guilds: Collection<string, Guild> = new Collection();
+    #messages: Collection<string, Message> = new Collection();
     #users: Collection<string, User> = new Collection();
     #reactions: Collection<string, any> = new Collection();
 

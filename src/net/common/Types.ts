@@ -74,6 +74,52 @@ export interface UserData extends BaseData {
 /**
  * Guilds
  */
+export interface GuildData extends BaseData {
+    name: string;
+    icon: string;
+    icon_hash?: string;
+    splash: string;
+    discovery_splash: string;  
+    owner?: boolean; // We may not use ???
+    owner_id: string;
+    permissions: any // We may not use ???
+    region: any;
+    afk_channel_id: string;
+    afk_timeout: number;
+    widget_enabled?: boolean;
+    widget_channel_id?: string;
+    verification_level: number;
+    default_message_notifications: number;
+    explicit_content_filter: number;
+    roles: RoleData[];
+    emojis: EmojiData[];
+    features: any[];
+    mfa_level: number // We may not use ???
+    application_id: string // We may not use ???
+    system_channel_id: string;
+    system_channel_flags: number;
+    rules_channel_id: string;
+    joined_at?: string;
+    large?: boolean;
+    unavailable?: boolean
+    member_count?: number;
+    voice_states?: any[];
+    members?: MemberData[];
+    channels?: ChannelData[];
+    presences?: any[];
+    max_presences?: number
+    max_members?: number
+    vanity_url_code?: string;
+    description?: string;
+    banner?: string;
+    premium_tier: number;
+    premium_subscription_count: number;
+    preferred_locale: string;
+    public_updates_channel_id: string;
+    max_video_channel_users?: number;
+    approximate_member_count?: number;
+    approximate_presence_count?: number
+}
 export type ChannelTypesNumeric = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type ChannelTypes = "Text" | "DM" | "Voice" | "Group" | "Category" | "News" | "Store" | "Unknown";
 
@@ -122,7 +168,7 @@ export interface RoleData extends BaseData {
 }
 
 /** Member */
-export interface MemberData {
+export interface MemberData extends BaseData {
     user?: UserData;
     nick?: string;
     roles: string[];

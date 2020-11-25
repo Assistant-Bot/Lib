@@ -18,10 +18,11 @@ import type { ChannelData } from "../../net/common/Types.ts";
 import Endpoints from "../../net/rest/Endpoints.ts";
 import Channel from "../Channel.ts";
 import Message, { MessageContent } from "../Message.ts";
+import Guild from "./Guild.ts";
 
 export default class GuildChannel extends Channel {
     public name!: string;
-    public guild!: any;
+    public guild!: Guild;
     public position!: number;
     public permissions!: any;
 
@@ -38,6 +39,7 @@ export default class GuildChannel extends Channel {
     }
 
     public async send(content: MessageContent): Promise<Message> {
+        // @ts-ignore
         return new Message(this.client, {});
     }
 
