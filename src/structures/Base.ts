@@ -6,7 +6,7 @@
  *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
  *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
  *
- * Copyright (C) 2020 John Bergman
+ * Copyright (C) 2020 Bavfalcon9
  *
  * This is private software, you cannot redistribute and/or modify it in any way
  * unless given explicit permission to do so. If you have not been given explicit
@@ -33,7 +33,7 @@ export default abstract class Base {
 	}
 
 	/**
-	 * Called by assistant to update structure data.
+	 * Called by bavfalcon9 to update structure data.
 	 * This should be similar, if not equal to creating a new structure.
 	 * @param data - The data to update the structure
 	 */

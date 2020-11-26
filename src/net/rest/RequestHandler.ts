@@ -6,7 +6,7 @@
  *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
  *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
  *
- * Copyright (C) 2020 John Bergman
+ * Copyright (C) 2020 Bavfalcon9
  *
  * This is private software, you cannot redistribute and/or modify it in any way
  * unless given explicit permission to do so. If you have not been given explicit
@@ -79,7 +79,6 @@ export default class RequestHandler {
 	 * @param headers
 	 * @param body
 	 * @param immediate
-	 * @deprecated
 	 */
 	public makeAndSend(url: string, method: HTTPMethod = "GET", body: any = {}, headers: Header[] = [], immediate: boolean = false): Promise<Response> {
 		const request: Request = new Request(url, { body: JSON.stringify(body), method });
