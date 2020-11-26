@@ -14,7 +14,7 @@
  * to remove this software from your device immediately.
  */
 import type Client from "../../Client.ts";
-import type { ChannelData } from "../../net/common/Types.ts";
+import type { ChannelData, MessageConstructorData, MessageData } from "../../net/common/Types.ts";
 import Endpoints from "../../net/rest/Endpoints.ts";
 import Channel from "../Channel.ts";
 import Message, { MessageContent } from "../Message.ts";
@@ -38,21 +38,26 @@ export default class GuildChannel extends Channel {
 		this.permissions = data.permission_overwrites;
 	}
 
+	/**
+	 * Send a message to the channel
+	 * @param content
+	 */
 	public async send(content: MessageContent): Promise<Message> {
-		// @ts-ignore
-		return new Message(this.client, {});
+		const mData: MessageData = await this.request.createMessage(this.id, content);
+
+		const m: Message = new Message(this.client, mData);
+		this.client.dataStore?.messages.set(m.id, m);
+
+		return m;
 	}
 
 	public async delete(): Promise<boolean> {
-		try {
-			const res: Response = await this.client.requestHandler.makeAndSend(Endpoints.channel(this.id), "DELETE");
-			if (res.status === 200) {
-				return true;
-			} else {
-				return false;
-			}
-		} catch (e) {
-			throw e;
+		const res: boolean = await this.request.deleteChannel(this.id);
+
+		if (res === true) {
+			this.client.dataStore?.channels.delete(this.id);
 		}
+
+		return res;
 	}
 }

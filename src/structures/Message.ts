@@ -21,7 +21,7 @@ import GuildChannel from "./guild/GuildChannel.ts";
 import User from "./User.ts";
 
 export type MessageContent = string | {
-	embeds?: EmbedData[];
+	embed?: EmbedData[];
 	content?: string;
 	tts?: boolean;
 	allowed_mentions?: {

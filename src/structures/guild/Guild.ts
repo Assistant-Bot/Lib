@@ -56,13 +56,19 @@ export default class Guild extends Base {
 	public locale!: string;
 	public publicUpdatesChannelID?: string;
 	public maxVideoChannelUsers?: number;
-	public channels!: Collection<string, GuildChannel>;
-	public roles!: Collection<string, Role>;
-	public members!: Collection<string, Member>;
-	public emojis!: Collection<string, Emoji>;
+	public roles: Collection<string, Role>;
+	public members: Collection<string, Member>;
+	public emojis: Collection<string, Emoji>;
+
+	// for reference
+	#boundChannels: Set<string>;
 
 	public constructor(client: Client, data: GuildData) {
 		super(client, data.id);
+		this.members = new Collection();
+		this.roles = new Collection();
+		this.emojis = new Collection();
+		this.#boundChannels = new Set();
 		this.update(data);
 	}
 
@@ -100,7 +106,8 @@ export default class Guild extends Base {
 		if (data.channels) {
 			for (let _ of data.channels) {
 				const ch = new GuildChannel(this.client, _);
-				this.channels.set(ch.id, ch);
+				this.client.dataStore?.channels.set(data.id, ch);
+				this.#boundChannels.add(data.id);
 			}
 		}
 
@@ -124,5 +131,13 @@ export default class Guild extends Base {
 				this.emojis.set(e.id, e);
 			}
 		}
+	}
+
+	public get channels(): GuildChannel[] {
+		const arr: GuildChannel[] = [];
+		for (let id of this.#boundChannels) {
+			arr.push(this.client.dataStore?.channels.get(id));
+		}
+		return arr.filter(c => c !== undefined);
 	}
 }

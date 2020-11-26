@@ -15,6 +15,7 @@
  */
 import type Client from "../Client.ts";
 import type { AnyStructureData } from "../net/common/Types.ts";
+import DiscordRequestHandler from "../net/rest/DiscordRequestHandler.ts";
 
 export default abstract class Base {
 	#client: Client;
@@ -40,10 +41,25 @@ export default abstract class Base {
 	public abstract update(data: AnyStructureData): any;
 
 	/**
+	 * Get the discord reuest handler of the client.
+	 */
+	protected get request(): DiscordRequestHandler {
+		return this.client.discordHandler;
+	}
+
+	/**
 	 * Protected so it's not accessible outside the class.
 	 * Work around to typescript's "protected" variables.
 	 */
 	protected get client(): Client {
 		return this.#client;
+	}
+
+	/**
+	 * Protected so it's not accessible outside the class.
+	 * Work around to typescript's "protected" variables.
+	 */
+	protected set client(client: Client) {
+		this.#client = client;
 	}
 }

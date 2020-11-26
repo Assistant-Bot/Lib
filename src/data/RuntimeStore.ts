@@ -15,6 +15,7 @@
  */
 
 import type { Payload } from "../net/ws/packet/Packet.ts";
+import Base from "../structures/Base.ts";
 import type Channel from "../structures/Channel.ts";
 import type Emoji from "../structures/guild/Emoji.ts";
 import type Guild from "../structures/guild/Guild.ts";
@@ -46,7 +47,7 @@ export default class RuntimeStore extends DataStore {
 	 * @param id
 	 * @param data
 	 */
-	public update(id: string, data: Payload) {}
+	public update(id: string, structure: Base) {}
 
 	/**
 	 * Update a structure in the datastore with a new payload.

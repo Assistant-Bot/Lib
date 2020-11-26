@@ -15,6 +15,7 @@
  */
 
 import { Payload } from "../net/ws/packet/Packet.ts";
+import Base from "../structures/Base.ts";
 
 export default abstract class DataStore {
 	/**
@@ -30,7 +31,7 @@ export default abstract class DataStore {
 	 * @param id
 	 * @param data
 	 */
-	public abstract update(id: string, data: Payload): any;
+	public abstract update(id: string, structure: Base): any;
 
 	/**
 	 * Deletes a structure in the datastore based on it's id.

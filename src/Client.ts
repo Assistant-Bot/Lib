@@ -15,12 +15,15 @@
  */
 import { EventEmitter, GenericFunction, WrappedFunction } from 'https://deno.land/std@0.78.0/node/events.ts';
 import DataStore from "./data/DataStore.ts";
-import { GatewayResponseBot, MessageData } from "./net/common/Types.ts";
+import type { GatewayResponseBot, MessageData } from "./net/common/Types.ts";
+import DiscordRequestHandler from "./net/rest/DiscordRequestHandler.ts";
 import Endpoints, { GATEWAY_URL } from "./net/rest/Endpoints.ts";
 import RequestHandler, { RequestHandlerOptions } from "./net/rest/RequestHandler.ts";
 import { Connector } from "./net/ws/Connector.ts";
 import Generic from "./net/ws/generic/Generic.ts";
-import { Payload } from "./net/ws/packet/Packet.ts";
+import type { Payload } from "./net/ws/packet/Packet.ts";
+import type ClientUser from "./structures/ClientUser.ts";
+import Guild from "./structures/guild/Guild.ts";
 import Message from "./structures/Message.ts";
 
 /**
@@ -38,6 +41,7 @@ export type ClientEvents =
 	| "channelUpdate"
 	| "channelDelete"
 	| "pinUpdate"
+	| "guildAvailable"
 	| "guildCreate"
 	| "guildUpdate"
 	| "guildDelete"
@@ -153,6 +157,8 @@ export type ClientShardMode = 'Nodes' | 'Shards' | 'Clusters';
 export default class Client extends EventEmitter {
 	public readonly options: ClientOptions;
 	public requestHandler!: RequestHandler;
+	public discordHandler!: DiscordRequestHandler;
+	public user!: ClientUser;
 
 	#dataStore?: DataStore;
 	#wsManager!: Connector;
@@ -195,6 +201,9 @@ export default class Client extends EventEmitter {
 		this.requestHandler = new RequestHandler(this.options.rest || {}, [
 			{ name: 'Authorization', value: 'Bot ' + token }
 		]);
+		this.discordHandler = new DiscordRequestHandler(this.options.rest || {}, [
+			{ name: 'Authorization', value: 'Bot ' + token }
+		]);
 
 		if (this.options.connection.respectDiscordGateway) {
 			const res: GatewayResponseBot = await this.getGatewayInfo();
@@ -220,23 +229,38 @@ export default class Client extends EventEmitter {
 	 * Emitted when the client recieves a message.
 	 */
 	public on(event: "message" | "messageCreate", listener: (message: Message) => any): this;
+
 	/**
 	 * Emitted when a message is updated somehow.
 	 */
 	public on(event: "messageUpdate", listener: (newMessage: Message, oldMessage?: Message) => any): this;
+
 	/**
 	 * Emitted when a message is deleted.
 	 */
 	public on(event: "messageDelete", listener: (message: Partial<Message> | Message) => any): this;
+
 	/**
 	 * Emitted when the client is connected to discord.
 	 */
 	public on(event: "ready", listener: (session_id: string, shard: number[] | null, version: number) => any): this;
+
+	/**
+	 * Emitted when the guild becomes availiable
+	 */
+	public on(event: "guildAvailable", listener: (guild: Guild) => any): this;
+
+	/**
+	 * Emitted when a guild is created
+	 */
+	public on(event: "guildCreate", listener: (guild: Guild) => any): this;
+
 	/**
 	 * Emitted when the websocket **manager** recieves a event
 	 * @requires ClientOptions.emitPayloads
 	 */
-	public on(event: "ws", listener: (ev: Payload) => any): this
+	public on(event: "ws", listener: (ev: Payload) => any): this;
+
 	public on(event: ClientEvents, listener: GenericFunction | WrappedFunction): any {
 		return super.on(event, listener);
 	}

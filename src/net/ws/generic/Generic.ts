@@ -15,13 +15,17 @@
  */
 import Client from "../../../Client.ts";
 import RuntimeStore from "../../../data/RuntimeStore.ts";
+import ClientUser from "../../../structures/ClientUser.ts";
+import Guild from "../../../structures/guild/Guild.ts";
 import Message from "../../../structures/Message.ts";
+import { GuildData } from "../../common/Types.ts";
 import { Connector } from "../Connector.ts";
 import EventPacket from "../packet/EventPacket.ts";
 import { Payload } from "../packet/Packet.ts";
 
 export default class Generic extends Connector {
 	public sequence: number = 0;
+	#deadGuilds: Set<string> = new Set<string>();
 	#client: Client;
 
 	public constructor(client: Client, gateway: string) {
@@ -44,6 +48,23 @@ export default class Generic extends Connector {
 			this.#client.emit('ws', payload);
 		}
 
+		if (packet.event === "READY") {
+			this.#client.user = new ClientUser(this.#client, packet.data.user);
+
+			for (let guild of packet.data.guilds) {
+				if (guild.unavaible) {
+					this.#deadGuilds.add(guild.id);
+				} else {
+					this.wsPacket({
+						t: "GUILD_CREATE",
+						s: -1,
+						op: 0,
+						d: guild
+					});
+				}
+			}
+		}
+
 		// todo: Check the client data provider, and update based on that
 		if (packet.event === 'MESSAGE_CREATE') {
 			const m: Message = new Message(this.#client, packet.data);
@@ -51,12 +72,36 @@ export default class Generic extends Connector {
 			this.#client.dataStore?.users.set(m.author.id, m.author);
 			this.#client.emit('messageCreate', m);
 			this.#client.emit('message', m);
-		} else if (packet.event === 'MESSAGE_UPDATE') {
+		}
+
+		if (packet.event === 'MESSAGE_UPDATE') {
 			const m: Message = new Message(this.#client, packet.data);
 			const cached = this.#client.dataStore?.messages.get(m.id);
 			this.#client.dataStore?.messages.set(m.id, m);
 			this.#client.dataStore?.users.set(m.author.id, m.author);
 			this.#client.emit('messageUpdate', m, cached || null);
+		}
+
+		if (packet.event === 'GUILD_CREATE') {
+			if (packet.data.unavaible) {
+				if (this.#client.dataStore?.guilds.has(packet.data.id)) {
+					this.#client.dataStore.guilds.get(packet.data.id).unavaible = true;
+				} else {
+					this.#deadGuilds.add(packet.data.id);
+				}
+			} else {
+				if (this.#deadGuilds.has(packet.data.id)) {
+					this.#deadGuilds.delete(packet.data.id);
+					// available
+					const guild: Guild = new Guild(this.#client, packet.data);
+					this.#client.dataStore?.guilds.set(guild.id, guild);
+					this.#client.emit('guildAvailable', guild);
+				} else {
+					const guild: Guild = new Guild(this.#client, packet.data);
+					this.#client.dataStore?.guilds.set(guild.id, guild);
+					this.#client.emit('guildCreate', guild);
+				}
+			}
 		}
 	}
 

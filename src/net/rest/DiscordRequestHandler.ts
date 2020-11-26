@@ -13,11 +13,22 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
+import { MessageContent } from "../../structures/Message.ts";
 import type { MessageConstructorData, MessageData, Snowflake } from "../common/Types.ts";
 import Endpoints from "./Endpoints.ts";
 import RequestHandler from "./RequestHandler.ts";
 
 class DiscordRequestHandler extends RequestHandler {
+	/**
+	 * Deletes a message from a channel
+	 * @param channelId
+	 * @param messageid
+	 */
+	public async deleteChannel(channelId: string): Promise<boolean> {
+		const res: Response = await this.makeAndSend(Endpoints.channel(channelId), 'DELETE');
+		return res.status === 200;
+	}
+
 	/**
 	 * Deletes a message from a channel
 	 * @param channelId
@@ -50,6 +61,16 @@ class DiscordRequestHandler extends RequestHandler {
 	 */
 	public async editMessage(channelId: string, messageid: string, content: MessageConstructorData): Promise<MessageData> {
 		const res: Response = await this.makeAndSend(Endpoints.channel_messages(channelId, messageid), 'PATCH', content, []);
+		return res.json();
+	}
+
+	/**
+	 * Creates a message in a channel
+	 * @param channelId
+	 * @param messageid
+	 */
+	public async createMessage(channelId: string, content: MessageContent): Promise<MessageData> {
+		const res: Response = await this.makeAndSend(Endpoints.channel_messages(channelId), 'POST', content, []);
 		return res.json();
 	}
 }
