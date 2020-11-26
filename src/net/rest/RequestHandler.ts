@@ -14,6 +14,7 @@
  * to remove this software from your device immediately.
  */
 import Sleep from "../../util/Sleep.ts";
+import { HTTPMethod } from "../common/Types.ts";
 
 export interface RequestHandlerOptions {
 	/**
@@ -70,8 +71,18 @@ export default class RequestHandler {
 		this.#globalBlock = false;
 	}
 
-	public makeAndSend(url: string, method: string = "GET", headers: Header[] = [], body: any = {}, immediate: boolean = false): Promise<Response> {
-		const request: Request = new Request(url, { body: JSON.stringify(body) });
+	/**
+	 * Not really intented for public use, however, quickly makes a request
+	 * and a request body, and returns the request with special headers.
+	 * @param url
+	 * @param method
+	 * @param headers
+	 * @param body
+	 * @param immediate
+	 * @deprecated
+	 */
+	public makeAndSend(url: string, method: HTTPMethod = "GET", body: any = {}, headers: Header[] = [], immediate: boolean = false): Promise<Response> {
+		const request: Request = new Request(url, { body: JSON.stringify(body), method });
 
 		for (let header of headers) {
 			request.headers.set(header.name, header.value);

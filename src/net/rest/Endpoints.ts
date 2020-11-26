@@ -13,7 +13,7 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import { Snowflake } from "../common/Types.ts";
+import type { Snowflake } from "../common/Types.ts";
 
 export const REST_VERSION: string = 'v8';
 export const GATEWAY: string = '/gateway'
@@ -41,8 +41,8 @@ export default class Endpoints {
 		return this.channel(id) + '/' + additional.join('/');
 	}
 
-	public static channel_messages(id: string): string {
-		return this.channel(id) + '/messages'
+	public static channel_messages(id: string, msgId?: string): string {
+		return this.channel(id) + (!!msgId ? '/messages/' + msgId : '/messages');
 	}
 
 	public static guild(id: string): string {

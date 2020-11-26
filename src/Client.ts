@@ -21,6 +21,7 @@ import RequestHandler, { RequestHandlerOptions } from "./net/rest/RequestHandler
 import { Connector } from "./net/ws/Connector.ts";
 import Generic from "./net/ws/generic/Generic.ts";
 import { Payload } from "./net/ws/packet/Packet.ts";
+import Message from "./structures/Message.ts";
 
 /**
  * Events emitted when recieved from the websocket.
@@ -215,9 +216,26 @@ export default class Client extends EventEmitter {
 		this.#wsManager.connect(token);
 	}
 
-	public on(event: "message" | "messageCreate", listener: (message: MessageData) => any): this;
-	public on(event: "messageDelete", listener: (message: Partial<MessageData> | MessageData) => any): this;
+	/**
+	 * Emitted when the client recieves a message.
+	 */
+	public on(event: "message" | "messageCreate", listener: (message: Message) => any): this;
+	/**
+	 * Emitted when a message is updated somehow.
+	 */
+	public on(event: "messageUpdate", listener: (newMessage: Message, oldMessage?: Message) => any): this;
+	/**
+	 * Emitted when a message is deleted.
+	 */
+	public on(event: "messageDelete", listener: (message: Partial<Message> | Message) => any): this;
+	/**
+	 * Emitted when the client is connected to discord.
+	 */
 	public on(event: "ready", listener: (session_id: string, shard: number[] | null, version: number) => any): this;
+	/**
+	 * Emitted when the websocket **manager** recieves a event
+	 * @requires ClientOptions.emitPayloads
+	 */
 	public on(event: "ws", listener: (ev: Payload) => any): this
 	public on(event: ClientEvents, listener: GenericFunction | WrappedFunction): any {
 		return super.on(event, listener);

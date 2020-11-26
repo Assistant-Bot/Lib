@@ -13,6 +13,24 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
+
+/**
+ * HTTP status codes
+ */
+export type HTTPMethod =
+	| "GET"
+	| "HEAD"
+	| "POST"
+	| "PUT"
+	| "DELETE"
+	| "CONNECT"
+	| "OPTIONS"
+	| "TRACE"
+	| "PATCH";
+
+/**
+ * Discord types
+ */
 export type Snowflake<Length> = string & {
 	length: Length
 };
@@ -121,6 +139,7 @@ export interface GuildData extends BaseData {
 	approximate_presence_count?: number
 }
 export type ChannelTypesNumeric = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
 export type ChannelTypes = "Text" | "DM" | "Voice" | "Group" | "Category" | "News" | "Store" | "Unknown";
 
 
@@ -274,8 +293,25 @@ export interface MessageData extends BaseData {
 	referenced_message?: Partial<MessageData> | null;
 }
 
-export interface MessageStickerData {
+export interface MessageStickerData extends BaseData {
+	pack_id: string;
+	name: string;
+	description: string;
+	tags?: string;
+	asset?: string;
+	preview_asset?: string;
+	/**
+	 * 1 - PNG
+	 * 2 - Animated PNG
+	 * 3 - LOTTIE (lol?)
+	 */
+	format_type: 1 | 2 | 3;
+}
 
+export interface MessageConstructorData {
+	content: string;
+	embed?: EmbedData;
+	flags?: number;
 }
 
 export interface ReactionData {
@@ -323,6 +359,7 @@ export type AnyStructureData =
 	| UserData
 	| UserFlags
 	| MessageData
+	| GuildData
 	| PermissionOverwrites
 	| PartialChannelData
 	| MessageStickerData

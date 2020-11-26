@@ -13,6 +13,7 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
+import Intents from "../../util/Intents.ts";
 import { GATEWAY, BASE_URL } from '../rest/Endpoints.ts';
 import EventPacket from "./packet/EventPacket.ts";
 import HeartBeatPacket from "./packet/HeartbeatPacket.ts";
@@ -135,7 +136,8 @@ export abstract class Connector {
 						this.sendPacket(packet);
 					}, packet.interval);
 				}
-				this.sendPacket(new LoginPacket(this.#token, false, 0, false));
+				// todo: Make intents a client option.
+				this.sendPacket(new LoginPacket(this.#token, false, Intents.defaults().parse(), false));
 				return;
 			case OPCode.RECONNECT:
 				packet = new ResumePacket(this.#token, this.sessionId, this.#lastSeq);

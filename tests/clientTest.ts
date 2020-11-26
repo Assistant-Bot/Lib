@@ -21,6 +21,7 @@
  * @template clientTest
  */
 import Client from "../src/Client.ts";
+import type Message from "../src/structures/Message.ts";
 
 const client = new Client({
 	sharding: {
@@ -40,6 +41,6 @@ const client = new Client({
 
 client.connect(JSON.parse(new TextDecoder().decode(Deno.readFileSync('./tests/config.json'))).token);
 
-client.on('ws', (data) => {
-    console.log(data.d)
-});
+client.on('message', (message: Message) => {
+	console.log(message);
+})

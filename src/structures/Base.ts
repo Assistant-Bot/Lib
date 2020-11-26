@@ -17,12 +17,12 @@ import type Client from "../Client.ts";
 import type { AnyStructureData } from "../net/common/Types.ts";
 
 export default abstract class Base {
-	protected client: Client;
+	#client: Client;
 	public id: string;
 
 	public constructor(client: Client, id: string) {
 		this.id = id;
-		this.client = client;
+		this.#client = client;
 	}
 
 	/**
@@ -38,4 +38,12 @@ export default abstract class Base {
 	 * @param data - The data to update the structure
 	 */
 	public abstract update(data: AnyStructureData): any;
+
+	/**
+	 * Protected so it's not accessible outside the class.
+	 * Work around to typescript's "protected" variables.
+	 */
+	protected get client(): Client {
+		return this.#client;
+	}
 }

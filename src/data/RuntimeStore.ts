@@ -46,8 +46,16 @@ export default class RuntimeStore extends DataStore {
 	 * @param id
 	 * @param data
 	 */
-	public update(id: string, data: Payload): void {
+	public update(id: string, data: Payload) {}
 
+	/**
+	 * Update a structure in the datastore with a new payload.
+	 * Should create a structure if it does not exist.
+	 * @param id
+	 * @param data
+	 */
+	public updateKnown(collection: Collection<string, any>, id: string, data: any): void {
+		collection.set(id, data);
 	}
 
 	/**
@@ -60,7 +68,7 @@ export default class RuntimeStore extends DataStore {
 		if (!collection.has(id)) return false;
 
 		collection.get(id).update(data);
-		return false;
+		return true;
 	}
 
 	/**

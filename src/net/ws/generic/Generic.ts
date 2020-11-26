@@ -15,6 +15,7 @@
  */
 import Client from "../../../Client.ts";
 import RuntimeStore from "../../../data/RuntimeStore.ts";
+import Message from "../../../structures/Message.ts";
 import { Connector } from "../Connector.ts";
 import EventPacket from "../packet/EventPacket.ts";
 import { Payload } from "../packet/Packet.ts";
@@ -44,6 +45,19 @@ export default class Generic extends Connector {
 		}
 
 		// todo: Check the client data provider, and update based on that
+		if (packet.event === 'MESSAGE_CREATE') {
+			const m: Message = new Message(this.#client, packet.data);
+			this.#client.dataStore?.messages.set(m.id, m);
+			this.#client.dataStore?.users.set(m.author.id, m.author);
+			this.#client.emit('messageCreate', m);
+			this.#client.emit('message', m);
+		} else if (packet.event === 'MESSAGE_UPDATE') {
+			const m: Message = new Message(this.#client, packet.data);
+			const cached = this.#client.dataStore?.messages.get(m.id);
+			this.#client.dataStore?.messages.set(m.id, m);
+			this.#client.dataStore?.users.set(m.author.id, m.author);
+			this.#client.emit('messageUpdate', m, cached || null);
+		}
 	}
 
 	public async wsError(ev: Event | ErrorEvent): Promise<void> {
