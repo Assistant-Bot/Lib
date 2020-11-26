@@ -33,7 +33,7 @@ export default abstract class Base {
 	}
 
 	/**
-	 * Called by bavfalcon9 to update structure data.
+	 * Called by assistant to update structure data.
 	 * This should be similar, if not equal to creating a new structure.
 	 * @param data - The data to update the structure
 	 */
