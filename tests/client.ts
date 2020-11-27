@@ -18,7 +18,7 @@
  * This test checks whether or not the client is functioning with the websocket provider properly.
  * If there are not any websocket events being emitted from the client, then something is wrong.
  *
- * @template clientTest
+ * @template client
  */
 import Client from "../src/Client.ts";
 
