@@ -42,25 +42,6 @@ export default class GuildChannel extends Channel {
 		this.permissions = data.permission_overwrites;
 	}
 
-	/**
-	 * Send a message to the channel
-	 * @param content
-	 */
-	public async send(content: MessageContent): Promise<Message> {
-		if (typeof content === 'string') {
-			content = {
-				content: content
-			}
-		}
-
-		const mData: MessageData = await this.request.createMessage(this.id, content);
-
-		const m: Message = new Message(this.client, mData);
-		this.client.dataStore?.messages.set(m.id, m);
-
-		return m;
-	}
-
 	public async delete(): Promise<boolean> {
 		const res: boolean = await this.request.deleteChannel(this.id);
 

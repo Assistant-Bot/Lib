@@ -17,6 +17,7 @@ import type Client from "../Client.ts";
 import type { ChannelData, EmbedData, MemberData, MessageData, RoleData, UserData } from "../net/common/Types.ts";
 import Base from "./Base.ts";
 import Channel from "./Channel.ts";
+import TextChannel from "./guild/TextChannel.ts";
 import Guild from "./guild/Guild.ts";
 import GuildChannel from "./guild/GuildChannel.ts";
 import User from "./User.ts";
@@ -39,7 +40,7 @@ export type MessageContent = string | {
 }
 
 export default class Message extends Base {
-	public channel!: Channel;
+	public channel!: TextChannel;
 	public author!: User;
 	public content!: string;
 
@@ -55,7 +56,7 @@ export default class Message extends Base {
 		this.content = data.content;
 	}
 
-	public get guild(): Guild {
+	public get guild(): Guild | null {
 		return (this.channel as GuildChannel).guild;
 	}
 }
