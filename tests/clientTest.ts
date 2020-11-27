@@ -21,9 +21,6 @@
  * @template clientTest
  */
 import Client from "../src/Client.ts";
-import { Payload } from "../src/net/ws/packet/Packet.ts";
-import GuildChannel from "../src/structures/guild/GuildChannel.ts";
-import type Message from "../src/structures/Message.ts";
 
 const client = new Client({
 	sharding: {
@@ -42,12 +39,3 @@ const client = new Client({
 
 
 client.connect(JSON.parse(new TextDecoder().decode(Deno.readFileSync('./tests/config.json'))).token);
-
-client.on('message', (message: Message) => {
-	console.log(message);
-	if (message.content === 'hi') {
-		if (message.channel instanceof GuildChannel) {
-			message.channel.send('Hi lmAO');
-		}
-	}
-});

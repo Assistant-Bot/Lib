@@ -22,18 +22,22 @@ import Guild from "./Guild.ts";
 
 export default class GuildChannel extends Channel {
 	public name!: string;
-	public guild!: Guild;
 	public position!: number;
 	public permissions!: any;
+	#guild_id: string;
 
 	public constructor(client: Client, data: ChannelData) {
 		super(client, data);
+		this.#guild_id = data.guild_id as string;
 		this.update(data);
+	}
+
+	public get guild(): Guild {
+		return this.client.dataStore?.guilds.get(this.#guild_id);
 	}
 
 	public update(data: ChannelData): void {
 		this.name = data.name || '';
-		this.guild = this.client.dataStore?.guilds.get(data.guild_id) || data.guild_id;
 		this.position = data.position || -1;
 		this.permissions = data.permission_overwrites;
 	}
@@ -43,6 +47,12 @@ export default class GuildChannel extends Channel {
 	 * @param content
 	 */
 	public async send(content: MessageContent): Promise<Message> {
+		if (typeof content === 'string') {
+			content = {
+				content: content
+			}
+		}
+
 		const mData: MessageData = await this.request.createMessage(this.id, content);
 
 		const m: Message = new Message(this.client, mData);

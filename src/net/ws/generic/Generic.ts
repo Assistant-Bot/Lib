@@ -52,7 +52,7 @@ export default class Generic extends Connector {
 			this.#client.user = new ClientUser(this.#client, packet.data.user);
 
 			for (let guild of packet.data.guilds) {
-				if (guild.unavaible) {
+				if (guild.unavailable === true) {
 					this.#deadGuilds.add(guild.id);
 				} else {
 					this.wsPacket({
@@ -83,9 +83,9 @@ export default class Generic extends Connector {
 		}
 
 		if (packet.event === 'GUILD_CREATE') {
-			if (packet.data.unavaible) {
+			if (packet.data.unavailable) {
 				if (this.#client.dataStore?.guilds.has(packet.data.id)) {
-					this.#client.dataStore.guilds.get(packet.data.id).unavaible = true;
+					this.#client.dataStore.guilds.get(packet.data.id).unavailable = true;
 				} else {
 					this.#deadGuilds.add(packet.data.id);
 				}
@@ -94,11 +94,9 @@ export default class Generic extends Connector {
 					this.#deadGuilds.delete(packet.data.id);
 					// available
 					const guild: Guild = new Guild(this.#client, packet.data);
-					this.#client.dataStore?.guilds.set(guild.id, guild);
 					this.#client.emit('guildAvailable', guild);
 				} else {
 					const guild: Guild = new Guild(this.#client, packet.data);
-					this.#client.dataStore?.guilds.set(guild.id, guild);
 					this.#client.emit('guildCreate', guild);
 				}
 			}

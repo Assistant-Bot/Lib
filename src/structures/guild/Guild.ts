@@ -105,9 +105,10 @@ export default class Guild extends Base {
 
 		if (data.channels) {
 			for (let _ of data.channels) {
+				_.guild_id = this.id;
 				const ch = new GuildChannel(this.client, _);
-				this.client.dataStore?.channels.set(data.id, ch);
-				this.#boundChannels.add(data.id);
+				this.client.dataStore?.channels.set(ch.id, ch);
+				this.#boundChannels.add(ch.id);
 			}
 		}
 
@@ -131,6 +132,7 @@ export default class Guild extends Base {
 				this.emojis.set(e.id, e);
 			}
 		}
+		this.client.dataStore?.guilds.set(this.id, this);
 	}
 
 	public get channels(): GuildChannel[] {

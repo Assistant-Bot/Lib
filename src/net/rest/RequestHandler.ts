@@ -14,7 +14,8 @@
  * to remove this software from your device immediately.
  */
 import Sleep from "../../util/Sleep.ts";
-import { HTTPMethod } from "../common/Types.ts";
+import type { HTTPMethod } from "../common/Types.ts";
+import { BASE_URL } from "./Endpoints.ts";
 
 export interface RequestHandlerOptions {
 	/**
@@ -81,6 +82,7 @@ export default class RequestHandler {
 	 * @param immediate
 	 */
 	public makeAndSend(url: string, method: HTTPMethod = "GET", body: any = {}, headers: Header[] = [], immediate: boolean = false): Promise<Response> {
+		url = BASE_URL + url;
 		const request: Request = new Request(url, { body: JSON.stringify(body), method });
 
 		for (let header of headers) {
@@ -112,6 +114,7 @@ export default class RequestHandler {
 					}
 
 					req.headers.set('User-Agent', this.#options.userAgent);
+					req.headers.set('Content-Type', 'application/json');
 
 					if (immediate) {
 						fetch(req).then(resolve).catch(reject);
@@ -156,15 +159,15 @@ export default class RequestHandler {
 						}
 
 						if (res.status === 400) {
-							throw new ResponseError('Bad Request', res);
+							reject(new ResponseError('Bad Request', res));
 						}
 
 						if (res.status === 403 || res.status === 401) {
-							throw new ResponseError('Unauthorized or Forbidden.', res);
+							reject(new ResponseError('Unauthorized or Forbidden.', res));
 						}
 
 						if (res.status === 405) {
-							throw new ResponseError('Method requested not allowed.', res);
+							reject(new ResponseError('Method requested not allowed.', res));
 						}
 
 						if (res.status === 502 && attempts < 3) {

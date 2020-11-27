@@ -17,6 +17,7 @@ import type Client from "../Client.ts";
 import type { ChannelData, EmbedData, MemberData, MessageData, RoleData, UserData } from "../net/common/Types.ts";
 import Base from "./Base.ts";
 import Channel from "./Channel.ts";
+import Guild from "./guild/Guild.ts";
 import GuildChannel from "./guild/GuildChannel.ts";
 import User from "./User.ts";
 
@@ -39,7 +40,6 @@ export type MessageContent = string | {
 
 export default class Message extends Base {
 	public channel!: Channel;
-	public guild?: any;
 	public author!: User;
 	public content!: string;
 
@@ -50,9 +50,12 @@ export default class Message extends Base {
 
 	public update(data: MessageData): void {
 		// todo: make this be fetched if it does not exist (some how)
-		this.channel = this.client.dataStore?.channels.get(data.id) || null;
-		this.guild = (this.channel instanceof GuildChannel) ? this.channel.guild : null;
+		this.channel = this.client.dataStore?.channels.get(data.channel_id) || null;
 		this.author = new User(this.client, data.author);
 		this.content = data.content;
+	}
+
+	public get guild(): Guild {
+		return (this.channel as GuildChannel).guild;
 	}
 }
