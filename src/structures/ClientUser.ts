@@ -23,7 +23,6 @@ export default class ClientUser extends User {
 
 	public constructor(client: Client, data: UserData) {
 		super(client, data);
-		super.update(data);
 		this.update(data);
 	}
 
