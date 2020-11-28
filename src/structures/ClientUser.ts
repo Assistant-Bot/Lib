@@ -21,8 +21,14 @@ export default class ClientUser extends User {
 	public verified!: boolean;
 	public email!: string;
 
-		public constructor(client: Client, data: UserData) {
+	public constructor(client: Client, data: UserData) {
 		super(client, data);
 		super.update(data);
+		this.update(data);
+	}
+
+	public update(data: UserData) {
+		this.verified = data.verified as boolean;
+		this.email = data.email as string;
 	}
 }
