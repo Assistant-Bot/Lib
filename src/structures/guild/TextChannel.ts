@@ -13,7 +13,7 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import type { MessageData } from "../../net/common/Types.ts";
+import type { MessageData, Snowflake } from "../../net/common/Types.ts";
 import Message, { MessageContent } from "../Message.ts";
 import GuildChannel from "./GuildChannel.ts";
 
@@ -35,5 +35,13 @@ export default class TextChannel extends GuildChannel {
 		this.client.dataStore?.messages.set(m.id, m);
 
 		return m;
+	}
+
+	public async deleteMessage(id: Snowflake<18>): Promise<boolean> {
+		return await this.request.deleteMessage(this.id, id);
+	}
+
+	public async deleteMessages(messages: Snowflake<18>[]): Promise<boolean> {
+		return await this.request.deleteMessages(this.id, messages);
 	}
 }

@@ -44,9 +44,9 @@ class DiscordRequestHandler extends RequestHandler {
 	 * @param channelId
 	 * @param messageid
 	 */
-	public async deleteMessages(channelId: string, messageid: string, messages: Snowflake<18>[]): Promise<boolean> {
+	public async deleteMessages(channelId: string, messages: Snowflake<18>[]): Promise<boolean> {
 		const res: Response = await this.makeAndSend(
-			Endpoints.channel_messages(channelId, messageid) + '/bulk-delete',
+			Endpoints.channel_messages(channelId) + '/bulk-delete',
 			'POST',
 			{ messages },
 			[],
