@@ -60,17 +60,17 @@ export default class Message extends Base {
 	}
 
 	public async edit(content: MessageConstructorData): Promise<Message> {
-		const mData: MessageData = await this.client.discordHandler.editMessage(this.channel.id, this.id, content);
+		const mData: MessageData = await this.request.editMessage(this.channel.id, this.id, content);
 		const m: Message = new Message(this.client, mData);
 		this.client.dataStore?.messages.set(m.id, m);
 		return m;
 	}
 
 	public async delete(): Promise<boolean> {
-		return await this.client.discordHandler.deleteMessage(this.channel.id, this.id);
+		return await this.request.deleteMessage(this.channel.id, this.id);
 	}
 
 	public async pin(): Promise<void> {
-		return await this.client.discordHandler.pinMessage(this.channel.id, this.id);
+		return await this.request.pinMessage(this.channel.id, this.id);
 	}
 }
