@@ -50,6 +50,7 @@ export default class Generic extends Connector {
 
 		if (packet.event === "READY") {
 			this.#client.user = new ClientUser(this.#client, packet.data.user);
+			this.#client.emit('ready');
 
 			for (let guild of packet.data.guilds) {
 				if (guild.unavailable === true) {

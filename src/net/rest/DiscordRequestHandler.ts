@@ -73,6 +73,15 @@ class DiscordRequestHandler extends RequestHandler {
 		const res: Response = await this.makeAndSend(Endpoints.channel_messages(channelId), 'POST', content, []);
 		return res.json();
 	}
+
+	/**
+	 * Pins a message in a channel
+	 * @param channelId 
+	 * @param messageId 
+	 */
+	public async pinMessage(channelId: string, messageId: string): Promise<void> {
+		await this.makeAndSend(Endpoints.channel_messages(channelId, messageId), 'PUT');
+	}
 }
 
 export default DiscordRequestHandler;

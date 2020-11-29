@@ -14,9 +14,8 @@
  * to remove this software from your device immediately.
  */
 import type Client from "../Client.ts";
-import type { ChannelData, EmbedData, MemberData, MessageData, RoleData, UserData } from "../net/common/Types.ts";
+import type { EmbedData, MessageConstructorData, MessageData } from "../net/common/Types.ts";
 import Base from "./Base.ts";
-import Channel from "./Channel.ts";
 import TextChannel from "./guild/TextChannel.ts";
 import Guild from "./guild/Guild.ts";
 import GuildChannel from "./guild/GuildChannel.ts";
@@ -58,5 +57,20 @@ export default class Message extends Base {
 
 	public get guild(): Guild | null {
 		return (this.channel as GuildChannel).guild;
+	}
+
+	public async edit(content: MessageConstructorData): Promise<Message> {
+		const mData: MessageData = await this.client.discordHandler.editMessage(this.channel.id, this.id, content);
+		const m: Message = new Message(this.client, mData);
+		this.client.dataStore?.messages.set(m.id, m);
+		return m;
+	}
+
+	public async delete(): Promise<boolean> {
+		return await this.client.discordHandler.deleteMessage(this.channel.id, this.id);
+	}
+
+	public async pin(): Promise<void> {
+		return await this.client.discordHandler.pinMessage(this.channel.id, this.id);
 	}
 }
