@@ -14,7 +14,7 @@
  * to remove this software from your device immediately.
  */
 import { EventEmitter, GenericFunction, WrappedFunction } from 'https://deno.land/std@0.78.0/node/events.ts';
-import DataStore from "./data/DataStore.ts";
+import DataManager from "./data/DataManager.ts";
 import type { GatewayResponseBot, MessageData } from "./net/common/Types.ts";
 import DiscordRequestHandler from "./net/rest/DiscordRequestHandler.ts";
 import Endpoints, { GATEWAY_URL } from "./net/rest/Endpoints.ts";
@@ -160,11 +160,11 @@ export default class Client extends EventEmitter {
 	public discordHandler!: DiscordRequestHandler;
 	public user!: ClientUser;
 
-	#dataStore?: DataStore;
+	#dataManager?: DataManager;
 	#wsManager!: Connector;
 	#shardMode: ClientShardMode | 'Unknown' = 'Unknown';
 
-	public constructor(opts: Partial<ClientOptions> = {}, customStore?: DataStore) {
+	public constructor(opts: Partial<ClientOptions> = {}, customStore?: DataManager) {
 		super();
 		const defaults: ClientOptions = {
 			connection: {
@@ -189,7 +189,7 @@ export default class Client extends EventEmitter {
 		this.options = Object.assign(defaults, opts);
 
 		if (customStore) {
-			this.#dataStore = customStore;
+			this.#dataManager = customStore;
 		}
 	}
 
@@ -311,17 +311,17 @@ export default class Client extends EventEmitter {
 	/**
 	 * Gets the data store.
 	 */
-	public get dataStore(): DataStore | null {
-		return this.#dataStore || null;
+	public get dataManager(): DataManager | null {
+		return this.#dataManager || null;
 	}
 
 	/**
 	 * Sets the data store (once).
 	 */
-	public set dataStore(store: DataStore | null) {
-		if (store instanceof DataStore) {
-			if (!this.#dataStore) {
-				this.#dataStore = store;
+	public set dataStore(store: DataManager | null) {
+		if (store instanceof DataManager) {
+			if (!this.#dataManager) {
+				this.#dataManager = store;
 			}
 		}
 	}

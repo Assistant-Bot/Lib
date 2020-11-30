@@ -33,7 +33,7 @@ export default class GuildChannel extends Channel {
 	}
 
 	public get guild(): Guild {
-		return this.client.dataStore?.guilds.get(this.#guild_id);
+		return this.client.dataManager?.guilds.get(this.#guild_id);
 	}
 
 	public update(data: ChannelData): void {
@@ -46,7 +46,7 @@ export default class GuildChannel extends Channel {
 		const res: boolean = await this.request.deleteChannel(this.id);
 
 		if (res === true) {
-			this.client.dataStore?.channels.delete(this.id);
+			this.client.dataManager?.channels.delete(this.id);
 		}
 
 		return res;

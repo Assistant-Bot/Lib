@@ -32,7 +32,7 @@ export default class TextChannel extends GuildChannel {
 		const mData: MessageData = await this.request.createMessage(this.id, content);
 
 		const m: Message = new Message(this.client, mData);
-		this.client.dataStore?.messages.set(m.id, m);
+		this.client.dataManager?.messages.set(m.id, m);
 
 		return m;
 	}

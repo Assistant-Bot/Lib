@@ -13,14 +13,13 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import type { Payload } from "../net/ws/packet/Packet.ts";
-import Base from "../structures/Base.ts";
+import type { Payload } from "../../net/ws/packet/Packet.ts";
+import type Base from "../../structures/Base.ts";
+import DataStore from "../DataStore.ts";
 
-export default abstract class DataStore<K, V> {
-	#structure: V;
-
-	public constructor(stucture: V) {
-		this.#structure = stucture;
+export default class RuntimeStore<K, V extends Base> extends DataStore<K, V> {
+	public constructor(structure: V) {
+		super(structure);
 	}
 
 	/**
@@ -30,35 +29,47 @@ export default abstract class DataStore<K, V> {
 	 * it will update to the client accessor immediately.
 	 * @param structure
 	 */
-	public abstract update(structure: V): V | Promise<V>;
+	public update(structure: V): V | Promise<V> {
+
+	}
 
 	/**
 	 * Get the structure from the store.
 	 * @param id
 	 */
-	public abstract get(id: K): V | null | Promise<V | null>;
+	public get(id: K): V | null | Promise<V | null> {
+
+	}
 
 	/**
 	 * Add the structure from the store
 	 */
-	public abstract add(idOrData: K|Payload): V | Promise<V | null> | null;
+	public add(idOrData: K|Payload): V | Promise<V | null> | null {
+
+	}
 
 	/**
 	 * Whether or not the id exists in the store.
 	 * @param id
 	 */
-	public abstract has(id: K): boolean | Promise<boolean>;
+	public has(id: K): boolean | Promise<boolean> {
+
+	}
 
 	/**
 	 * Deletes the id from the store.
 	 * @param id
 	 */
-	public abstract delete(id: K): boolean | Promise<boolean>;
+	public delete(id: K): boolean | Promise<boolean> {
+
+	}
 
 	/**
 	 * Sets the key of the structure into the datastore.
 	 * @param id
 	 * @param structure
 	 */
-	public abstract set(id: K, structure: V): V | Promise<V | null> | null;
+	public set(id: K, structure: V): V | Promise<V | null> | null {
+
+	}
 }
