@@ -1,21 +1,20 @@
 /***
  *                    _     _              _
- *      /\           (_)   | |            | |  
- *     /  \   ___ ___ _ ___| |_ __ _ _ __ | |_ 
+ *      /\           (_)   | |            | |
+ *     /  \   ___ ___ _ ___| |_ __ _ _ __ | |_
  *    / /\ \ / __/ __| / __| __/ _` | '_ \| __|
- *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_ 
+ *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
  *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
  *
- * Copyright (C) 2020 John Bergman
- * 
+ * Copyright (C) 2020 Bavfalcon9
+ *
  * This is private software, you cannot redistribute and/or modify it in any way
  * unless given explicit permission to do so. If you have not been given explicit
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import type * as Eris from 'eris';
-import type Message from '../../structures/Message';
-import Permission from "./Permission";
+import type Message from "../../structures/Message.ts";
+import Permission from "./Permission.ts";
 
 export type PermissionResolvable = Permission | number | string;
 export type PermissionTestResolvable = PermissionResolvable | null;
@@ -35,9 +34,9 @@ class PermissionManager {
         if (this._permissions.filter(p => p.id === permission.id).length > 0) {
             throw new Error('A permission with the id of: "' + permission.id + '" is already registered');
         }
-        
+
         this._permissions.push(permission);
-        
+
         return true;
     }
 
@@ -54,7 +53,7 @@ class PermissionManager {
         if (this._permissions.filter(p => p.id === permission.id).length < 0) {
             throw new Error('No permission with the id of: "' + permission.id + '" is registered');
         }
-        
+
         return false;
     }
 
@@ -69,7 +68,7 @@ class PermissionManager {
     /**
      * Tests whether a permission can use a permission or not.
      */
-    public static testExecution(msg: Eris.Message, permissions: PermissionResolvable[]): PermissionResolvable|null {
+    public static testExecution(msg: Message, permissions: PermissionResolvable[]): PermissionResolvable|null {
         if (!msg.member) return -1;
         for (let permission of permissions) {
             if (permission instanceof Permission) {

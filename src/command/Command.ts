@@ -6,18 +6,17 @@
  *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
  *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
  *
- * Copyright (C) 2020 John Bergman
+ * Copyright (C) 2020 Bavfalcon9
  *
  * This is private software, you cannot redistribute and/or modify it in any way
  * unless given explicit permission to do so. If you have not been given explicit
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import type * as Eris from 'eris';
-import type { Client } from 'eris';
-import type Message from '../structures/Message';
-import type Permission from './permission/Permission';
-import type { PermissionResolvable } from './permission/PermissionManager';
+import Client from "../Client.ts";
+import type Message from '../structures/Message.ts';
+import type Permission from './permission/Permission.ts';
+import type { PermissionResolvable } from './permission/PermissionManager.ts';
 
 export type CommandEvents =
     | 'execute'
@@ -73,24 +72,24 @@ abstract class Command {
     /**
      * Called when the command is executed.
      */
-    public abstract onRun(client: Client, msg: Eris.Message, args: string[], additional?: any): Promise<void>;
+    public abstract onRun(client: Client, msg: Message, args: string[], additional?: any): Promise<void>;
 
     /**
      * Called when execution fails
      *
      * If this errors, it is supressed, and the command is disabled.
      */
-    public async onError(error: Error, client: Client, msg: Eris.Message, additional?: any): Promise<void> { }
+    public async onError(error: Error, client: Client, msg: Message, additional?: any): Promise<void> { }
 
     /**
      * Called when a user is on cooldown.
      */
-    public async onCooldown(client: Client, msg: Eris.Message, timeLeft: number, additional?: any): Promise<void> { }
+    public async onCooldown(client: Client, msg: Message, timeLeft: number, additional?: any): Promise<void> { }
 
     /**
      * Called if the user is missing permission.
      */
-    public async onMissingPermission(client: Client, msg: Eris.Message, permission: Permission, additional?: any): Promise<void> {
+    public async onMissingPermission(client: Client, msg: Message, permission: Permission, additional?: any): Promise<void> {
     }
 
     /**

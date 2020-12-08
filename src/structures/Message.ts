@@ -58,6 +58,13 @@ export default class Message extends Base {
 		this.timestamp = Date.parse(data.timestamp);
 	}
 
+	/**
+	 * @todo
+	 */
+	public get member(): any {
+		return {};
+	}
+
 	public get guild(): Guild | null {
 		return (this.channel as GuildChannel).guild;
 	}
