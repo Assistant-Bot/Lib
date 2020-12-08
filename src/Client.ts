@@ -308,6 +308,10 @@ export default class Client extends EventEmitter {
 		}
 	}
 
+	public sendPayload(p: Payload) {
+		this.#wsManager.send(p);
+	}
+
 	/**
 	 * Gets the data store.
 	 */
