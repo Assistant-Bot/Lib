@@ -42,7 +42,8 @@ export default class Message extends Base {
 	public channel!: TextChannel;
 	public author!: User;
 	public content!: string;
-	public timestamp!: number
+	public timestamp!: number;
+	public prefix?: string;
 
 	public constructor(client: Client, data: MessageData) {
 		super(client, data.id);
