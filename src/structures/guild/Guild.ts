@@ -18,9 +18,14 @@ import type { GuildData } from "../../net/common/Types.ts";
 import Collection from "../../util/Collection.ts";
 import Base from "../Base.ts";
 import GuildChannel from "../guild/GuildChannel.ts";
+import CategoryChannel from "./CategoryChannel.ts";
 import Emoji from "./Emoji.ts";
 import Member from "./Member.ts";
+import NewsChannel from "./NewsChannel.ts";
 import Role from "./Role.ts";
+import StoreChannel from "./StoreChannel.ts";
+import TextChannel from "./TextChannel.ts";
+import VoiceChannel from "./VoiceChannel.ts";
 
 export default class Guild extends Base {
 	public name!: string;
@@ -106,8 +111,28 @@ export default class Guild extends Base {
 		if (data.channels) {
 			for (let _ of data.channels) {
 				_.guild_id = this.id;
-				const ch = new GuildChannel(this.client, _);
-				this.client.dataManager?.channels.set(ch.id, ch);
+				let ch: GuildChannel;
+				switch(_.type) {
+					case 0:
+						ch = new TextChannel(this.client, _);
+						break;
+					case 2:
+						ch = new VoiceChannel(this.client, _);
+						break;
+					case 4:
+						ch = new CategoryChannel(this.client, _);
+						break;
+					case 5:
+						ch = new NewsChannel(this.client, _);
+						break;
+					case 6:
+						ch = new StoreChannel(this.client, _);
+						break;
+					default:
+						ch = new GuildChannel(this.client, _);
+						break;
+				}
+				this.client.dataStore?.channels.set(ch.id, ch);
 				this.#boundChannels.add(ch.id);
 			}
 		}
@@ -132,13 +157,13 @@ export default class Guild extends Base {
 				this.emojis.set(e.id, e);
 			}
 		}
-		this.client.dataManager?.guilds.set(this.id, this);
+		this.client.dataStore?.guilds.set(this.id, this);
 	}
 
 	public get channels(): GuildChannel[] {
 		const arr: GuildChannel[] = [];
 		for (let id of this.#boundChannels) {
-			arr.push(this.client.dataManager?.channels.get(id));
+			arr.push(this.client.dataStore?.channels.get(id));
 		}
 		return arr.filter(c => c !== undefined);
 	}

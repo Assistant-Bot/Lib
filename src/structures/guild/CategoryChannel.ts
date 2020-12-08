@@ -23,6 +23,6 @@ export default class CategoryChannel extends GuildChannel {
 		for(const channel of channels) {
 			children.set(channel.id, channel);
 		}
-		return children
+		return children;
 	}
 }

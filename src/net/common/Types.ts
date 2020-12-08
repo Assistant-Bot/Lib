@@ -156,7 +156,7 @@ export interface PartialChannelData extends BaseData {
 }
 
 export interface ChannelData extends BaseData {
-	type: 0 | 1 | 3 | 4 | 5 | 6;
+	type: 0 | 1 | 2 | 3 | 4 | 5 | 6;
 	name?: string;
 	guild_id?: string;
 	position?: number;

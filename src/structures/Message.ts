@@ -42,6 +42,7 @@ export default class Message extends Base {
 	public channel!: TextChannel;
 	public author!: User;
 	public content!: string;
+	public timestamp!: number
 
 	public constructor(client: Client, data: MessageData) {
 		super(client, data.id);
@@ -50,9 +51,10 @@ export default class Message extends Base {
 
 	public update(data: MessageData): void {
 		// todo: make this be fetched if it does not exist (some how)
-		this.channel = this.client.dataManager?.channels.get(data.channel_id) || null;
+		this.channel = this.client.dataStore?.channels.get(data.channel_id) || null;
 		this.author = new User(this.client, data.author);
 		this.content = data.content;
+		this.timestamp = Date.parse(data.timestamp);
 	}
 
 	public get guild(): Guild | null {
@@ -62,9 +64,29 @@ export default class Message extends Base {
 	public async edit(content: MessageConstructorData): Promise<Message> {
 		const mData: MessageData = await this.request.editMessage(this.channel.id, this.id, content);
 		const m: Message = new Message(this.client, mData);
-		this.client.dataManager?.messages.set(m.id, m);
+		this.client.dataStore?.messages.set(m.id, m);
 		return m;
 	}
+
+	public async reply(content: MessageContent): Promise<Message> {
+		if (typeof content === 'string') {
+            		content = {
+                		content: content,
+                		message_reference: {
+                    			guild_id: this.channel.guild.id,
+                    			channel_id: this.channel.id,
+                    			message_id: this.id
+                		}
+            		}
+        	} else {
+            		content.message_reference = {
+                		guild_id: this.channel.guild.id as string,
+                		channel_id: this.channel.id,
+                		message_id: this.id
+            		}
+		}
+		return this.channel.send(content);
+	} 
 
 	public async delete(): Promise<boolean> {
 		return await this.request.deleteMessage(this.channel.id, this.id);
