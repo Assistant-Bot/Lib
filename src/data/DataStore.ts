@@ -17,10 +17,10 @@ import type { Payload } from "../net/ws/packet/Packet.ts";
 import Base from "../structures/Base.ts";
 
 export default abstract class DataStore<K, V> {
-	#structure: V;
+	protected structure: V;
 
 	public constructor(stucture: V) {
-		this.#structure = stucture;
+		this.structure = stucture;
 	}
 
 	/**

@@ -14,7 +14,8 @@
  * to remove this software from your device immediately.
  */
 import Client from "../../../Client.ts";
-import RuntimeStore from "../../../data/RuntimeStore.ts";
+import RuntimeManager from "../../../data/runtime/RuntimeManager.ts";
+import RuntimeStore from "../../../data/runtime/RuntimeStore.ts";
 import ClientUser from "../../../structures/ClientUser.ts";
 import Guild from "../../../structures/guild/Guild.ts";
 import Message from "../../../structures/Message.ts";
@@ -37,7 +38,7 @@ export default class Generic extends Connector {
 		}
 
 		if (!client.dataStore) {
-			client.dataStore = new RuntimeStore();
+			client.dataStore = new RuntimeManager();
 		}
 	}
 

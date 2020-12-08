@@ -31,6 +31,7 @@ export default class RuntimeManager extends DataManager {
 	#guilds = new RuntimeStore<string, typeof Guild & Base>(Guild as typeof Guild & Base);
 	#messages = new RuntimeStore<string, typeof Message & Base>(Message as typeof Message & Base);
 	#users = new RuntimeStore<string, typeof User & Base>(User as typeof User & Base);
+	// to-do Reactions!
 	#reactions = new RuntimeStore<string, typeof Channel & Base>(Channel as typeof Channel & Base);
 
 	/**

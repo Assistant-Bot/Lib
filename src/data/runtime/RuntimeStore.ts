@@ -15,9 +15,12 @@
  */
 import type { Payload } from "../../net/ws/packet/Packet.ts";
 import type Base from "../../structures/Base.ts";
+import Collection from "../../util/Collection.ts";
 import DataStore from "../DataStore.ts";
 
-export default class RuntimeStore<K, V extends Base> extends DataStore<K, V> {
+export default class RuntimeStore<K extends string, V extends Base> extends DataStore<K, V> {
+	#dataSet: Collection<K, V> = new Collection();
+
 	public constructor(structure: V) {
 		super(structure);
 	}
@@ -29,39 +32,56 @@ export default class RuntimeStore<K, V extends Base> extends DataStore<K, V> {
 	 * it will update to the client accessor immediately.
 	 * @param structure
 	 */
-	public update(structure: V): V | Promise<V> {
-
+	public update(structure: V): V {
+		this.#dataSet.set(structure.id as K, structure);
+		return structure;
 	}
 
 	/**
 	 * Get the structure from the store.
 	 * @param id
 	 */
-	public get(id: K): V | null | Promise<V | null> {
-
+	public get(id: K): V | null  {
+		return this.#dataSet.get(id) || null;
 	}
 
 	/**
 	 * Add the structure from the store
 	 */
-	public add(idOrData: K|Payload): V | Promise<V | null> | null {
-
+	public add(idOrData: K | Payload): V | null {
+		if (typeof idOrData === 'string') {
+			if (this.has(idOrData)) {
+				return null;
+			} else {
+				// @ts-ignore
+				this.#dataSet.set(idOrData, new this.structure(idOrData));
+				return this.get(idOrData);
+			}
+		} else {
+			if (this.has(idOrData.d.id)) {
+				return null;
+			} else {
+				// @ts-ignore
+				this.#dataSet.set(idOrData.d.id, new this.structure(idOrData.d));
+				return this.get(idOrData.d.id);
+			}
+		}
 	}
 
 	/**
 	 * Whether or not the id exists in the store.
 	 * @param id
 	 */
-	public has(id: K): boolean | Promise<boolean> {
-
+	public has(id: K): boolean {
+		return this.#dataSet.has(id);
 	}
 
 	/**
 	 * Deletes the id from the store.
 	 * @param id
 	 */
-	public delete(id: K): boolean | Promise<boolean> {
-
+	public delete(id: K): boolean {
+		return this.#dataSet.delete(id);
 	}
 
 	/**
@@ -69,7 +89,8 @@ export default class RuntimeStore<K, V extends Base> extends DataStore<K, V> {
 	 * @param id
 	 * @param structure
 	 */
-	public set(id: K, structure: V): V | Promise<V | null> | null {
-
+	public set(id: K, structure: V): V | null {
+		this.#dataSet.set(id, structure);
+		return structure || null;
 	}
 }
