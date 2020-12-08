@@ -37,8 +37,8 @@ export default class Generic extends Connector {
 			throw new Error('Generic connector does not support any mode other than "Nodes"');
 		}
 
-		if (!client.dataStore) {
-			client.dataStore = new RuntimeManager();
+		if (!client.dataManager) {
+			client.dataManager = new RuntimeManager();
 		}
 	}
 
@@ -70,24 +70,24 @@ export default class Generic extends Connector {
 		// todo: Check the client data provider, and update based on that
 		if (packet.event === 'MESSAGE_CREATE') {
 			const m: Message = new Message(this.#client, packet.data);
-			this.#client.dataStore?.messages.set(m.id, m);
-			this.#client.dataStore?.users.set(m.author.id, m.author);
+			this.#client.dataManager?.messages.set(m.id, m);
+			this.#client.dataManager?.users.set(m.author.id, m.author);
 			this.#client.emit('messageCreate', m);
 			this.#client.emit('message', m);
 		}
 
 		if (packet.event === 'MESSAGE_UPDATE') {
 			const m: Message = new Message(this.#client, packet.data);
-			const cached = this.#client.dataStore?.messages.get(m.id);
-			this.#client.dataStore?.messages.set(m.id, m);
-			this.#client.dataStore?.users.set(m.author.id, m.author);
+			const cached = this.#client.dataManager?.messages.get(m.id);
+			this.#client.dataManager?.messages.set(m.id, m);
+			this.#client.dataManager?.users.set(m.author.id, m.author);
 			this.#client.emit('messageUpdate', m, cached || null);
 		}
 
 		if (packet.event === 'GUILD_CREATE') {
 			if (packet.data.unavailable) {
-				if (this.#client.dataStore?.guilds.has(packet.data.id)) {
-					this.#client.dataStore.guilds.get(packet.data.id).unavailable = true;
+				if (this.#client.dataManager?.guilds.has(packet.data.id)) {
+					this.#client.dataManager.guilds.get(packet.data.id).unavailable = true;
 				} else {
 					this.#deadGuilds.add(packet.data.id);
 				}

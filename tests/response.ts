@@ -40,7 +40,6 @@ const client = new Client({
 
 client.on('message', (message: Message)=> {
 	if (message.content === '!assistant') {
-		console.log(message.channel.send);
 		message.channel.send("Recieved response!");
 	}
 })

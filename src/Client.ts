@@ -318,7 +318,7 @@ export default class Client extends EventEmitter {
 	/**
 	 * Sets the data store (once).
 	 */
-	public set dataStore(store: DataManager | null) {
+	public set dataManager(store: DataManager | null) {
 		if (store instanceof DataManager) {
 			if (!this.#dataManager) {
 				this.#dataManager = store;
