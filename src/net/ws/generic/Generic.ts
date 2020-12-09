@@ -20,13 +20,17 @@ import type GroupChannel from "../../../structures/channel/GroupChannel.ts";
 import type DMChannel from "../../../structures/channel/GroupChannel.ts";
 import type UnknownChannel from "../../../structures/channel/UnknownChannel.ts";
 import ClientUser from "../../../structures/ClientUser.ts";
+import Emoji from "../../../structures/guild/Emoji.ts";
 import Guild from "../../../structures/guild/Guild.ts";
+import Member from "../../../structures/guild/Member.ts";
 import type NewsChannel from "../../../structures/guild/NewsChannel.ts";
+import Role from "../../../structures/guild/Role.ts";
 import type StoreChannel from "../../../structures/guild/StoreChannel.ts";
 import type TextChannel from "../../../structures/guild/TextChannel.ts";
 import type VoiceChannel from "../../../structures/guild/VoiceChannel.ts";
 import Message from "../../../structures/Message.ts";
-import { GuildData } from "../../common/Types.ts";
+import User from "../../../structures/User.ts";
+import { GuildData, RoleData } from "../../common/Types.ts";
 import { Connector } from "../Connector.ts";
 import EventPacket from "../packet/EventPacket.ts";
 import { Payload } from "../packet/Packet.ts";
@@ -148,6 +152,88 @@ export default class Generic extends Connector {
 			this.#client.dataManager?.messages.set(m.id, m);
 			this.#client.dataManager?.users.set(m.author.id, m.author);
 			this.#client.emit('messageUpdate', m, cached || null);
+		}
+
+		if (packet.event === "GUILD_BAN_ADD") {
+			// we're making an object here because we dont need to fetch from the datastore.
+			const user: User = new User(this.#client, packet.data);
+			this.#client.emit('banAdd', user, packet.data.guild_id);
+		}
+
+		if (packet.event === "GUILD_BAN_REMOVE") {
+			const user: User = new User(this.#client, packet.data);
+			this.#client.emit('banRemove', user, packet.data.guild_id);
+		}
+
+		if (packet.event === "GUILD_EMOJIS_UPDATE") {
+			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
+			const updated: Emoji[] = [];
+			let emoji: Emoji;
+			for (emoji of packet.data.emojis) {
+				guild.emojis.set(emoji.id, new Emoji(this.#client, emoji));
+				updated.push(new Emoji(this.#client, emoji));
+			}
+			this.#client.dataManager?.guilds.update(guild);
+			this.#client.emit('emojisUpdate', updated);
+		}
+
+		if (packet.event === "GUILD_INTEGRATIONS_UPDATE") {
+			// wtf
+			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
+			this.#client.emit('integrationsUpdate', guild);
+		}
+
+		if (packet.event === "GUILD_MEMBER_ADD") {
+			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
+			const member: Member = new Member(this.#client, packet.data);
+			guild.members.set(packet.data.id, member);
+			this.#client.emit('memberJoin', member, guild);
+		}
+
+		if (packet.event === "GUILD_MEMBER_UPDATE") {
+			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
+			const member: Member | undefined = guild.members.get(packet.data.user.id);
+
+			this.#client.emit('memberUpdate', member || new Member(this.#client, packet.data), guild);
+		}
+
+		if (packet.event === "GUILD_MEMBER_REMOVE") {
+			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
+			const member: Member | User = guild.members.get(packet.data.user.id) || new User(this.#client, packet.data);
+			guild.members.delete(packet.data.user.id);
+			this.#client.emit('memberRemove', member, guild);
+		}
+
+		if (packet.event === "GUILD_MEMBER_CHUNK") {
+			if (packet.data.not_found) {
+				return;
+			}
+			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
+			// to do: Presences
+			for (let member of packet.data.members) {
+				guild.members.set(member.user.id, new Member(this.#client, member.user.id));
+			}
+		}
+
+		if (packet.event === "GUILD_ROLE_CREATE") {
+			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
+			const role: Role = new Role(this.#client, packet.data.role);
+			guild.roles.set(packet.data.role.id, role);
+			this.#client.emit('roleCreate', role, guild);
+		}
+
+		if (packet.event === "GUILD_ROLE_UPDATE") {
+			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
+			const role: Role = guild.roles.get(packet.data.role.id) || new Role(this.#client, packet.data.role);
+			role.update(Object.assign(role, packet.data));
+			this.#client.emit('roleUpdate', role, guild);
+		}
+
+		if (packet.event === "GUILD_ROLE_DELETE") {
+			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
+			const role: Role | Partial<RoleData> = guild.roles.get(packet.data.role_id) || { id: packet.data.role_id };
+			guild.roles.delete(role.id as string);
+			this.#client.emit('roleDelete', role, guild);
 		}
 	}
 

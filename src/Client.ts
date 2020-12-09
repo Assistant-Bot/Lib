@@ -15,16 +15,21 @@
  */
 import { EventEmitter, GenericFunction, WrappedFunction } from 'https://deno.land/std@0.78.0/node/events.ts';
 import DataManager from "./data/DataManager.ts";
-import type { GatewayResponseBot, MessageData } from "./net/common/Types.ts";
+import type { GatewayResponseBot, MessageData, RoleData } from "./net/common/Types.ts";
 import DiscordRequestHandler from "./net/rest/DiscordRequestHandler.ts";
 import Endpoints, { GATEWAY_URL } from "./net/rest/Endpoints.ts";
 import RequestHandler, { RequestHandlerOptions } from "./net/rest/RequestHandler.ts";
 import { Connector } from "./net/ws/Connector.ts";
 import Generic from "./net/ws/generic/Generic.ts";
 import type { Payload } from "./net/ws/packet/Packet.ts";
+import Channel from "./structures/channel/Channel.ts";
 import type ClientUser from "./structures/ClientUser.ts";
+import Emoji from "./structures/guild/Emoji.ts";
 import Guild from "./structures/guild/Guild.ts";
+import Member from "./structures/guild/Member.ts";
+import Role from "./structures/guild/Role.ts";
 import Message from "./structures/Message.ts";
+import User from "./structures/User.ts";
 
 /**
  * Events emitted when recieved from the websocket.
@@ -227,24 +232,24 @@ export default class Client extends EventEmitter {
 	}
 
 	/**
-	 * Emitted when the client recieves a message.
-	 */
-	public on(event: "message" | "messageCreate", listener: (message: Message) => any): this;
-
-	/**
-	 * Emitted when a message is updated somehow.
-	 */
-	public on(event: "messageUpdate", listener: (newMessage: Message, oldMessage?: Message) => any): this;
-
-	/**
-	 * Emitted when a message is deleted.
-	 */
-	public on(event: "messageDelete", listener: (message: Partial<Message> | Message) => any): this;
-
-	/**
 	 * Emitted when the client is connected to discord.
 	 */
 	public on(event: "ready", listener: (session_id: string, shard: number[] | null, version: number) => any): this;
+
+	/**
+	 * Emitted when a channel is created.
+	 */
+	public on(event: "channelCreate", listener: (channel: Channel) => any): this;
+
+	/**
+	 * Emitted when a channel is updated.
+	 */
+	public on(event: "channelUpdate", listener: (channel: Channel) => any): this;
+
+	/**
+	 * Emitted when a channel is deleted.
+	 */
+	public on(event: "channelDelete", listener: (channel: Channel | string) => any): this;
 
 	/**
 	 * Emitted when the guild becomes availiable
@@ -260,6 +265,76 @@ export default class Client extends EventEmitter {
 	 * Emitted when a guild is created
 	 */
 	public on(event: "guildCreate", listener: (guild: Guild) => any): this;
+
+	/**
+	 * Emitted when a guild is updated
+	 */
+	public on(event: "guildUpdate", listener: (guild: Guild) => any): this;
+
+	/**
+	 * Emitted when a guild is deleted
+	 */
+	public on(event: "guildUpdate", listener: (guild: Guild) => any): this;
+
+	/**
+	 * Emitted when the client recieves a message.
+	 */
+	public on(event: "message" | "messageCreate", listener: (message: Message) => any): this;
+
+	/**
+	 * Emitted when a message is updated somehow.
+	 */
+	public on(event: "messageUpdate", listener: (newMessage: Message, oldMessage?: Message) => any): this;
+
+	/**
+	 * Emitted when a message is deleted.
+	 */
+	public on(event: "messageDelete", listener: (message: Partial<Message> | Message) => any): this;
+
+	/**
+	 * Emitted when a user is banned from a guild
+	 */
+	public on(event: "banAdd", listener: (user: User) => any): this;
+
+	/**
+	 * Emitted when a user is unbanned from a guild
+	 */
+	public on(event: "banRemove", listener: (user: User) => any): this;
+
+	/**
+	 * Emitted when emojis in a guild are updated
+	 */
+	public on(event: "emojisUpdate", listener: (Emojis: Emoji[]) => any): this;
+
+	/**
+	 * Emitted when a guild member joins a guild
+	 */
+	public on(event: "memberJoin", listener: (member: Member, guild: Guild) => any): this;
+
+	/**
+	 * Emitted when a member is updated.
+	 */
+	public on(event: "memberUpdate", listener: (member: Member, guild: Guild) => any): this;
+
+	/**
+	 * Emitted when a user leaves a guild or is banned.
+	 */
+	public on(event: "memberRemove", listener: (user: User | Member, guild: Guild) => any): this;
+
+	/**
+	 * Emitted when a role is created
+	 */
+	public on(event: "roleCreate", listener: (role: Role, guild: Guild) => any): this;
+
+	/**
+	 * Emitted when a role is updated
+	 */
+	public on(event: "roleUpdate", listener: (role: Role, guild: Guild) => any): this;
+
+	/**
+	 * Emitted when a role is deleted
+	 */
+	public on(event: "roleDelete", listener: (role: Role | Partial<RoleData>, guild: Guild) => any): this;
 
 	/**
 	 * Emitted when the websocket **manager** recieves a event

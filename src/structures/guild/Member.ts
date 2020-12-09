@@ -28,7 +28,7 @@ export default class Member extends Base {
 	public joinedAt!: string;
 	public deaf!: boolean;
 
-	public constructor(client: Client, data: MemberData,) {
+	public constructor(client: Client, data: MemberData) {
 		super(client, data.id);
 		this.update(data);
 	}
