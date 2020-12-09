@@ -11,4 +11,4 @@ This framework is currently being developed and will be used for **Assistant Bot
 
 ### API
 
-**DataStores:** Datastores are stores that handle runtime data, such as client.guilds. 
+**DataStores:** Datastores are stores that handle runtime data, such as client.guilds

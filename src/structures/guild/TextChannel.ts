@@ -13,11 +13,37 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import type { MessageData, Snowflake } from "../../net/common/Types.ts";
+import Client from "../../Client.ts";
+import type { ChannelData, MessageData, Snowflake } from "../../net/common/Types.ts";
 import Message, { MessageContent } from "../Message.ts";
 import GuildChannel from "./GuildChannel.ts";
 
 export default class TextChannel extends GuildChannel {
+	public lastMessageId?: string;
+	public lastMessage?: Message;
+	public rateLimitPerUser?: number;
+
+	public constructor(client: Client, data: ChannelData) {
+		super(client, data);
+		this.update(data);
+	}
+
+	public async update(data: ChannelData): Promise<void> {
+		if (data.rate_limit_per_user) {
+			this.rateLimitPerUser = data.rate_limit_per_user;
+		}
+
+		if (data.last_message_id) {
+			this.lastMessageId = data.last_message_id;
+			if (this.client.dataManager?.messages.has(this.lastMessageId)) {
+				this.lastMessage = this.client.dataManager.messages.get(this.lastMessageId);
+				if (this.lastMessage instanceof Promise) {
+					this.lastMessage = await this.lastMessage;
+				}
+			}
+		}
+	}
+
 	/**
 	 * Send a message to the channel
 	 * @param content

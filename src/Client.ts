@@ -252,6 +252,11 @@ export default class Client extends EventEmitter {
 	public on(event: "guildAvailable", listener: (guild: Guild) => any): this;
 
 	/**
+	 * Emitted when the guild becomes availiable
+	 */
+	public on(event: "guildUnavailable", listener: (guild: Guild | Partial<Guild>) => any): this;
+
+	/**
 	 * Emitted when a guild is created
 	 */
 	public on(event: "guildCreate", listener: (guild: Guild) => any): this;
