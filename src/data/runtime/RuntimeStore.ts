@@ -33,8 +33,14 @@ export default class RuntimeStore<K extends string, V extends Base> extends Data
 	 * @param structure
 	 */
 	public update(structure: V): V {
-		this.#dataSet.set(structure.id as K, structure);
-		return structure;
+		if (this.has(structure.id as K)) {
+			let cache: V = (this.get(structure.id as K) as V);
+			cache.update(Object.assign(cache, structure as any));
+			return cache;
+		} else {
+			this.#dataSet.set(structure.id as K, structure);
+			return structure;
+		}
 	}
 
 	/**
