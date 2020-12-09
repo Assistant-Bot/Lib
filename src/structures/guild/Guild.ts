@@ -163,6 +163,8 @@ export default class Guild extends Base {
 	public get channels(): GuildChannel[] {
 		const arr: GuildChannel[] = [];
 		for (let id of this.#boundChannels) {
+			// todo refactor
+			// make asyncable
 			arr.push(this.client.dataManager?.channels.get(id));
 		}
 		return arr.filter(c => c !== undefined);

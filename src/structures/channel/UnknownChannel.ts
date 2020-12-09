@@ -13,8 +13,14 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
+import Client from "../../Client.ts";
+import type { ChannelData } from "../../net/common/Types.ts";
 import Channel from "./Channel.ts";
 
-export default class DMChannel extends Channel { // TextChannel? // Just nullify guild
-	// I don't forsee a use case for this?
+export default class UnknownChannel extends Channel {
+	public readonly data: ChannelData;
+	public constructor(client: Client, data: ChannelData) {
+		super(client, data);
+		this.data = data;
+	}
 }

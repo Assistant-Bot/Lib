@@ -15,9 +15,16 @@
  */
 import Client from "../../../Client.ts";
 import RuntimeManager from "../../../data/runtime/RuntimeManager.ts";
-import RuntimeStore from "../../../data/runtime/RuntimeStore.ts";
+import Channel from "../../../structures/channel/Channel.ts";
+import type GroupChannel from "../../../structures/channel/GroupChannel.ts";
+import type DMChannel from "../../../structures/channel/GroupChannel.ts";
+import type UnknownChannel from "../../../structures/channel/UnknownChannel.ts";
 import ClientUser from "../../../structures/ClientUser.ts";
 import Guild from "../../../structures/guild/Guild.ts";
+import type NewsChannel from "../../../structures/guild/NewsChannel.ts";
+import type StoreChannel from "../../../structures/guild/StoreChannel.ts";
+import type TextChannel from "../../../structures/guild/TextChannel.ts";
+import type VoiceChannel from "../../../structures/guild/VoiceChannel.ts";
 import Message from "../../../structures/Message.ts";
 import { GuildData } from "../../common/Types.ts";
 import { Connector } from "../Connector.ts";
@@ -67,21 +74,26 @@ export default class Generic extends Connector {
 			}
 		}
 
-		// todo: Check the client data provider, and update based on that
-		if (packet.event === 'MESSAGE_CREATE') {
-			const m: Message = new Message(this.#client, packet.data);
-			this.#client.dataManager?.messages.set(m.id, m);
-			this.#client.dataManager?.users.set(m.author.id, m.author);
-			this.#client.emit('messageCreate', m);
-			this.#client.emit('message', m);
+		if (packet.event === "CHANNEL_CREATE") {
+			const channel: TextChannel | DMChannel | GroupChannel | NewsChannel | StoreChannel | VoiceChannel | UnknownChannel = Channel.from(this.#client, packet.data);
+			this.#client.dataManager?.channels.set(packet.data.id, channel)
+			this.#client.emit('channelCreate', channel);
 		}
 
-		if (packet.event === 'MESSAGE_UPDATE') {
-			const m: Message = new Message(this.#client, packet.data);
-			const cached = this.#client.dataManager?.messages.get(m.id);
-			this.#client.dataManager?.messages.set(m.id, m);
-			this.#client.dataManager?.users.set(m.author.id, m.author);
-			this.#client.emit('messageUpdate', m, cached || null);
+		if (packet.event === "CHANNEL_UPDATE") {
+			const channel: TextChannel | DMChannel | GroupChannel | NewsChannel | StoreChannel | VoiceChannel | UnknownChannel = Channel.from(this.#client, packet.data);
+			this.#client.dataManager?.channels.set(packet.data.id, channel)
+			this.#client.emit('channelUpdate', channel);
+		}
+
+		if (packet.event === "CHANNEL_DELETE") {
+			const channel: TextChannel | DMChannel | GroupChannel | NewsChannel | StoreChannel | VoiceChannel | UnknownChannel = this.#client.dataManager?.channels.get(packet.data);
+			this.#client.dataManager?.channels.delete(packet.data.id);
+			this.#client.emit('channelDelete', channel);
+		}
+
+		if (packet.event === "CHANNEL_PINS_UPDATE") {
+			// todo
 		}
 
 		if (packet.event === 'GUILD_CREATE') {
@@ -102,6 +114,40 @@ export default class Generic extends Connector {
 					this.#client.emit('guildCreate', guild);
 				}
 			}
+		}
+
+		if (packet.event === "GUILD_UPDATE") {
+			// todo: Refactor how updates are handled.
+			const guild: Guild = this.#client.dataManager?.guilds.update(new Guild(this.#client, packet.data));
+			this.#client.emit('guildUpdate', guild);
+		}
+
+		if (packet.event === "GUILD_DELETE") {
+			if (packet.data.unavailable === true) {
+				const guild: Guild = this.#client.dataManager?.guilds.get(packet.data) || new Guild(this.#client, packet.data);
+				guild.unavailable = true;
+				this.#client.emit('guildUnavailable', guild);
+			} else {
+				const guildOrPart: Guild | Partial<GuildData> = this.#client.dataManager?.guilds.get(packet.data) || packet.data;
+				this.#client.dataManager?.guilds.delete(packet.data.id);
+				this.#client.emit('guildDelete', guildOrPart);
+			}
+		}
+
+		if (packet.event === 'MESSAGE_CREATE') {
+			const m: Message = new Message(this.#client, packet.data);
+			this.#client.dataManager?.messages.set(m.id, m);
+			this.#client.dataManager?.users.set(m.author.id, m.author);
+			this.#client.emit('messageCreate', m);
+			this.#client.emit('message', m);
+		}
+
+		if (packet.event === 'MESSAGE_UPDATE') {
+			const m: Message = new Message(this.#client, packet.data);
+			const cached = this.#client.dataManager?.messages.get(m.id);
+			this.#client.dataManager?.messages.set(m.id, m);
+			this.#client.dataManager?.users.set(m.author.id, m.author);
+			this.#client.emit('messageUpdate', m, cached || null);
 		}
 	}
 

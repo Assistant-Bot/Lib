@@ -15,7 +15,7 @@
  */
 import type { Payload } from "../../net/ws/packet/Packet.ts";
 import Base from "../../structures/Base.ts";
-import Channel from "../../structures/Channel.ts";
+import Channel from "../../structures/channel/Channel.ts";
 import Emoji from "../../structures/guild/Emoji.ts";
 import Guild from "../../structures/guild/Guild.ts";
 import Message from "../../structures/Message.ts";

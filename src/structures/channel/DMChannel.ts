@@ -14,7 +14,7 @@
  * to remove this software from your device immediately.
  */
 import { MessageData } from "../../net/common/Types.ts";
-import Channel from "../Channel.ts";
+import Channel from "./Channel.ts";
 import Message, { MessageContent } from "../Message.ts";
 
 export default class DMChannel extends Channel { // TextChannel? // Just nullify guild

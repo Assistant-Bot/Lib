@@ -42,6 +42,7 @@ export type ClientEvents =
 	| "channelDelete"
 	| "pinUpdate"
 	| "guildAvailable"
+	| "guildUnavailable"
 	| "guildCreate"
 	| "guildUpdate"
 	| "guildDelete"

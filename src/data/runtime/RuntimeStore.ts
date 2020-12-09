@@ -38,6 +38,21 @@ export default class RuntimeStore<K extends string, V extends Base> extends Data
 	}
 
 	/**
+	 * Updates the structure in the store.
+	 *
+	 * @warn If it is a promise, there is no garauntee
+	 * it will update to the client accessor immediately.
+	 * @param data
+	 */
+	public updatePayload(data: any): V {
+		if (this.has(data.id)) {
+			return this.get(data.id)?.update(data)
+		} else {
+			return this.add(data) as V;
+		}
+	}
+
+	/**
 	 * Get the structure from the store.
 	 * @param id
 	 */

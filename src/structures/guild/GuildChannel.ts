@@ -14,10 +14,8 @@
  * to remove this software from your device immediately.
  */
 import type Client from "../../Client.ts";
-import type { ChannelData, MessageConstructorData, MessageData } from "../../net/common/Types.ts";
-import Endpoints from "../../net/rest/Endpoints.ts";
-import Channel from "../Channel.ts";
-import Message, { MessageContent } from "../Message.ts";
+import type { ChannelData } from "../../net/common/Types.ts";
+import Channel from "../channel/Channel.ts";
 import Guild from "./Guild.ts";
 
 export default class GuildChannel extends Channel {
