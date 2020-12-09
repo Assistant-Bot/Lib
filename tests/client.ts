@@ -37,5 +37,4 @@ const client = new Client({
 	}
 });
 
-
 client.connect(JSON.parse(new TextDecoder().decode(Deno.readFileSync('./tests/config.json'))).token);

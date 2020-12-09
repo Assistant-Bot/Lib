@@ -1,8 +1,8 @@
 {
-     "editor.tabSize": 4,
-	 "editor.detectIndentation": false,
-     "editor.insertSpaces": false,
-     "deno.enable": true,
-	 "deno.unstable": true,
-	 "deno.lint": false
+	"editor.tabSize": 4,
+	"editor.detectIndentation": false,
+	"editor.insertSpaces": false,
+	"deno.enable": true,
+	"deno.unstable": true,
+	"deno.lint": false
 }
