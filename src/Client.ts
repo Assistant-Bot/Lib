@@ -15,6 +15,7 @@
  */
 import { EventEmitter, GenericFunction, WrappedFunction } from 'https://deno.land/std@0.78.0/node/events.ts';
 import DataManager from "./data/DataManager.ts";
+import DataStore from "./data/DataStore.ts";
 import type { GatewayResponseBot, MessageData, RoleData } from "./net/common/Types.ts";
 import DiscordRequestHandler from "./net/rest/DiscordRequestHandler.ts";
 import Endpoints, { GATEWAY_URL } from "./net/rest/Endpoints.ts";
@@ -235,6 +236,9 @@ export default class Client extends EventEmitter {
 		this.#wsManager.connect(token);
 	}
 
+	/**
+	 * Gets the oauth application from discord.
+	 */
 	private async resolveApplication(): Promise<Application | null> {
 		const resp = await this.discordHandler.getApplication();
 
@@ -354,6 +358,9 @@ export default class Client extends EventEmitter {
 	 */
 	public on(event: "ws", listener: (ev: Payload) => any): this;
 
+	/**
+	 * Listen to a gateway event
+	 */
 	public on(event: ClientEvents, listener: GenericFunction | WrappedFunction): any {
 		return super.on(event, listener);
 	}
@@ -367,7 +374,7 @@ export default class Client extends EventEmitter {
 	}
 
 	/**
-	 * This determines how the client is handling guilds
+	 * Gets the current shard mode of the client.
 	 * EG:
 	 *  - Clusters
 	 *  - Shards
@@ -421,5 +428,47 @@ export default class Client extends EventEmitter {
 				this.#dataManager = store;
 			}
 		}
+	}
+
+	/**
+	 * Get all channels stored within the store.
+	 */
+	public get channels(): DataStore<string, any> {
+		return this.dataManager?.channels as DataStore<string, any>;
+	}
+
+	/**
+	 * Gets all the emoijs stored within the store.
+	 */
+	public get emoijs(): DataStore<string, any> {
+		return this.dataManager?.emojis as DataStore<string, any>;
+	}
+
+	/**
+	 * Get all guidls stored within the store.
+	 */
+	public get guilds(): DataStore<string, any> {
+		return this.dataManager?.guilds as DataStore<string, any>;
+	}
+
+	/**
+	 * Get all messages stored within the store.
+	 */
+	public get messages(): DataStore<string, any> {
+		return this.dataManager?.messages as DataStore<string, any>;
+	}
+
+	/**
+	 * Gets all the users stored within the store.
+	 */
+	public get users(): DataStore<string, any> {
+		return this.dataManager?.users as DataStore<string, any>;
+	}
+
+	/**
+	 * Gets all the reactions stored within the store.
+	 */
+	public get reactions(): DataStore<string, any> {
+		return this.dataManager?.reactions as DataStore<string, any>;
 	}
 }

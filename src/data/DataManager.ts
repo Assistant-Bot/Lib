@@ -26,7 +26,7 @@ export default abstract class DataManager {
 	/**
 	 * Gets all the emoijs stored within the store.
 	 */
-	public abstract get emoijs(): DataStore<string, any>;
+	public abstract get emojis(): DataStore<string, any>;
 
 	/**
 	 * Get all guidls stored within the store.

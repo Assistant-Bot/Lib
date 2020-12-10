@@ -52,7 +52,7 @@ export default class RuntimeManager extends DataManager {
 	/**
 	 * Gets all the emoijs stored within the store.
 	 */
-	public get emoijs(): any {
+	public get emojis(): any {
 		return this.#emojis;
 	}
 
