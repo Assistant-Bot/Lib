@@ -15,7 +15,7 @@
  */
 import AppCommand from "../../structures/application/AppCommand.ts";
 import { MessageContent } from "../../structures/Message.ts";
-import type { ApplicationCommandData, ApplicationData, InteractionResponse, MessageConstructorData, MessageData, Snowflake } from "../common/Types.ts";
+import type { ApplicationCommandData, ApplicationData, ChannelData, InteractionResponse, MessageConstructorData, MessageData, Snowflake } from "../common/Types.ts";
 import Endpoints, { BASE_API_URL } from "./Endpoints.ts";
 import RequestHandler from "./RequestHandler.ts";
 
@@ -82,6 +82,18 @@ class DiscordRequestHandler extends RequestHandler {
 	 */
 	public async pinMessage(channelId: string, messageId: string): Promise<void> {
 		await this.makeAndSend(Endpoints.channel_messages(channelId, messageId), 'PUT');
+	}
+
+	public async getChannel(channelId: string): Promise<ChannelData | false> {
+		const res: Response = await this.makeAndSend(
+			Endpoints.channel(channelId)
+		);
+
+		if (!res.ok) {
+			return false;
+		}
+		
+		return res.json();
 	}
 
 	public async getApplication(): Promise<ApplicationData|boolean> {

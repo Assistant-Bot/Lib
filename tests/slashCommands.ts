@@ -25,6 +25,7 @@ import { Payload } from "../src/net/ws/packet/Packet.ts";
 import AppCommand from "../src/structures/application/AppCommand.ts";
 import Interaction from "../src/structures/application/Interaction.ts";
 import Message from "../src/structures/Message.ts";
+import Embed from "../src/util/Embed.ts";
 
 const client = new Client({
 	sharding: {
@@ -44,6 +45,7 @@ const client = new Client({
 client.on('message', (message: Message)=> {
 	if (message.content === '!assistant') {
 		message.channel.send("Recieved response!");
+		message.channel.send(new Embed().setTitle('Test'));
 	}
 })
 
@@ -98,9 +100,29 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 		interaction.respond({
 			type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 			data: {
-				content: `:ping_pong: **Pong!** ${Date.now() - interaction.timestamp} ms`
+				content: `:ping_pong: **Pong!** ${Math.max(Math.floor((Date.now() - interaction.createdAt)), 10)} ms`
 			}
 		})
+	}
+
+	if (cmd === "embed") {
+		let title = (interaction.data.options as InteractionDataOption[])[0].value;
+		let description = (interaction.data.options as InteractionDataOption[])[1].value;
+		let color = (interaction.data.options as InteractionDataOption[])[2]
+			? (interaction.data.options as InteractionDataOption[])[2].value || "#fff000"
+			: "#fff000";
+
+		const embed: Embed = new Embed()
+			.setTitle(title)
+			.setDescription(description)
+			.setColor(color);
+
+		const channel = interaction.channel ?? await interaction.getChannel();
+		channel?.send(embed);
+
+		interaction.respond({
+			type: InteractionResponseType.ACK_WITH_SOURCE
+		}).catch(e => {})
 	}
 })
 
@@ -125,5 +147,33 @@ setTimeout(() => {
 		description: 'Ping Assistant.',
 		application_id: client.user.id,
 		guildId: '771479857514676245'
+	});
+
+
+	AppCommand.create(client, {
+		name: 'embed',
+		description: 'Make an embed',
+		application_id: client.user.id,
+		guildId: '771479857514676245',
+		options: [
+			{
+				name: 'title',
+				description: 'The title of the embed',
+				type: ApplicationOptionType.STRING,
+				required: true
+			},
+			{
+				name: 'description',
+				description: 'The description of the embed',
+				type: ApplicationOptionType.STRING,
+				required: true
+			},
+			{
+				name: 'color',
+				description: 'The color of the embed (hex)',
+				type: ApplicationOptionType.STRING,
+				required: false
+			}
+		]
 	});
 }, 2000);

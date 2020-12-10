@@ -23,13 +23,14 @@
 import Client from "../src/Client.ts";
 import { Payload } from "../src/net/ws/packet/Packet.ts";
 import Message from "../src/structures/Message.ts";
+import Embed from "../src/util/Embed.ts";
 
 const client = new Client({
 	sharding: {
 		useDiscord: true
 	},
 	connection: {
-		emitPayloads: true,
+		emitPayloads: false,
 		autoReconnect: true,
 		compress: false,
 		maxReconnectTries: 1,

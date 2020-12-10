@@ -25,14 +25,13 @@ export default class Interaction extends Base {
 	public type!: ApplicationOptionType;
 	public id!: string;
 	public data!: InteractionData;
-	public channel!: TextChannel;
 	public guild?: Guild;
-	public timestamp: number;
+	public channel!: TextChannel | null;
+	#channelid!: string;
 	#token!: string;
 
 	public constructor(client: Client, data: InteractionDataRecieve) {
 		super(client, data.id);
-		this.timestamp = Date.now();
 		this.update(data);
 	}
 
@@ -42,8 +41,27 @@ export default class Interaction extends Base {
 		this.id = data.id;
 		this.data = data.data;
 		this.#token = data.token;
-		this.channel = await this.client.channels.get(data.channel_id);
+		this.#channelid = data.channel_id;
+		this.channel = await this.client.channels.get(this.#channelid);
 		this.guild = await this.client.guilds.get(data.guild_id);
+	}
+
+	public async getChannel(): Promise<TextChannel | null> {
+		const chan = await this.client.channels.get(this.#channelid);
+
+		if (chan === null) {
+			let res = await this.request.getChannel(this.#channelid);
+			if (!!res) {
+				this.channel = new TextChannel(this.client, res);
+				this.client.channels.set(this.channel.id, this.channel);
+			}
+
+			return this.channel;
+		}
+
+		this.channel = chan;
+
+		return chan;
 	}
 
 	public async respond(response: InteractionResponse): Promise<void> {
