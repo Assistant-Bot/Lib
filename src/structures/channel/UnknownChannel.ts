@@ -27,6 +27,7 @@ export default class UnknownChannel extends Channel {
 	public readonly data: ChannelData;
 	public constructor(client: Client, data: ChannelData) {
 		super(client, data);
+		super.update(data);
 		this.data = data;
 	}
 }

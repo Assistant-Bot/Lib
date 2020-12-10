@@ -26,6 +26,7 @@ export default class GuildChannel extends Channel {
 
 	public constructor(client: Client, data: ChannelData) {
 		super(client, data);
+		super.update(data);
 		this.#guild_id = data.guild_id as string;
 		this.update(data);
 	}

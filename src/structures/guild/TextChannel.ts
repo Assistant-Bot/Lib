@@ -25,6 +25,7 @@ export default class TextChannel extends GuildChannel {
 
 	public constructor(client: Client, data: ChannelData) {
 		super(client, data);
+		super.update(data);
 		this.update(data);
 	}
 
