@@ -13,6 +13,7 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
+import Guild from "../../structures/guild/Guild.ts";
 
 /**
  * HTTP status codes
@@ -338,7 +339,7 @@ export interface EmojiData {
 export interface InviteData {
 	code: string;
 	channel: PartialChannelData;
-	guild?: string;
+	guild?: Guild;
 	inviter?: Partial<UserData>;
 	target_user?: Partial<UserData>;
 	target_user_type?: 1;

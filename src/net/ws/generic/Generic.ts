@@ -29,7 +29,7 @@ import type TextChannel from "../../../structures/guild/TextChannel.ts";
 import type VoiceChannel from "../../../structures/guild/VoiceChannel.ts";
 import Message from "../../../structures/Message.ts";
 import User from "../../../structures/User.ts";
-import { GuildData, RoleData } from "../../common/Types.ts";
+import { GuildData, InviteData, InviteMetadata, RoleData } from "../../common/Types.ts";
 import { Connector } from "../Connector.ts";
 import EventPacket from "../packet/EventPacket.ts";
 import { Payload } from "../packet/Packet.ts";
@@ -96,7 +96,11 @@ export default class Generic extends Connector {
 		}
 
 		if (packet.event === "CHANNEL_PINS_UPDATE") {
-			// todo
+			console.log(packet.data)
+			const channel: TextChannel = this.#client.dataManager?.channels.get(packet.data.channel_id)
+			if(!channel) return // ???
+			channel.lastPinTimestamp = Date.parse(packet.data.last_pin_timestamp);
+			this.#client.emit('pinUpdate', channel, channel.lastPinTimestamp)
 		}
 
 		if (packet.event === 'GUILD_CREATE') {
@@ -151,6 +155,18 @@ export default class Generic extends Connector {
 			this.#client.dataManager?.messages.set(m.id, m);
 			this.#client.dataManager?.users.set(m.author.id, m.author);
 			this.#client.emit('messageUpdate', m, cached || null);
+		}
+
+		if(packet.event === 'MESSAGE_DELETE') {
+			const m: Message = this.#client.dataManager?.messages.get(packet.data.id);
+			this.#client.dataManager?.messages.delete(packet.data.id)
+			this.#client.emit('messageDelete', m)
+		}
+
+		if(packet.event === 'MESSAGE_DELETE_BULK') {
+			const m: (Message | string)[] = packet.data.ids.map((id: string) => this.#client.dataManager?.messages.get(id) || id);
+			packet.data.ids.map((id: string) => this.#client.dataManager?.messages.delete(id));
+			this.#client.emit('messageDeleteBulk', m); // idk if you'll like this john :^|
 		}
 
 		if (packet.event === "GUILD_BAN_ADD") {
@@ -233,6 +249,14 @@ export default class Generic extends Connector {
 			const role: Role | Partial<RoleData> = guild.roles.get(packet.data.role_id) || { id: packet.data.role_id };
 			guild.roles.delete(role.id as string);
 			this.#client.emit('roleDelete', role, guild);
+		}
+
+		if(packet.event === 'INVITE_CREATE') {
+			this.#client.emit('inviteCreate', packet.data as InviteData)
+		}
+
+		if(packet.event === 'INVITE_DELETE') {
+			this.#client.emit('inviteDelete', packet.data.guild_id, packet.data.code);
 		}
 	}
 

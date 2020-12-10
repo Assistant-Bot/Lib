@@ -21,6 +21,7 @@ import GuildChannel from "./GuildChannel.ts";
 export default class TextChannel extends GuildChannel {
 	public lastMessageId?: string;
 	public lastMessage?: Message;
+	public lastPinTimestamp?: number;
 	public rateLimitPerUser?: number;
 
 	public constructor(client: Client, data: ChannelData) {
@@ -42,6 +43,10 @@ export default class TextChannel extends GuildChannel {
 					this.lastMessage = await this.lastMessage;
 				}
 			}
+		}
+
+		if(data.last_pin_timestamp) {
+			this.lastPinTimestamp = Date.parse(data.last_pin_timestamp)
 		}
 	}
 
