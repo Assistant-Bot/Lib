@@ -15,12 +15,15 @@
  */
 import Client from "../../../Client.ts";
 import RuntimeManager from "../../../data/runtime/RuntimeManager.ts";
+import AppCommand from "../../../structures/application/AppCommand.ts";
+import Interaction from "../../../structures/application/Interaction.ts";
 import type GroupChannel from "../../../structures/channel/GroupChannel.ts";
 import type DMChannel from "../../../structures/channel/GroupChannel.ts";
 import UnknownChannel, { makeChannel } from "../../../structures/channel/UnknownChannel.ts";
 import ClientUser from "../../../structures/ClientUser.ts";
 import Emoji from "../../../structures/guild/Emoji.ts";
 import Guild from "../../../structures/guild/Guild.ts";
+import Invite from "../../../structures/guild/Invite.ts";
 import Member from "../../../structures/guild/Member.ts";
 import type NewsChannel from "../../../structures/guild/NewsChannel.ts";
 import Role from "../../../structures/guild/Role.ts";
@@ -61,7 +64,7 @@ export default class Generic extends Connector {
 
 		if (packet.event === "READY") {
 			this.#client.user = new ClientUser(this.#client, packet.data.user);
-			this.#client.emit('ready');
+			this.#client.emit('ready', packet.data.session_id);
 
 			for (let guild of packet.data.guilds) {
 				if (guild.unavailable === true) {
@@ -96,11 +99,13 @@ export default class Generic extends Connector {
 		}
 
 		if (packet.event === "CHANNEL_PINS_UPDATE") {
-			console.log(packet.data)
-			const channel: TextChannel = this.#client.dataManager?.channels.get(packet.data.channel_id)
-			if(!channel) return // ???
+			const channel: TextChannel = this.#client.dataManager?.channels.get(packet.data.channel_id);
+			if(!channel) {
+				this.#client.emit('pinUpdate', packet.data); // in case they really need this event.
+				return;
+			}
 			channel.lastPinTimestamp = Date.parse(packet.data.last_pin_timestamp);
-			this.#client.emit('pinUpdate', channel, channel.lastPinTimestamp)
+			this.#client.emit('pinUpdate', channel, channel.lastPinTimestamp);
 		}
 
 		if (packet.event === 'GUILD_CREATE') {
@@ -231,32 +236,38 @@ export default class Generic extends Connector {
 		}
 
 		if (packet.event === "GUILD_ROLE_CREATE") {
-			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
+			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id) || { id: packet.data.guild_id };
 			const role: Role = new Role(this.#client, packet.data.role);
 			guild.roles.set(packet.data.role.id, role);
 			this.#client.emit('roleCreate', role, guild);
 		}
 
 		if (packet.event === "GUILD_ROLE_UPDATE") {
-			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
+			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id) || { id: packet.data.guild_id };
 			const role: Role = guild.roles.get(packet.data.role.id) || new Role(this.#client, packet.data.role);
 			role.update(Object.assign(role, packet.data));
 			this.#client.emit('roleUpdate', role, guild);
 		}
 
 		if (packet.event === "GUILD_ROLE_DELETE") {
-			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
+			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id) || { id: packet.data.guild_id };
 			const role: Role | Partial<RoleData> = guild.roles.get(packet.data.role_id) || { id: packet.data.role_id };
 			guild.roles.delete(role.id as string);
 			this.#client.emit('roleDelete', role, guild);
 		}
 
-		if(packet.event === 'INVITE_CREATE') {
-			this.#client.emit('inviteCreate', packet.data as InviteData)
+		if (packet.event === 'INVITE_CREATE') {
+			this.#client.emit('inviteCreate', new Invite(this.#client, packet.data as InviteData))
 		}
 
-		if(packet.event === 'INVITE_DELETE') {
-			this.#client.emit('inviteDelete', packet.data.guild_id, packet.data.code);
+		if (packet.event === 'INVITE_DELETE') {
+			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id) || { id: packet.data.guild_id };
+			this.#client.emit('inviteDelete', guild, packet.data.code);
+		}
+
+		if (packet.event === "INTERACTION_CREATE") {
+			const interaction: Interaction = new Interaction(this.#client, packet.data);
+			this.#client.emit('interactionCreate', interaction);
 		}
 	}
 

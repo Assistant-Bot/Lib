@@ -159,6 +159,8 @@ export default class RequestHandler {
 						}
 
 						if (res.status === 400) {
+							console.log(res.url)
+							console.log(req);
 							reject(new ResponseError('Bad Request', res));
 						}
 

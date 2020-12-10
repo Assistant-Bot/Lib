@@ -46,13 +46,16 @@ client.on('message', (message: Message)=> {
 })
 
 client.on('ws', (m: Payload) => {
-	console.log(Deno.inspect(m, { depth: 2 }));
+	//console.log(Deno.inspect(m, { depth: 2 }));
 })
 
 await client.connect(JSON.parse(new TextDecoder().decode(Deno.readFileSync('./tests/config.json'))).token);
 
-AppCommand.create(client, {
-	name: 'test',
-	description: 'A simple test!',
-	application_id: '@me'
-});
+setTimeout(() => {
+	AppCommand.create(client, {
+		name: 'eval',
+		description: 'Evaluates JS Code.',
+		application_id: client.user.id,
+		guildId: '771479857514676245'
+	});
+}, 2000);

@@ -13,13 +13,15 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import { InviteData, PartialChannelData } from "../../net/common/Types.ts";
-import User from "../User.ts";
+import type Client from "../../Client.ts";
+import type { GuildData, InviteData, PartialChannelData } from "../../net/common/Types.ts";
+import Base from "../Base.ts";
+import type User from "../User.ts";
 import Guild from "./Guild.ts";
 
-export default class Invite {
+export default class Invite extends Base {
 	public code!: string;
-	public guild?: Guild;
+	public guild?: Partial<Guild> | Partial<GuildData>;
 	public channel!: PartialChannelData;
 	public inviter!: Partial<User>;
 	public targetUser?: Partial<User>;
@@ -27,18 +29,24 @@ export default class Invite {
 	public approximatePresenceCount!: number;
 	public approximateMemberCount!: number;
 
-	public constructor(data: InviteData) {
+	public constructor(client: Client, data: InviteData) {
+		super(client, '0');
 		this.update(data);
 	}
 
-	public update(data: InviteData) {
+	public async update(data: InviteData): Promise<void> {
 		this.code = data.code;
-		this.guild = data.guild;
 		this.channel = data.channel;
 		this.inviter = data.inviter as Partial<User>;
 		this.targetUser = data.target_user;
 		this.targetUserType = 1;
 		this.approximateMemberCount = data.approximate_member_count || 0;
 		this.approximatePresenceCount = data.approximate_presence_count || 0;
+
+		if (!await this.client.guilds.has((data.guild as GuildData).id)) {
+			this.guild = data.guild;
+		} else {
+			this.guild = await this.client.guilds.get((data.guild as GuildData).id);
+		}
 	}
 }
