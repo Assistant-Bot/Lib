@@ -15,10 +15,9 @@
  */
 import Client from "../../../Client.ts";
 import RuntimeManager from "../../../data/runtime/RuntimeManager.ts";
-import Channel from "../../../structures/channel/Channel.ts";
 import type GroupChannel from "../../../structures/channel/GroupChannel.ts";
 import type DMChannel from "../../../structures/channel/GroupChannel.ts";
-import type UnknownChannel from "../../../structures/channel/UnknownChannel.ts";
+import UnknownChannel, { makeChannel } from "../../../structures/channel/UnknownChannel.ts";
 import ClientUser from "../../../structures/ClientUser.ts";
 import Emoji from "../../../structures/guild/Emoji.ts";
 import Guild from "../../../structures/guild/Guild.ts";
@@ -79,13 +78,13 @@ export default class Generic extends Connector {
 		}
 
 		if (packet.event === "CHANNEL_CREATE") {
-			const channel: TextChannel | DMChannel | GroupChannel | NewsChannel | StoreChannel | VoiceChannel | UnknownChannel = Channel.from(this.#client, packet.data);
+			const channel: TextChannel | DMChannel | GroupChannel | NewsChannel | StoreChannel | VoiceChannel | UnknownChannel = makeChannel(this.#client, packet.data);
 			this.#client.dataManager?.channels.set(packet.data.id, channel)
 			this.#client.emit('channelCreate', channel);
 		}
 
 		if (packet.event === "CHANNEL_UPDATE") {
-			const channel: TextChannel | DMChannel | GroupChannel | NewsChannel | StoreChannel | VoiceChannel | UnknownChannel = Channel.from(this.#client, packet.data);
+			const channel: TextChannel | DMChannel | GroupChannel | NewsChannel | StoreChannel | VoiceChannel | UnknownChannel = makeChannel(this.#client, packet.data);
 			this.#client.dataManager?.channels.set(packet.data.id, channel)
 			this.#client.emit('channelUpdate', channel);
 		}

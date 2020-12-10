@@ -354,8 +354,26 @@ export interface InviteMetadata {
 	created_at: string;
 }
 
+export interface ApplicationData {
+	name: string;
+    icon: string;
+    description: string;
+    rpc_origins?: string[];
+    bot_public: boolean;
+    bot_require_code_grant: boolean;
+    owner: UserData;
+    summary: string;
+    verify_key: string;
+    team?: any;
+    guild_id?: string;
+    primary_sku_id?: string;
+    slug?: string;
+    cover_image?: string;
+}
+
 /** Generalized Types */
 export type AnyStructureData =
+	| ApplicationData
 	| UserData
 	| UserFlags
 	| MessageData

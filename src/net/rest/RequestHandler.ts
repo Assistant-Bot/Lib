@@ -13,7 +13,7 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import Sleep from "../../util/Sleep.ts";
+import { Sleep } from "../../util/Async.ts";
 import type { HTTPMethod } from "../common/Types.ts";
 import { BASE_URL } from "./Endpoints.ts";
 

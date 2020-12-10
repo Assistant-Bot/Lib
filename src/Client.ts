@@ -29,6 +29,7 @@ import Guild from "./structures/guild/Guild.ts";
 import Member from "./structures/guild/Member.ts";
 import Role from "./structures/guild/Role.ts";
 import Message from "./structures/Message.ts";
+import Application from "./structures/oauth/Application.ts";
 import User from "./structures/User.ts";
 
 /**
@@ -162,6 +163,7 @@ export type ClientShardMode = 'Nodes' | 'Shards' | 'Clusters';
 
 export default class Client extends EventEmitter {
 	public readonly options: ClientOptions;
+	public application: Application | null;
 	public requestHandler!: RequestHandler;
 	public discordHandler!: DiscordRequestHandler;
 	public user!: ClientUser;
@@ -193,6 +195,7 @@ export default class Client extends EventEmitter {
 		}
 
 		this.options = Object.assign(defaults, opts);
+		this.application = null;
 
 		if (customStore) {
 			this.#dataManager = customStore;
@@ -228,7 +231,16 @@ export default class Client extends EventEmitter {
 			this.#wsManager = new Generic(this, GATEWAY_URL);
 		}
 
+		this.application = await this.resolveApplication();
 		this.#wsManager.connect(token);
+	}
+
+	private async resolveApplication(): Promise<Application | null> {
+		const resp = await this.discordHandler.getApplication();
+
+		if (!resp) return null;
+
+		return new Application(this, resp);
 	}
 
 	/**

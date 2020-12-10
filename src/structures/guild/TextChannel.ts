@@ -63,6 +63,16 @@ export default class TextChannel extends GuildChannel {
 		return m;
 	}
 
+	/**
+	 * Sends a codeblock
+	 * @param code
+	 * @param content
+	 * @deprecated
+	 */
+	public async sendBlock(code: string, content: string): Promise<Message> {
+		return this.send("```" + code + "\n" + content + "\n```");
+	}
+
 	public async deleteMessage(id: Snowflake<18>): Promise<boolean> {
 		return await this.request.deleteMessage(this.id, id);
 	}

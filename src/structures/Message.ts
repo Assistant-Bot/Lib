@@ -44,6 +44,7 @@ export default class Message extends Base {
 	public content!: string;
 	public timestamp!: number;
 	public prefix?: string;
+	public args!: string[];
 
 	public constructor(client: Client, data: MessageData) {
 		super(client, data.id);
@@ -69,7 +70,12 @@ export default class Message extends Base {
 		return (this.channel as GuildChannel).guild;
 	}
 
-	public async edit(content: MessageConstructorData): Promise<Message> {
+	public async edit(content: MessageConstructorData | string): Promise<Message> {
+		if (typeof content === "string") {
+			content = {
+				content: content
+			}
+		}
 		const mData: MessageData = await this.request.editMessage(this.channel.id, this.id, content);
 		const m: Message = new Message(this.client, mData);
 		this.client.dataManager?.messages.set(m.id, m);
@@ -102,5 +108,18 @@ export default class Message extends Base {
 
 	public async pin(): Promise<void> {
 		return await this.request.pinMessage(this.channel.id, this.id);
+	}
+
+	/**
+	 * [UTILITY]
+	 * Gets the command from the sent message. (will be deprecated in the future)
+	 * @param prefix
+	 */
+	public getCommand(prefix: string = "!"): string {
+        if (this.content && this.content.indexOf(prefix) === 0) {
+            this.args = this.content.slice(prefix.length).trim().split(/ +/g);
+            return this.args.shift()?.toLowerCase() || "";
+        }
+        return "";
 	}
 }

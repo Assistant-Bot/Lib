@@ -14,8 +14,8 @@
  * to remove this software from your device immediately.
  */
 import { MessageContent } from "../../structures/Message.ts";
-import type { MessageConstructorData, MessageData, Snowflake } from "../common/Types.ts";
-import Endpoints from "./Endpoints.ts";
+import type { ApplicationData, MessageConstructorData, MessageData, Snowflake } from "../common/Types.ts";
+import Endpoints, { BASE_API_URL } from "./Endpoints.ts";
 import RequestHandler from "./RequestHandler.ts";
 
 class DiscordRequestHandler extends RequestHandler {
@@ -76,11 +76,19 @@ class DiscordRequestHandler extends RequestHandler {
 
 	/**
 	 * Pins a message in a channel
-	 * @param channelId 
-	 * @param messageId 
+	 * @param channelId
+	 * @param messageId
 	 */
 	public async pinMessage(channelId: string, messageId: string): Promise<void> {
 		await this.makeAndSend(Endpoints.channel_messages(channelId, messageId), 'PUT');
+	}
+
+	public async getApplication(): Promise<ApplicationData|boolean> {
+		const res: Response = await this.request(new Request(BASE_API_URL + Endpoints.discordApplication()));
+		if (!res.ok) {
+			return false;
+		}
+		return res.json();
 	}
 }
 
