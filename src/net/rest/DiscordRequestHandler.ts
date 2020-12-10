@@ -13,8 +13,9 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
+import AppCommand from "../../structures/application/AppCommand.ts";
 import { MessageContent } from "../../structures/Message.ts";
-import type { ApplicationData, MessageConstructorData, MessageData, Snowflake } from "../common/Types.ts";
+import type { ApplicationCommandData, ApplicationData, MessageConstructorData, MessageData, Snowflake } from "../common/Types.ts";
 import Endpoints, { BASE_API_URL } from "./Endpoints.ts";
 import RequestHandler from "./RequestHandler.ts";
 
@@ -85,6 +86,39 @@ class DiscordRequestHandler extends RequestHandler {
 
 	public async getApplication(): Promise<ApplicationData|boolean> {
 		const res: Response = await this.request(new Request(BASE_API_URL + Endpoints.discordApplication()));
+		if (!res.ok) {
+			return false;
+		}
+		return res.json();
+	}
+
+	public async getApplicationId(id: string): Promise<ApplicationData|boolean> {
+		const res: Response = await this.request(new Request(BASE_API_URL + Endpoints.discordApplication(id)));
+		if (!res.ok) {
+			return false;
+		}
+		return res.json();
+	}
+
+	public async createAppGlobalCommand(id: string, command: ApplicationCommandData): Promise<ApplicationCommandData|false> {
+		const res: Response = await this.makeAndSend(
+			Endpoints.applicationCommand(id),
+			'POST',
+			command
+		)
+
+		if (!res.ok) {
+			return false;
+		}
+		return res.json();
+	}
+
+	public async deleteAppGlobalCommand(id: string, command: ApplicationCommandData): Promise<ApplicationCommandData|false> {
+		const res: Response = await this.makeAndSend(
+			Endpoints.applicationCommand(id) + "/commands/" + command.id,
+			'POST'
+		)
+
 		if (!res.ok) {
 			return false;
 		}

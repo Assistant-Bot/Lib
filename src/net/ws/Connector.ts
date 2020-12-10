@@ -71,7 +71,8 @@ export abstract class Connector {
 			// to-do handle zlib
 			this.ws.send(JSON.stringify(payload));
 			return;
-		} catch {
+		} catch (e) {
+			console.error(e);
 			return;
 		}
 	}
@@ -126,10 +127,9 @@ export abstract class Connector {
 		switch (payload.op) {
 			case OPCode.HELLO:
 				packet = HeartBeatPacket.from(payload);
-				if (this.#heartInterval) {
+				if (!!this.#heartInterval) {
 					this.close();
-					this.wsError(new Error('Already initialized'));
-					return;
+					throw new Error('Got op: 1 while already connected.');
 				} else {
 					this.#heartInterval = setInterval(() => {
 						// @ts-ignore
@@ -151,7 +151,7 @@ export abstract class Connector {
 					this.sessionId = packet.data.session_id;
 				}
 				break;
-			case OPCode.HEARTBEAT_ACK:
+			case OPCode.HEARTBEAT:
 				this.#lastAck = Date.now();
 				return;
 			default:

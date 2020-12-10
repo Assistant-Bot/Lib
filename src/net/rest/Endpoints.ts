@@ -62,4 +62,12 @@ export default class Endpoints {
 	public static discordApplication(id: string = "@me"): string {
 		return '/oauth2/applications/' + id;
 	}
+
+	public static applicationCommand(id: string): string {
+		return BASE_URL + "/applications/" + id + "/commands";
+	}
+
+	public static applicationCommandGuild(id: string, guildId: string): string {
+		return BASE_URL + "/applications/" + id + "/guilds/" + guildId + "/commands";
+	}
 }

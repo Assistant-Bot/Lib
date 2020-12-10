@@ -371,6 +371,30 @@ export interface ApplicationData {
 	cover_image?: string;
 }
 
+// command stuff
+export interface ApplicationCommandChoice {
+	name: string;
+	value: string | number;
+}
+
+export interface ApplicationCommandOption {
+	name: string;
+	description: string;
+	type: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+	default?: boolean;
+	required?: boolean;
+	choices?: ApplicationCommandChoice[];
+	options?: ApplicationCommandOption
+}
+
+export interface ApplicationCommandData {
+	id?: string;
+	application_id?: string;
+	name: string;
+	description: string;
+	options?: ApplicationCommandOption[];
+}
+
 /** Generalized Types */
 export type AnyStructureData =
 	| ApplicationData
@@ -388,4 +412,5 @@ export type AnyStructureData =
 	| MemberData
 	| InviteData
 	| InviteMetadata
-	| EmojiData;
+	| EmojiData
+	| ApplicationCommandData;

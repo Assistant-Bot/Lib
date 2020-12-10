@@ -21,6 +21,7 @@
  */
 import Client from "../src/Client.ts";
 import { Payload } from "../src/net/ws/packet/Packet.ts";
+import AppCommand from "../src/structures/application/AppCommand.ts";
 import Message from "../src/structures/Message.ts";
 
 const client = new Client({
@@ -50,16 +51,8 @@ client.on('ws', (m: Payload) => {
 
 await client.connect(JSON.parse(new TextDecoder().decode(Deno.readFileSync('./tests/config.json'))).token);
 
-client.sendPayload({
-	t: "GUILD_APPLICATION_COMMANDS_UPDATE",
-	op: 0,
-	d: {
-		guild_id: "771479857514676245",
-		applications_commands: [
-			{
-				name: "test",
-				description: "Hi there, i do something"
-			}
-		]
-	}
-})
+AppCommand.create(client, {
+	name: 'test',
+	description: 'A simple test!',
+	application_id: '@me'
+});
