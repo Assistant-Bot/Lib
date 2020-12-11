@@ -21,8 +21,10 @@ import UnknownChannel, { makeChannel } from "../../../structures/channel/Unknown
 import ClientUser from "../../../structures/ClientUser.ts";
 import Emoji from "../../../structures/guild/Emoji.ts";
 import Guild from "../../../structures/guild/Guild.ts";
+import Invite from "../../../structures/guild/Invite.ts";
 import Member from "../../../structures/guild/Member.ts";
 import type NewsChannel from "../../../structures/guild/NewsChannel.ts";
+import Presence from "../../../structures/guild/Presence.ts";
 import Role from "../../../structures/guild/Role.ts";
 import type StoreChannel from "../../../structures/guild/StoreChannel.ts";
 import type TextChannel from "../../../structures/guild/TextChannel.ts";
@@ -169,6 +171,48 @@ export default class Generic extends Connector {
 			this.#client.emit('messageDeleteBulk', m); // idk if you'll like this john :^|
 		}
 
+		if(packet.event === 'MESSAGE_REACTION_ADD') {
+			const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
+			const mm: Member = this.#client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.user_id);
+			const e: Partial<Emoji> = new Emoji(this.#client, packet.data)
+			this.#client.emit('messageReactionAdd', m, mm, e);
+		}
+
+		if(packet.event === 'MESSAGE_REACTION_REMOVE') {
+			const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
+			const mm: Member = this.#client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.member.id);
+			const e: Partial<Emoji> = new Emoji(this.#client, packet.data)
+			this.#client.emit('messageReactionRemove', m, mm, e);
+		}
+
+		if(packet.event === 'MESSAGE_REACTION_REMOVE_ALL') {
+			const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
+			this.#client.emit('messageReactionRemoveAll', m);
+		}
+
+		if(packet.event === 'MESSAGE_REACTION_REMOVE_EMOJI') {
+			const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
+			const mm: Member = this.#client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.member.id);
+			const e: Partial<Emoji> = new Emoji(this.#client, packet.data)
+			this.#client.emit('messageReactionRemoveEmoji', m, mm, e);
+		}
+
+		if(packet.event === 'PRESENCE_UPDATE') {
+			const p: Presence = new Presence(packet.data);
+			this.#client.emit('presenceUpdate', p);
+		}
+
+		if(packet.event === 'TYPINGS_START') {
+			const m: Member = new Member(this.#client, packet.data.member);
+			const ch: TextChannel = this.#client.dataManager?.channels.get(packet.data.channel_id);
+			this.#client.emit('typingStart', m, ch, packet.data.timestamp as number)
+		}
+
+		if(packet.event === 'USER_UPDATE') {
+			const user: User = new User(this.#client, packet.data); // Should we fetch???
+			this.#client.emit('userUpdate', user);
+		}
+
 		if (packet.event === "GUILD_BAN_ADD") {
 			// we're making an object here because we dont need to fetch from the datastore.
 			const user: User = new User(this.#client, packet.data);
@@ -252,7 +296,7 @@ export default class Generic extends Connector {
 		}
 
 		if(packet.event === 'INVITE_CREATE') {
-			this.#client.emit('inviteCreate', packet.data as InviteData)
+			this.#client.emit('inviteCreate', new Invite(packet.data))
 		}
 
 		if(packet.event === 'INVITE_DELETE') {
