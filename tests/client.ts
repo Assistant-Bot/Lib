@@ -21,16 +21,16 @@
  * @template client
  */
 import Client from "../src/Client.ts";
-import RuntimeManager from "../src/data/runtime/RuntimeManager.ts";
 import { Payload } from "../src/net/ws/packet/Packet.ts";
 import Message from "../src/structures/Message.ts";
+import Embed from "../src/util/Embed.ts";
 
 const client = new Client({
 	sharding: {
 		useDiscord: true
 	},
 	connection: {
-		emitPayloads: true,
+		emitPayloads: false,
 		autoReconnect: true,
 		compress: false,
 		maxReconnectTries: 1,
@@ -38,7 +38,7 @@ const client = new Client({
 		respectDiscordGateway: true,
 		timeout: 1000
 	}
-}, new RuntimeManager());
+});
 
 client.on("ws", (ev: Payload) => {
 	console.log(Deno.inspect(ev, { depth: 2, colors: true }));

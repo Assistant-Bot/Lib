@@ -15,7 +15,7 @@
  */
 import AppCommand from "../../structures/application/AppCommand.ts";
 import { MessageContent } from "../../structures/Message.ts";
-import type { ApplicationCommandData, ApplicationData, MessageConstructorData, MessageData, Snowflake } from "../common/Types.ts";
+import type { ApplicationCommandData, ApplicationData, ChannelData, InteractionResponse, MessageConstructorData, MessageData, Snowflake } from "../common/Types.ts";
 import Endpoints, { BASE_API_URL } from "./Endpoints.ts";
 import RequestHandler from "./RequestHandler.ts";
 
@@ -84,6 +84,18 @@ class DiscordRequestHandler extends RequestHandler {
 		await this.makeAndSend(Endpoints.channel_messages(channelId, messageId), 'PUT');
 	}
 
+	public async getChannel(channelId: string): Promise<ChannelData | false> {
+		const res: Response = await this.makeAndSend(
+			Endpoints.channel(channelId)
+		);
+
+		if (!res.ok) {
+			return false;
+		}
+		
+		return res.json();
+	}
+
 	public async getApplication(): Promise<ApplicationData|boolean> {
 		const res: Response = await this.request(new Request(BASE_API_URL + Endpoints.discordApplication()));
 		if (!res.ok) {
@@ -123,6 +135,45 @@ class DiscordRequestHandler extends RequestHandler {
 			return false;
 		}
 		return res.json();
+	}
+
+	public async createAppCommand(id: string, guild: string, command: ApplicationCommandData): Promise<ApplicationCommandData|false> {
+		const res: Response = await this.makeAndSend(
+			Endpoints.applicationCommandGuild(id, guild),
+			'POST',
+			command
+		)
+
+		if (!res.ok) {
+			return false;
+		}
+		return res.json();
+	}
+
+	public async deleteAppCommand(id: string, guild: string, command: ApplicationCommandData): Promise<ApplicationCommandData|false> {
+		const res: Response = await this.makeAndSend(
+			Endpoints.applicationCommandGuild(id, guild),
+			'POST'
+		)
+
+		if (!res.ok) {
+			return false;
+		}
+		return res.json();
+	}
+
+	public async createInteractionResponse(id: string, token: string, data: InteractionResponse): Promise<boolean> {
+		const res: Response = await this.makeAndSend(
+			Endpoints.interactionResponse(id, token),
+			"POST",
+			data
+		);
+
+		if (!res.ok) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 }
 

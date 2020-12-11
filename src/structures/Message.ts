@@ -54,8 +54,13 @@ export default class Message extends Base {
 	public update(data: MessageData): void {
 		// todo: make this be fetched if it does not exist (some how)
 		this.channel = this.client.dataManager?.channels.get(data.channel_id) || null;
-		this.author = new User(this.client, data.author);
-		this.content = data.content;
+		if (data.author) {
+			this.author = new User(this.client, data.author);
+		}
+
+		if (data.content) {
+			this.content = data.content;
+		}
 		this.timestamp = Date.parse(data.timestamp);
 	}
 

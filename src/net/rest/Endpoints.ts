@@ -64,10 +64,14 @@ export default class Endpoints {
 	}
 
 	public static applicationCommand(id: string): string {
-		return BASE_URL + "/applications/" + id + "/commands";
+		return "/applications/" + id + "/commands";
 	}
 
 	public static applicationCommandGuild(id: string, guildId: string): string {
-		return BASE_URL + "/applications/" + id + "/guilds/" + guildId + "/commands";
+		return "/applications/" + id + "/guilds/" + guildId + "/commands";
+	}
+
+	public static interactionResponse(id: string, token: string): string {
+		return "/interactions/" + id + "/" + token + "/callback";
 	}
 }

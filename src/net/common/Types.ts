@@ -13,7 +13,7 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import Guild from "../../structures/guild/Guild.ts";
+import Member from "../../structures/guild/Member.ts";
 
 /**
  * HTTP status codes
@@ -339,7 +339,7 @@ export interface EmojiData {
 export interface InviteData {
 	code: string;
 	channel: PartialChannelData;
-	guild?: Guild;
+	guild?: Partial<GuildData>;
 	inviter?: Partial<UserData>;
 	target_user?: Partial<UserData>;
 	target_user_type?: 1;
@@ -373,6 +373,17 @@ export interface ApplicationData {
 }
 
 // command stuff
+export enum ApplicationOptionType {
+	SUB_COMMAND = 1,
+	SUB_COMMAND_GROUP = 2,
+	STRING = 3,
+	INTEGER = 4,
+	BOOLEAN = 5,
+	USER = 6,
+	CHANNEL = 7,
+	ROLE = 8,
+}
+
 export interface ApplicationCommandChoice {
 	name: string;
 	value: string | number;
@@ -381,11 +392,11 @@ export interface ApplicationCommandChoice {
 export interface ApplicationCommandOption {
 	name: string;
 	description: string;
-	type: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+	type: ApplicationOptionType;
 	default?: boolean;
 	required?: boolean;
 	choices?: ApplicationCommandChoice[];
-	options?: ApplicationCommandOption
+	options?: ApplicationCommandOption;
 }
 
 export interface ApplicationCommandData {
@@ -394,6 +405,63 @@ export interface ApplicationCommandData {
 	name: string;
 	description: string;
 	options?: ApplicationCommandOption[];
+}
+
+export interface InteractionDataOption {
+	/** The name of the parammeter */
+	name: string;
+	/** The value of the pair */
+	value?: any;
+	/** Present if this option is a group or subcommand */
+	options?: InteractionDataOption[];
+}
+
+export interface InteractionData {
+	name: string;
+	id: string;
+	options?: InteractionDataOption[];
+}
+
+export interface InteractionDataRecieve {
+	/** id of the command */
+	id: string;
+	name: string;
+	member: MemberData;
+	type: ApplicationOptionType;
+	token: string;
+	guild_id: string;
+	channel_id: string;
+	mentions: any[];
+	mention_everyone: boolean;
+	data: InteractionData;
+}
+
+export interface InteractionResponse {
+	/** The type of response */
+	type: InteractionResponseType;
+	/** The optional response message */
+	data?: ApplicationCommandCallbackData;
+}
+
+export interface ApplicationCommandCallbackData {
+	tts?: boolean;
+	content: string;
+	embeds?: EmbedData[];
+	allowed_mentions?: "roles" | "users" | "everyone";
+	flags?: number;
+}
+
+export enum InteractionType {
+	PING = 1,
+	APPLICATION_COMMAND = 2
+}
+
+export enum InteractionResponseType {
+	PONG = 1,
+	ACKNOWLEDGE = 2,
+	CHANNEL_MESSAGE = 3,
+	CHANNEL_MESSAGE_WITH_SOURCE = 4,
+	ACK_WITH_SOURCE = 5
 }
 
 /** Generalized Types */

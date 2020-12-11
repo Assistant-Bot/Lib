@@ -14,7 +14,7 @@
  * to remove this software from your device immediately.
  */
 import Client from "../../Client.ts";
-import { ApplicationCommandData, ApplicationCommandOption } from "../../net/common/Types.ts";
+import { ApplicationCommandData, ApplicationCommandOption, ApplicationData } from "../../net/common/Types.ts";
 import Endpoints from "../../net/rest/Endpoints.ts";
 import Base from "../Base.ts";
 import Application from "../oauth/Application.ts";
@@ -33,7 +33,7 @@ export default class AppCommand extends Base {
 	public name!: string;
 	public description!: string;
 	public options!: ApplicationCommandOption[];
-	public application?: Application;
+	public application!: string;
 
 	public constructor(client: Client, data: ApplicationCommandData) {
 		super(client, data.id as string);
@@ -44,10 +44,8 @@ export default class AppCommand extends Base {
 		this.name = data.name;
 		this.description = data.name;
 		this.options = data.options || [];
-		let appData = await this.request.getApplicationId(data.application_id as string);
-		if (appData !== false) {
-			this.application = new Application(this.client, appData);
-		}
+		this.application = data.application_id as string;
+		this.client.commands.set(data.id as string, this);
 	}
 
 	public parse(): ApplicationCommandData {
@@ -64,6 +62,7 @@ export default class AppCommand extends Base {
 
 	public getType(data: ApplicationCommandOption): CommandOptionType {
 		switch (data.type) {
+			default:
 			case 1:
 				return "SubCommand";
 			case 2:
@@ -83,8 +82,20 @@ export default class AppCommand extends Base {
 		}
 	}
 
-	public static async create(client: Client, data: ApplicationCommandData): Promise<AppCommand> {
-		const res = await client.discordHandler.createAppGlobalCommand(data.application_id as string, data);
+	/**
+	 * When created, you can listen to this on: .on(command)
+	 * @param client
+	 * @param data
+	 */
+	public static async create(client: Client, data: ApplicationCommandData & { guildId?: string }): Promise<AppCommand> {
+		let res: ApplicationCommandData | false
+		if (data.guildId) {
+			res = await client.discordHandler.createAppCommand(data.application_id as string, data.guildId,  data);
+			// @ts-ignore
+			delete data.guildId;
+		} else {
+			res = await client.discordHandler.createAppGlobalCommand(data.application_id as string, data);
+		}
 
 		if (res) {
 			return new this(client, res);
