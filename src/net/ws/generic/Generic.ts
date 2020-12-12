@@ -175,26 +175,26 @@ export default class Generic extends Connector {
 			const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
 			const mm: Member = this.#client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.user_id);
 			const e: Partial<Emoji> = new Emoji(this.#client, packet.data)
-			this.#client.emit('messageReactionAdd', m, mm, e);
+			this.#client.emit('reactionAdd', m, mm, e);
 		}
 
 		if(packet.event === 'MESSAGE_REACTION_REMOVE') {
 			const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
 			const mm: Member = this.#client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.member.id);
 			const e: Partial<Emoji> = new Emoji(this.#client, packet.data)
-			this.#client.emit('messageReactionRemove', m, mm, e);
+			this.#client.emit('reactionRemove', m, mm, e);
 		}
 
 		if(packet.event === 'MESSAGE_REACTION_REMOVE_ALL') {
 			const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
-			this.#client.emit('messageReactionRemoveAll', m);
+			this.#client.emit('reactionRemoveAll', m);
 		}
 
 		if(packet.event === 'MESSAGE_REACTION_REMOVE_EMOJI') {
 			const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
 			const mm: Member = this.#client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.member.id);
 			const e: Partial<Emoji> = new Emoji(this.#client, packet.data)
-			this.#client.emit('messageReactionRemoveEmoji', m, mm, e);
+			this.#client.emit('reactionRemoveEmoji', m, mm, e);
 		}
 
 		if(packet.event === 'PRESENCE_UPDATE') {
@@ -296,7 +296,7 @@ export default class Generic extends Connector {
 		}
 
 		if(packet.event === 'INVITE_CREATE') {
-			this.#client.emit('inviteCreate', new Invite(packet.data))
+			this.#client.emit('inviteCreate', new Invite(this.#client ,packet.data));
 		}
 
 		if(packet.event === 'INVITE_DELETE') {

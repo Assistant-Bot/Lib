@@ -23,8 +23,6 @@ import RequestHandler, { RequestHandlerOptions } from "./net/rest/RequestHandler
 import { Connector } from "./net/ws/Connector.ts";
 import Generic from "./net/ws/generic/Generic.ts";
 import type { Payload } from "./net/ws/packet/Packet.ts";
-import AppCommand from "./structures/application/AppCommand.ts";
-import Interaction from "./structures/application/Interaction.ts";
 import Channel from "./structures/channel/Channel.ts";
 import type ClientUser from "./structures/ClientUser.ts";
 import Emoji from "./structures/guild/Emoji.ts";
@@ -49,7 +47,6 @@ export type ClientEvents =
 	| "channelCreate"
 	| "channelUpdate"
 	| "channelDelete"
-	| "interactionCreate"
 	| "pinUpdate"
 	| "guildAvailable"
 	| "guildUnavailable"
@@ -74,11 +71,11 @@ export type ClientEvents =
 	| "messageUpdate"
 	| "messageDelete"
 	| "messageDeleteBulk"
-	| "messageReactionAdd"
-	| "messageReactionUpdate"
-	| "messageReactionRemove"
-	| "messageReactionRemoveAll"
-	| "messageReactionRemoveEmoji"
+	| "reactionAdd"
+	| "reactionUpdate"
+	| "reactionRemove"
+	| "reactionRemoveAll"
+	| "reactionRemoveEmoji"
 	| "presenceUpdate"
 	| "typingStart"
 	| "userUpdate"
@@ -171,7 +168,6 @@ export default class Client extends EventEmitter {
 	public requestHandler!: RequestHandler;
 	public discordHandler!: DiscordRequestHandler;
 	public user!: ClientUser;
-	public commands: Map<string, AppCommand> = new Map();
 
 	#dataManager?: DataManager;
 	#wsManager!: Connector;
@@ -355,11 +351,6 @@ export default class Client extends EventEmitter {
 	 * Emitted when a role is deleted
 	 */
 	public on(event: "roleDelete", listener: (role: Role | Partial<RoleData>, guild: Guild) => any): this;
-
-	/**
-	 * Emitted when a interaction is created
-	 */
-	public on(event: "interactionCreate", listener: (interaction: Interaction) => any): this;
 
 	/**
 	 * Emitted when the websocket **manager** recieves a event
