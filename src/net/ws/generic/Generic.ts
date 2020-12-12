@@ -300,7 +300,7 @@ export default class Generic extends Connector {
 		}
 
 		if(packet.event === 'INVITE_CREATE') {
-			this.#client.emit('inviteCreate', new Invite(this.#client ,packet.data));
+			this.#client.emit('inviteCreate', new Invite(this.#client, packet.data));
 		}
 
 		if(packet.event === 'INVITE_DELETE') {

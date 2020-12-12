@@ -15,23 +15,24 @@
  */
 import { EventEmitter, GenericFunction, WrappedFunction } from 'https://deno.land/std@0.78.0/node/events.ts';
 import DataManager from "./data/DataManager.ts";
-import DataStore from "./data/DataStore.ts";
-import type { GatewayResponseBot, MessageData, RoleData } from "./net/common/Types.ts";
+import type DataStore from "./data/DataStore.ts";
+import type { GatewayResponseBot, MessageData, RoleData, VoiceState } from "./net/common/Types.ts";
 import DiscordRequestHandler from "./net/rest/DiscordRequestHandler.ts";
-import Endpoints, { GATEWAY_URL } from "./net/rest/Endpoints.ts";
+import  Endpoints, { GATEWAY_URL } from "./net/rest/Endpoints.ts";
 import RequestHandler, { RequestHandlerOptions } from "./net/rest/RequestHandler.ts";
-import { Connector } from "./net/ws/Connector.ts";
+import type { Connector } from "./net/ws/Connector.ts";
 import Generic from "./net/ws/generic/Generic.ts";
 import type { Payload } from "./net/ws/packet/Packet.ts";
-import Channel from "./structures/channel/Channel.ts";
+import type Channel from "./structures/channel/Channel.ts";
 import type ClientUser from "./structures/ClientUser.ts";
-import Emoji from "./structures/guild/Emoji.ts";
-import Guild from "./structures/guild/Guild.ts";
-import Member from "./structures/guild/Member.ts";
-import Role from "./structures/guild/Role.ts";
-import Message from "./structures/Message.ts";
+import type Emoji from "./structures/guild/Emoji.ts";
+import type Guild from "./structures/guild/Guild.ts";
+import type Invite from "./structures/guild/Invite.ts";
+import type Member from "./structures/guild/Member.ts";
+import type Role from "./structures/guild/Role.ts";
+import type Message from "./structures/Message.ts";
 import Application from "./structures/oauth/Application.ts";
-import User from "./structures/User.ts";
+import type User from "./structures/User.ts";
 
 /**
  * Events emitted when recieved from the websocket.
@@ -309,6 +310,11 @@ export default class Client extends EventEmitter {
 	public on(event: "messageDelete", listener: (message: Partial<Message> | Message) => any): this;
 
 	/**
+	 * Emitted when (bulk) messages are deleted
+	 */
+	public on(event: "messageDeleteBulk", listener: (messages: (Message | string)[]) => any): this
+
+	/**
 	 * Emitted when a user is banned from a guild
 	 */
 	public on(event: "banAdd", listener: (user: User) => any): this;
@@ -352,6 +358,26 @@ export default class Client extends EventEmitter {
 	 * Emitted when a role is deleted
 	 */
 	public on(event: "roleDelete", listener: (role: Role | Partial<RoleData>, guild: Guild) => any): this;
+
+	/**
+	 * Emitted when an invite is created
+	 */
+	public on(event: "inviteCreate", listener: (invite: Invite) => any): this;
+
+	/**
+	 * Emitted when an invite is delete
+	 */
+	public on(event: "inviteDelete", listener: (guildID: string, code: string) => any): this;
+
+	/**
+	 * Emitted when voice state is updated
+	 */
+	public on(event: "voiceStateUpdate", listener: (state: VoiceState) => any): this;
+
+	/**
+	 * Emitted when voice region is updated
+	 */
+	public on(event: "voiceRegionUpdate", listener: (state: {token: string, guild_id: string, endpoint: string}) => any): this;
 
 	/**
 	 * Emitted when the websocket **manager** recieves a event
