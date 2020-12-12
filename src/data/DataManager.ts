@@ -13,8 +13,6 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import type { Payload } from "../net/ws/packet/Packet.ts";
-import Base from "../structures/Base.ts";
 import DataStore from "./DataStore.ts";
 
 export default abstract class DataManager {

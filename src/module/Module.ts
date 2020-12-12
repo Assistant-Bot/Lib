@@ -13,7 +13,6 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import { ClientEvents } from "../Client.ts";
 import type Command from '../command/Command.ts';
 import type Permission from '../command/permission/Permission.ts';
 

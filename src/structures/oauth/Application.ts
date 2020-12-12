@@ -1,5 +1,5 @@
 import Client from "../../Client.ts";
-import { AnyStructureData, ApplicationData } from "../../net/common/Types.ts";
+import { ApplicationData } from "../../net/common/Types.ts";
 import Base from "../Base.ts";
 import User from "../User.ts";
 

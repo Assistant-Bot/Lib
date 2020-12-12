@@ -14,7 +14,6 @@
  * to remove this software from your device immediately.
  */
 import type { Payload } from "../net/ws/packet/Packet.ts";
-import Base from "../structures/Base.ts";
 
 export default abstract class DataStore<K, V> {
 	protected structure: V;

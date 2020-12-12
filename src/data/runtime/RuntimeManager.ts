@@ -13,7 +13,6 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import type { Payload } from "../../net/ws/packet/Packet.ts";
 import Base from "../../structures/Base.ts";
 import Channel from "../../structures/channel/Channel.ts";
 import Emoji from "../../structures/guild/Emoji.ts";
@@ -21,9 +20,7 @@ import Guild from "../../structures/guild/Guild.ts";
 import Message from "../../structures/Message.ts";
 import User from "../../structures/User.ts";
 import DataManager from "../DataManager.ts";
-import DataStore from "../DataStore.ts";
 import RuntimeStore from "./RuntimeStore.ts";
-
 
 export default class RuntimeManager extends DataManager {
 	#channels = new RuntimeStore<string, typeof Channel & Base>(Channel as typeof Channel & Base);

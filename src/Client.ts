@@ -23,6 +23,7 @@ import RequestHandler, { RequestHandlerOptions } from "./net/rest/RequestHandler
 import type { Connector } from "./net/ws/Connector.ts";
 import Generic from "./net/ws/generic/Generic.ts";
 import type { Payload } from "./net/ws/packet/Packet.ts";
+import Interaction from "./structures/application/Interaction.ts";
 import type Channel from "./structures/channel/Channel.ts";
 import type ClientUser from "./structures/ClientUser.ts";
 import type Emoji from "./structures/guild/Emoji.ts";
@@ -378,6 +379,11 @@ export default class Client extends EventEmitter {
 	 * Emitted when voice region is updated
 	 */
 	public on(event: "voiceRegionUpdate", listener: (state: {token: string, guild_id: string, endpoint: string}) => any): this;
+
+	/**
+	 * Emitted when an interaction is RECIEVED.
+	 */
+	public on(event: "interactionCreate", listener: (interaction: Interaction) => any): this;
 
 	/**
 	 * Emitted when the websocket **manager** recieves a event

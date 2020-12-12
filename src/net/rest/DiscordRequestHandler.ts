@@ -13,7 +13,6 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import AppCommand from "../../structures/application/AppCommand.ts";
 import { MessageContent } from "../../structures/Message.ts";
 import type { ApplicationCommandData, ApplicationData, ChannelData, InteractionResponse, MessageConstructorData, MessageData, Snowflake } from "../common/Types.ts";
 import Endpoints, { BASE_API_URL } from "./Endpoints.ts";

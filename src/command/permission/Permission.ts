@@ -15,7 +15,6 @@
  */
 import { MemberData } from "../../net/common/Types.ts";
 import type Message from "../../structures/Message.ts";
-import User from "../../structures/User.ts";
 
 abstract class Permission {
     public name: string;
