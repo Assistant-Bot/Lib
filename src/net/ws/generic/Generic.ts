@@ -31,7 +31,7 @@ import type TextChannel from "../../../structures/guild/TextChannel.ts";
 import type VoiceChannel from "../../../structures/guild/VoiceChannel.ts";
 import Message from "../../../structures/Message.ts";
 import User from "../../../structures/User.ts";
-import { GuildData, InviteData, InviteMetadata, RoleData, VoiceState } from "../../common/Types.ts";
+import type { GuildData, RoleData, VoiceState } from "../../common/Types.ts";
 import { Connector } from "../Connector.ts";
 import EventPacket from "../packet/EventPacket.ts";
 import { Payload } from "../packet/Packet.ts";
