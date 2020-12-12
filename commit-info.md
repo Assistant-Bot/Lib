@@ -1,6 +1,6 @@
 # Message style for commits.
 All commits should have the following style: `<emoji>(file?): Description`. An example:
-> 🎉 feature: Voice channel support!
+> 🎉 feature: Voice channel support! <br />
 > 📝 chore(test.ts): Fix a few types
 
 ### Chores
