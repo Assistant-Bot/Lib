@@ -464,6 +464,21 @@ export enum InteractionResponseType {
 	ACK_WITH_SOURCE = 5
 }
 
+export interface VoiceState {
+	guild_id?: string;
+	channel_id?: string;
+	user_id: string
+	member?: Member;
+	session_id: string;
+	deaf: boolean;
+	mute: boolean;
+	self_deaf: boolean;
+	self_mute: boolean;
+	self_stream: boolean;
+	self_video: boolean;
+	suppress: boolean
+}
+
 /** Generalized Types */
 export type AnyStructureData =
 	| ApplicationData

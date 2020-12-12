@@ -31,7 +31,7 @@ import type TextChannel from "../../../structures/guild/TextChannel.ts";
 import type VoiceChannel from "../../../structures/guild/VoiceChannel.ts";
 import Message from "../../../structures/Message.ts";
 import User from "../../../structures/User.ts";
-import { GuildData, InviteData, InviteMetadata, RoleData } from "../../common/Types.ts";
+import { GuildData, InviteData, InviteMetadata, RoleData, VoiceState } from "../../common/Types.ts";
 import { Connector } from "../Connector.ts";
 import EventPacket from "../packet/EventPacket.ts";
 import { Payload } from "../packet/Packet.ts";
@@ -77,6 +77,10 @@ export default class Generic extends Connector {
 					});
 				}
 			}
+		}
+
+		if(packet.event === 'RESUMED') {
+			this.#client.emit('resume');
 		}
 
 		if (packet.event === "CHANNEL_CREATE") {
@@ -301,6 +305,21 @@ export default class Generic extends Connector {
 
 		if(packet.event === 'INVITE_DELETE') {
 			this.#client.emit('inviteDelete', packet.data.guild_id, packet.data.code);
+		}
+
+		if(packet.event === 'VOICE_STATE_UPDATE') {
+			const v: VoiceState = packet.data;
+			this.#client.emit('voiceStateUpdate', v);
+		}
+
+		if(packet.event === 'VOICE_SERVER_UPDATE') {
+ 			const v: {token: string, guild_id: string, endpoint: string} = packet.data;
+			this.#client.emit('voiceRegionUpdate', v);
+		}
+
+		if(packet.event === "WEBHOOKS_UPDATE") {
+			const w: {guild_id: string, channel_id: string} = packet.data;
+			this.#client.emit('webhookUpdate', w);
 		}
 	}
 
