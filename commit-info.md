@@ -35,10 +35,15 @@ All commits should have the following style: `<emoji>(file?): Description`. An e
 
 ### Removal or Deletion
 **Name:** delete<br/>
-**Prefix:**🗑<br/>
+**Prefix:** 🗑<br/>
 **Description:** This commit removes one or multiple files.
 
 ### Bulk
 **Name:** bulk<br/>
 **Prefix:** 🛒<br/>
 **Description:** Includes a bulk amount of changes.
+
+### Merge
+**Name:** merge<br/>
+**Prefix:** 📩<br/>
+**Description:** This commit merges a branch into another (or related).
