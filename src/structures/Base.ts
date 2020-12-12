@@ -6,7 +6,7 @@
  *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
  *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
  *
- * Copyright (C) 2020 John Bergman
+ * Copyright (C) 2020 Bavfalcon9
  *
  * This is private software, you cannot redistribute and/or modify it in any way
  * unless given explicit permission to do so. If you have not been given explicit
@@ -15,14 +15,15 @@
  */
 import type Client from "../Client.ts";
 import type { AnyStructureData } from "../net/common/Types.ts";
+import DiscordRequestHandler from "../net/rest/DiscordRequestHandler.ts";
 
 export default abstract class Base {
-	protected client: Client;
+	#client: Client;
 	public id: string;
 
 	public constructor(client: Client, id: string) {
 		this.id = id;
-		this.client = client;
+		this.#client = client;
 	}
 
 	/**
@@ -38,4 +39,27 @@ export default abstract class Base {
 	 * @param data - The data to update the structure
 	 */
 	public abstract update(data: AnyStructureData): any;
+
+	/**
+	 * Get the discord reuest handler of the client.
+	 */
+	protected get request(): DiscordRequestHandler {
+		return this.client.discordHandler;
+	}
+
+	/**
+	 * Protected so it's not accessible outside the class.
+	 * Work around to typescript's "protected" variables.
+	 */
+	protected get client(): Client {
+		return this.#client;
+	}
+
+	/**
+	 * Protected so it's not accessible outside the class.
+	 * Work around to typescript's "protected" variables.
+	 */
+	protected set client(client: Client) {
+		this.#client = client;
+	}
 }

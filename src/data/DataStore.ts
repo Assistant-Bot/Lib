@@ -6,65 +6,58 @@
  *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
  *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
  *
- * Copyright (C) 2020 John Bergman
+ * Copyright (C) 2020 Bavfalcon9
  *
  * This is private software, you cannot redistribute and/or modify it in any way
  * unless given explicit permission to do so. If you have not been given explicit
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
+import type { Payload } from "../net/ws/packet/Packet.ts";
 
-import { Payload } from "../net/ws/packet/Packet.ts";
+export default abstract class DataStore<K, V> {
+	protected structure: V;
 
-export default abstract class DataStore {
+	public constructor(stucture: V) {
+		this.structure = stucture;
+	}
+
 	/**
-	 * Get a structure based on it's id
-	 * This should return the structure.
+	 * Updates the structure in the store.
+	 *
+	 * @warn If it is a promise, there is no garauntee
+	 * it will update to the client accessor immediately.
+	 * @param structure
+	 */
+	public abstract update(structure: V): V | Promise<V>;
+
+	/**
+	 * Get the structure from the store.
 	 * @param id
 	 */
-	public abstract get(id: string): any;
+	public abstract get(id: K): V | null | Promise<V | null>;
 
 	/**
-	 * Update a structure in the datastore with a new payload.
-	 * Should create a structure if it does not exist.
-	 * @param id
-	 * @param data
+	 * Add the structure from the store
 	 */
-	public abstract update(id: string, data: Payload): any;
+	public abstract add(idOrData: K|Payload): V | Promise<V | null> | null;
 
 	/**
-	 * Deletes a structure in the datastore based on it's id.
+	 * Whether or not the id exists in the store.
 	 * @param id
 	 */
-	public abstract delete(id: string): Promise<boolean> | boolean;
+	public abstract has(id: K): boolean | Promise<boolean>;
 
 	/**
-	 * Get all channels stored within the store.
+	 * Deletes the id from the store.
+	 * @param id
 	 */
-	public abstract get channels(): any;
+	public abstract delete(id: K): boolean | Promise<boolean>;
 
 	/**
-	 * Gets all the emoijs stored within the store.
+	 * Sets the key of the structure into the datastore.
+	 * @param id
+	 * @param structure
 	 */
-	public abstract get emoijs(): any;
-
-	/**
-	 * Get all guidls stored within the store.
-	 */
-	public abstract get guilds(): any;
-
-	/**
-	 * Get all messages stored within the store.
-	 */
-	public abstract get messages(): any;
-
-	/**
-	 * Gets all the users stored within the store.
-	 */
-	public abstract get users(): any;
-
-	/**
-	 * Gets all the reactions stored within the store.
-	 */
-	public abstract get reactions(): any;
+	public abstract set(id: K, structure: V): V | Promise<V | null> | null;
 }

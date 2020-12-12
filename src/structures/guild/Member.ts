@@ -6,7 +6,7 @@
  *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
  *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
  *
- * Copyright (C) 2020 John Bergman
+ * Copyright (C) 2020 Bavfalcon9
  *
  * This is private software, you cannot redistribute and/or modify it in any way
  * unless given explicit permission to do so. If you have not been given explicit
@@ -28,7 +28,7 @@ export default class Member extends Base {
 	public joinedAt!: string;
 	public deaf!: boolean;
 
-	public constructor(client: Client, data: MemberData,) {
+	public constructor(client: Client, data: MemberData) {
 		super(client, data.id);
 		this.update(data);
 	}

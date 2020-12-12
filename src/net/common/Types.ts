@@ -6,12 +6,31 @@
  *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
  *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
  *
- * Copyright (C) 2020 John Bergman
+ * Copyright (C) 2020 Bavfalcon9
  *
  * This is private software, you cannot redistribute and/or modify it in any way
  * unless given explicit permission to do so. If you have not been given explicit
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
+ */
+import Member from "../../structures/guild/Member.ts";
+
+/**
+ * HTTP status codes
+ */
+export type HTTPMethod =
+	| "GET"
+	| "HEAD"
+	| "POST"
+	| "PUT"
+	| "DELETE"
+	| "CONNECT"
+	| "OPTIONS"
+	| "TRACE"
+	| "PATCH";
+
+/**
+ * Discord types
  */
 export type Snowflake<Length> = string & {
 	length: Length
@@ -121,6 +140,7 @@ export interface GuildData extends BaseData {
 	approximate_presence_count?: number
 }
 export type ChannelTypesNumeric = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
 export type ChannelTypes = "Text" | "DM" | "Voice" | "Group" | "Category" | "News" | "Store" | "Unknown";
 
 
@@ -137,7 +157,7 @@ export interface PartialChannelData extends BaseData {
 }
 
 export interface ChannelData extends BaseData {
-	type: 0 | 1 | 3 | 4 | 5 | 6;
+	type: 0 | 1 | 2 | 3 | 4 | 5 | 6;
 	name?: string;
 	guild_id?: string;
 	position?: number;
@@ -274,8 +294,25 @@ export interface MessageData extends BaseData {
 	referenced_message?: Partial<MessageData> | null;
 }
 
-export interface MessageStickerData {
+export interface MessageStickerData extends BaseData {
+	pack_id: string;
+	name: string;
+	description: string;
+	tags?: string;
+	asset?: string;
+	preview_asset?: string;
+	/**
+	 * 1 - PNG
+	 * 2 - Animated PNG
+	 * 3 - LOTTIE (lol?)
+	 */
+	format_type: 1 | 2 | 3;
+}
 
+export interface MessageConstructorData {
+	content: string;
+	embed?: EmbedData;
+	flags?: number;
 }
 
 export interface ReactionData {
@@ -302,7 +339,7 @@ export interface EmojiData {
 export interface InviteData {
 	code: string;
 	channel: PartialChannelData;
-	guild?: string;
+	guild?: Partial<GuildData>;
 	inviter?: Partial<UserData>;
 	target_user?: Partial<UserData>;
 	target_user_type?: 1;
@@ -318,11 +355,137 @@ export interface InviteMetadata {
 	created_at: string;
 }
 
+export interface ApplicationData {
+	name: string;
+	icon: string;
+	description: string;
+	rpc_origins?: string[];
+	bot_public: boolean;
+	bot_require_code_grant: boolean;
+	owner: UserData;
+	summary: string;
+	verify_key: string;
+	team?: any;
+	guild_id?: string;
+	primary_sku_id?: string;
+	slug?: string;
+	cover_image?: string;
+}
+
+// command stuff
+export enum ApplicationOptionType {
+	SUB_COMMAND = 1,
+	SUB_COMMAND_GROUP = 2,
+	STRING = 3,
+	INTEGER = 4,
+	BOOLEAN = 5,
+	USER = 6,
+	CHANNEL = 7,
+	ROLE = 8,
+}
+
+export interface ApplicationCommandChoice {
+	name: string;
+	value: string | number;
+}
+
+export interface ApplicationCommandOption {
+	name: string;
+	description: string;
+	type: ApplicationOptionType;
+	default?: boolean;
+	required?: boolean;
+	choices?: ApplicationCommandChoice[];
+	options?: ApplicationCommandOption;
+}
+
+export interface ApplicationCommandData {
+	id?: string;
+	application_id?: string;
+	name: string;
+	description: string;
+	options?: ApplicationCommandOption[];
+}
+
+export interface InteractionDataOption {
+	/** The name of the parammeter */
+	name: string;
+	/** The value of the pair */
+	value?: any;
+	/** Present if this option is a group or subcommand */
+	options?: InteractionDataOption[];
+}
+
+export interface InteractionData {
+	name: string;
+	id: string;
+	options?: InteractionDataOption[];
+}
+
+export interface InteractionDataRecieve {
+	/** id of the command */
+	id: string;
+	name: string;
+	member: MemberData;
+	type: ApplicationOptionType;
+	token: string;
+	guild_id: string;
+	channel_id: string;
+	mentions: any[];
+	mention_everyone: boolean;
+	data: InteractionData;
+}
+
+export interface InteractionResponse {
+	/** The type of response */
+	type: InteractionResponseType;
+	/** The optional response message */
+	data?: ApplicationCommandCallbackData;
+}
+
+export interface ApplicationCommandCallbackData {
+	tts?: boolean;
+	content: string;
+	embeds?: EmbedData[];
+	allowed_mentions?: "roles" | "users" | "everyone";
+	flags?: number;
+}
+
+export enum InteractionType {
+	PING = 1,
+	APPLICATION_COMMAND = 2
+}
+
+export enum InteractionResponseType {
+	PONG = 1,
+	ACKNOWLEDGE = 2,
+	CHANNEL_MESSAGE = 3,
+	CHANNEL_MESSAGE_WITH_SOURCE = 4,
+	ACK_WITH_SOURCE = 5
+}
+
+export interface VoiceState {
+	guild_id?: string;
+	channel_id?: string;
+	user_id: string
+	member?: Member;
+	session_id: string;
+	deaf: boolean;
+	mute: boolean;
+	self_deaf: boolean;
+	self_mute: boolean;
+	self_stream: boolean;
+	self_video: boolean;
+	suppress: boolean
+}
+
 /** Generalized Types */
 export type AnyStructureData =
+	| ApplicationData
 	| UserData
 	| UserFlags
 	| MessageData
+	| GuildData
 	| PermissionOverwrites
 	| PartialChannelData
 	| MessageStickerData
@@ -333,4 +496,5 @@ export type AnyStructureData =
 	| MemberData
 	| InviteData
 	| InviteMetadata
-	| EmojiData;
+	| EmojiData
+	| ApplicationCommandData;

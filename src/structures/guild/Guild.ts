@@ -6,7 +6,7 @@
  *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
  *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
  *
- * Copyright (C) 2020 John Bergman
+ * Copyright (C) 2020 Bavfalcon9
  *
  * This is private software, you cannot redistribute and/or modify it in any way
  * unless given explicit permission to do so. If you have not been given explicit
@@ -18,9 +18,14 @@ import type { GuildData } from "../../net/common/Types.ts";
 import Collection from "../../util/Collection.ts";
 import Base from "../Base.ts";
 import GuildChannel from "../guild/GuildChannel.ts";
+import CategoryChannel from "./CategoryChannel.ts";
 import Emoji from "./Emoji.ts";
 import Member from "./Member.ts";
+import NewsChannel from "./NewsChannel.ts";
 import Role from "./Role.ts";
+import StoreChannel from "./StoreChannel.ts";
+import TextChannel from "./TextChannel.ts";
+import VoiceChannel from "./VoiceChannel.ts";
 
 export default class Guild extends Base {
 	public name!: string;
@@ -56,13 +61,19 @@ export default class Guild extends Base {
 	public locale!: string;
 	public publicUpdatesChannelID?: string;
 	public maxVideoChannelUsers?: number;
-	public channels!: Collection<string, GuildChannel>;
-	public roles!: Collection<string, Role>;
-	public members!: Collection<string, Member>;
-	public emojis!: Collection<string, Emoji>;
+	public roles: Collection<string, Role>;
+	public members: Collection<string, Member>;
+	public emojis: Collection<string, Emoji>;
+
+	// for reference
+	#boundChannels: Set<string>;
 
 	public constructor(client: Client, data: GuildData) {
 		super(client, data.id);
+		this.members = new Collection();
+		this.roles = new Collection();
+		this.emojis = new Collection();
+		this.#boundChannels = new Set();
 		this.update(data);
 	}
 
@@ -99,8 +110,30 @@ export default class Guild extends Base {
 
 		if (data.channels) {
 			for (let _ of data.channels) {
-				const ch = new GuildChannel(this.client, _);
-				this.channels.set(ch.id, ch);
+				_.guild_id = this.id;
+				let ch: GuildChannel;
+				switch(_.type) {
+					case 0:
+						ch = new TextChannel(this.client, _);
+						break;
+					case 2:
+						ch = new VoiceChannel(this.client, _);
+						break;
+					case 4:
+						ch = new CategoryChannel(this.client, _);
+						break;
+					case 5:
+						ch = new NewsChannel(this.client, _);
+						break;
+					case 6:
+						ch = new StoreChannel(this.client, _);
+						break;
+					default:
+						ch = new GuildChannel(this.client, _);
+						break;
+				}
+				this.client.dataManager?.channels.set(ch.id, ch);
+				this.#boundChannels.add(ch.id);
 			}
 		}
 
@@ -124,5 +157,16 @@ export default class Guild extends Base {
 				this.emojis.set(e.id, e);
 			}
 		}
+		this.client.dataManager?.guilds.set(this.id, this);
+	}
+
+	public get channels(): GuildChannel[] {
+		const arr: GuildChannel[] = [];
+		for (let id of this.#boundChannels) {
+			// todo refactor
+			// make asyncable
+			arr.push(this.client.dataManager?.channels.get(id));
+		}
+		return arr.filter(c => c !== undefined);
 	}
 }

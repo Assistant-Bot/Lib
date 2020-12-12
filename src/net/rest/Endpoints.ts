@@ -6,18 +6,20 @@
  *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
  *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
  *
- * Copyright (C) 2020 John Bergman
+ * Copyright (C) 2020 Bavfalcon9
  *
  * This is private software, you cannot redistribute and/or modify it in any way
  * unless given explicit permission to do so. If you have not been given explicit
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import { Snowflake } from "../common/Types.ts";
+import type { Snowflake } from "../common/Types.ts";
 
 export const REST_VERSION: string = 'v8';
 export const GATEWAY: string = '/gateway'
+export const DOMAIN: string = 'https://discord.com';
 export const BASE_URL: string = 'https://discord.com/api/' + REST_VERSION;
+export const BASE_API_URL: string = 'https://discord.com/api';
 export const GATEWAY_URL: string = 'wss://gateway.discord.gg/?v=8&encoding=json';
 
 export default class Endpoints {
@@ -41,8 +43,8 @@ export default class Endpoints {
 		return this.channel(id) + '/' + additional.join('/');
 	}
 
-	public static channel_messages(id: string): string {
-		return this.channel(id) + '/messages'
+	public static channel_messages(id: string, msgId?: string): string {
+		return this.channel(id) + (!!msgId ? '/messages/' + msgId : '/messages');
 	}
 
 	public static guild(id: string): string {
@@ -55,5 +57,21 @@ export default class Endpoints {
 
 	public static rest_gateway(bot: boolean): string {
 		return BASE_URL + GATEWAY + ((bot) ? '/bot' : '');
+	}
+
+	public static discordApplication(id: string = "@me"): string {
+		return '/oauth2/applications/' + id;
+	}
+
+	public static applicationCommand(id: string): string {
+		return "/applications/" + id + "/commands";
+	}
+
+	public static applicationCommandGuild(id: string, guildId: string): string {
+		return "/applications/" + id + "/guilds/" + guildId + "/commands";
+	}
+
+	public static interactionResponse(id: string, token: string): string {
+		return "/interactions/" + id + "/" + token + "/callback";
 	}
 }

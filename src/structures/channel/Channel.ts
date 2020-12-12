@@ -6,18 +6,18 @@
  *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
  *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
  *
- * Copyright (C) 2020 John Bergman
+ * Copyright (C) 2020 Bavfalcon9
  *
  * This is private software, you cannot redistribute and/or modify it in any way
  * unless given explicit permission to do so. If you have not been given explicit
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import type Client from "../Client.ts";
-import type { ChannelData, ChannelTypes, ChannelTypesNumeric } from "../net/common/Types.ts";
-import Base from './Base.ts';
+import type Client from "../../Client.ts";
+import type { ChannelData, ChannelTypes, ChannelTypesNumeric } from "../../net/common/Types.ts";
+import Base from '../Base.ts';
 
-export default class Channel extends Base {
+abstract class Channel extends Base {
 	public typeNumeric!: ChannelTypesNumeric;
 
 	public constructor(client: Client, data: ChannelData) {
@@ -50,3 +50,5 @@ export default class Channel extends Base {
 		}
 	}
 }
+
+export default Channel;

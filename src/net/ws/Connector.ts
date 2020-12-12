@@ -6,13 +6,14 @@
  *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
  *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
  *
- * Copyright (C) 2020 John Bergman
+ * Copyright (C) 2020 Bavfalcon9
  *
  * This is private software, you cannot redistribute and/or modify it in any way
  * unless given explicit permission to do so. If you have not been given explicit
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
+import Intents from "../../util/Intents.ts";
 import { GATEWAY, BASE_URL } from '../rest/Endpoints.ts';
 import EventPacket from "./packet/EventPacket.ts";
 import HeartBeatPacket from "./packet/HeartbeatPacket.ts";
@@ -70,7 +71,8 @@ export abstract class Connector {
 			// to-do handle zlib
 			this.ws.send(JSON.stringify(payload));
 			return;
-		} catch {
+		} catch (e) {
+			console.error(e);
 			return;
 		}
 	}
@@ -125,17 +127,17 @@ export abstract class Connector {
 		switch (payload.op) {
 			case OPCode.HELLO:
 				packet = HeartBeatPacket.from(payload);
-				if (this.#heartInterval) {
+				if (!!this.#heartInterval) {
 					this.close();
-					this.wsError(new Error('Already initialized'));
-					return;
+					throw new Error('Got op: 1 while already connected.');
 				} else {
 					this.#heartInterval = setInterval(() => {
 						// @ts-ignore
 						this.sendPacket(packet);
 					}, packet.interval);
 				}
-				this.sendPacket(new LoginPacket(this.#token, false, 0, false));
+				// todo: Make intents a client option.
+				this.sendPacket(new LoginPacket(this.#token, false, Intents.defaults().parse(), false));
 				return;
 			case OPCode.RECONNECT:
 				packet = new ResumePacket(this.#token, this.sessionId, this.#lastSeq);
@@ -149,7 +151,7 @@ export abstract class Connector {
 					this.sessionId = packet.data.session_id;
 				}
 				break;
-			case OPCode.HEARTBEAT_ACK:
+			case OPCode.HEARTBEAT:
 				this.#lastAck = Date.now();
 				return;
 			default:

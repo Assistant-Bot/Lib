@@ -6,22 +6,29 @@
  *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
  *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
  *
- * Copyright (C) 2020 John Bergman
+ * Copyright (C) 2020 Bavfalcon9
  *
  * This is private software, you cannot redistribute and/or modify it in any way
  * unless given explicit permission to do so. If you have not been given explicit
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import Client from "../src/Client.ts";
-import { MessageData } from "../src/net/common/Types.ts";
-import Endpoints from "../src/net/rest/Endpoints.ts";
+import type Client from "../Client.ts";
+import type { UserData } from "../net/common/Types.ts";
+import User from "./User.ts";
 
-const client = new Client({sharding: {useDiscord: true}, connection: {emitPayloads: true, autoReconnect: true, compress: false, maxReconnectTries: 1, maxResumeTries: 1, respectDiscordGateway: true, timeout: 1000}});
+export default class ClientUser extends User {
+	public verified!: boolean;
+	public email!: string;
 
+	public constructor(client: Client, data: UserData) {
+		super(client, data);
+		super.update(data);
+		this.update(data);
+	}
 
-await client.connect(JSON.parse(new TextDecoder().decode(Deno.readFileSync('./tests/config.json'))).token);
-
-client.on('ws', (data) => {
-    console.log(data.d)
-});
+	public update(data: UserData) {
+		this.verified = data.verified as boolean;
+		this.email = data.email as string;
+	}
+}

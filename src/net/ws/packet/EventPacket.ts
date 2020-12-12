@@ -6,7 +6,7 @@
  *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
  *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
  *
- * Copyright (C) 2020 John Bergman
+ * Copyright (C) 2020 Bavfalcon9
  *
  * This is private software, you cannot redistribute and/or modify it in any way
  * unless given explicit permission to do so. If you have not been given explicit
@@ -37,10 +37,18 @@ export type GatewayEvent =
 	| 'GUILD_INTEGRATIONS_UPDATE'
 	| 'GUILD_MEMBER_ADD'
 	| 'GUILD_MEMBER_UPDATE'
+	| 'GUILD_MEMBER_REMOVE'
 	| 'GUILD_MEMBER_CHUNK'
 	| 'GUILD_ROLE_CREATE'
 	| 'GUILD_ROLE_UPDATE'
 	| 'GUILD_ROLE_DELETE'
+	| 'GUILD_APPLICATION_COMMANDS_CREATE' // user only
+	| 'GUILD_APPLICATION_COMMANDS_UPDATE' // user only
+	| 'GUILD_APPLICATION_COMMANDS_DELETE' // user only
+	| 'GUILD_APPLICATION_FORM_UPDATE' // unknown structure - user only
+	| 'GUILD_APPLICATION_FORM_CREATE' // unknown structure - user only
+	| 'GUILD_APPLICATION_FORM_DELETE' // unknown structure - user only
+	| 'INTERACTION_CREATE' // Respond to a command
 	| 'INVITE_CREATE'
 	| 'INVITE_DELETE'
 	| 'MESSAGE_CREATE'

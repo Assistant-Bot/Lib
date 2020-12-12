@@ -6,14 +6,16 @@
  *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
  *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
  *
- * Copyright (C) 2020 John Bergman
+ * Copyright (C) 2020 Bavfalcon9
  *
  * This is private software, you cannot redistribute and/or modify it in any way
  * unless given explicit permission to do so. If you have not been given explicit
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import Sleep from "../../util/Sleep.ts";
+import { Sleep } from "../../util/Async.ts";
+import type { HTTPMethod } from "../common/Types.ts";
+import { BASE_URL } from "./Endpoints.ts";
 
 export interface RequestHandlerOptions {
 	/**
@@ -70,8 +72,18 @@ export default class RequestHandler {
 		this.#globalBlock = false;
 	}
 
-	public makeAndSend(url: string, method: string = "GET", headers: Header[] = [], body: any = {}, immediate: boolean = false): Promise<Response> {
-		const request: Request = new Request(url, { body: JSON.stringify(body) });
+	/**
+	 * Not really intented for public use, however, quickly makes a request
+	 * and a request body, and returns the request with special headers.
+	 * @param url
+	 * @param method
+	 * @param headers
+	 * @param body
+	 * @param immediate
+	 */
+	public makeAndSend(url: string, method: HTTPMethod = "GET", body: any = {}, headers: Header[] = [], immediate: boolean = false): Promise<Response> {
+		url = BASE_URL + url;
+		const request: Request = new Request(url, { body: JSON.stringify(body), method });
 
 		for (let header of headers) {
 			request.headers.set(header.name, header.value);
@@ -102,6 +114,7 @@ export default class RequestHandler {
 					}
 
 					req.headers.set('User-Agent', this.#options.userAgent);
+					req.headers.set('Content-Type', 'application/json');
 
 					if (immediate) {
 						fetch(req).then(resolve).catch(reject);
@@ -146,15 +159,15 @@ export default class RequestHandler {
 						}
 
 						if (res.status === 400) {
-							throw new ResponseError('Bad Request', res);
+							reject(new ResponseError('Bad Request', res));
 						}
 
 						if (res.status === 403 || res.status === 401) {
-							throw new ResponseError('Unauthorized or Forbidden.', res);
+							reject(new ResponseError('Unauthorized or Forbidden.', res));
 						}
 
 						if (res.status === 405) {
-							throw new ResponseError('Method requested not allowed.', res);
+							reject(new ResponseError('Method requested not allowed.', res));
 						}
 
 						if (res.status === 502 && attempts < 3) {
