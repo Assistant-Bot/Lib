@@ -55,7 +55,7 @@ client.on('ws', (m: Payload) => {
 
 await client.connect(JSON.parse(new TextDecoder().decode(Deno.readFileSync('./tests/config.json'))).token);
 
-client.on('interactionCreate', async (interaction: Interaction) => {
+client.on("interactionCreate", async (interaction: Interaction) => {
 	const cmd: string = interaction.data.name;
 
 	if (cmd === "eval") {
@@ -121,7 +121,7 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 		channel?.send(embed);
 
 		interaction.respond({
-			type: InteractionResponseType.ACK_WITH_SOURCE
+			type: InteractionResponseType.ACKNOWLEDGE
 		}).catch(e => {})
 	}
 })
@@ -131,7 +131,6 @@ setTimeout(() => {
 		name: 'eval',
 		description: 'Evaluates JS Code.',
 		application_id: client.user.id,
-		guildId: '771479857514676245',
 		options: [
 			{
 				name: 'code',
@@ -139,14 +138,15 @@ setTimeout(() => {
 				type: ApplicationOptionType.STRING,
 				required: true
 			}
-		]
+		],
+		guildId: '759244023562108938'
 	});
 
 	AppCommand.create(client, {
 		name: 'ping',
 		description: 'Ping Assistant.',
 		application_id: client.user.id,
-		guildId: '771479857514676245'
+		guildId: '759244023562108938'
 	});
 
 
@@ -154,7 +154,6 @@ setTimeout(() => {
 		name: 'embed',
 		description: 'Make an embed',
 		application_id: client.user.id,
-		guildId: '771479857514676245',
 		options: [
 			{
 				name: 'title',
@@ -174,6 +173,7 @@ setTimeout(() => {
 				type: ApplicationOptionType.STRING,
 				required: false
 			}
-		]
+		],
+		guildId: '759244023562108938'
 	});
 }, 2000);

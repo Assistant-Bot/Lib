@@ -34,7 +34,7 @@ import User from "../../../structures/User.ts";
 import type { GuildData, RoleData, VoiceState } from "../../common/Types.ts";
 import { Connector } from "../Connector.ts";
 import EventPacket from "../packet/EventPacket.ts";
-import { Payload } from "../packet/Packet.ts";
+import type { Payload } from "../packet/Packet.ts";
 
 export default class Generic extends Connector {
 	public sequence: number = 0;
