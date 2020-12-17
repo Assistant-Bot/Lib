@@ -14,7 +14,7 @@
  * to remove this software from your device immediately.
  */
 import { MessageContent } from "../../structures/Message.ts";
-import type { ApplicationCommandData, ApplicationData, ChannelData, InteractionResponse, MessageConstructorData, MessageData, Snowflake } from "../common/Types.ts";
+import type { ApplicationCommandData, ApplicationData, ChannelData, CreateWebhookData, EmbedData, ExecuteWebhookData, InteractionResponse, MessageConstructorData, MessageData, Snowflake, WebhookData } from "../common/Types.ts";
 import Endpoints, { BASE_API_URL } from "./Endpoints.ts";
 import RequestHandler from "./RequestHandler.ts";
 
@@ -173,6 +173,37 @@ class DiscordRequestHandler extends RequestHandler {
 		} else {
 			return true;
 		}
+	}
+
+	public async createWebhook(data: CreateWebhookData): Promise<WebhookData> {
+		const res: Response = await this.makeAndSend(
+			Endpoints.createWehook(data.channel_id),
+			'POST', 
+			{name: data.name, avatar: data.avatar}
+		);
+		return res.json();
+	}
+
+	public async executeWebhook(id: string, token: string, data: ExecuteWebhookData): Promise<WebhookData> /** correct ? */ {
+		const res: Response = await this.makeAndSend(
+			Endpoints.executeWebhook(id, token),
+			'POST',
+			data
+		);
+		return res.json();
+	}
+
+	public async editWebhook(
+		wID: string,
+		token: string,
+		mID: string, 
+		data: {content: string, embeds?: EmbedData[], allowed_mentions?: ("roles" | "channels" | "members")[]}): Promise<WebhookData> /** correct ? */ {
+		const res: Response = await this.makeAndSend(
+			Endpoints.editWebhook(wID, token, mID),
+			'PATCH',
+			data
+		);
+		return res.json();
 	}
 }
 
