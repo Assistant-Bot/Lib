@@ -74,4 +74,16 @@ export default class Endpoints {
 	public static interactionResponse(id: string, token: string): string {
 		return "/interactions/" + id + "/" + token + "/callback";
 	}
+
+	public static createWehook(id: string): string {
+		return "/channels/" + id + "/webhooks";
+	}
+
+	public static executeWebhook(id: string, token: string) {
+		return "/webhooks" + id + "/" + token;
+	}
+
+	public static editWebhook(wID: string, token: string, mID: string) {
+		return this.executeWebhook(wID, token) + "/messages/" + mID;
+	}
 }

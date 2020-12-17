@@ -14,6 +14,7 @@
  * to remove this software from your device immediately.
  */
 import Member from "../../structures/guild/Member.ts";
+import User from "../../structures/User.ts";
 
 /**
  * HTTP status codes
@@ -462,6 +463,35 @@ export enum InteractionResponseType {
 	CHANNEL_MESSAGE = 3,
 	CHANNEL_MESSAGE_WITH_SOURCE = 4,
 	ACK_WITH_SOURCE = 5
+}
+
+export interface WebhookData {
+	id: string;
+	type: 1 | 2;
+	guild_id: string;
+	channel_id: string;
+	user?: User;
+	name: string;
+	avatar: string;
+	token?: String;
+	application_id: string;
+}
+
+export interface CreateWebhookData {
+	name: string,
+	avatar?: string;
+	channel_id: string;
+}
+
+export interface ExecuteWebhookData {
+	content: string;
+	username?: string;
+	avatar_url?: string;
+	tts?: boolean;
+	file?: Uint8Array; //??
+	embeds: EmbedData[];
+	payload_json?: string;
+	allowed_mentions?: ("roles" | "channels" | "members")[];
 }
 
 export interface VoiceState {
