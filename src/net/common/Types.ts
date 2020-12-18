@@ -144,6 +144,23 @@ export type ChannelTypesNumeric = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 export type ChannelTypes = "Text" | "DM" | "Voice" | "Group" | "Category" | "News" | "Store" | "Unknown";
 
+export interface GuildEditOptions {
+	name?: string;
+	region?: string;
+	verificationLevel?: string;
+	defaultMessageNotifications?: string;
+	explicitContentFilter?: string;
+	afkChannelID?: string;
+	afkTimeout?: string;
+	icon?: string;
+	ownerID?: string
+	splash?: string;
+	banner?: string;
+	systemChannelID?: string;
+	rulesChannelID?: string;
+	publicUpdatesChannelID?: string;
+	preferredLocale?: string
+}
 
 /** Channels */
 export interface PermissionOverwrites extends BaseData {
@@ -175,6 +192,19 @@ export interface ChannelData extends BaseData {
 	application_id?: string;
 	parent_id?: string;
 	last_pin_timestamp?: string;
+}
+
+export interface ChannelEditOption {
+	name?: string;
+	type?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+	position?: number;
+	topic?: string;
+	nsfw?: boolean;
+	rateLimitPerUser?: number;
+	bitrate?: number;
+	userLimit?: number;
+	permissionsOverwrites?: PermissionOverwrites[];
+	parentID?: string;
 }
 
 /** Role */

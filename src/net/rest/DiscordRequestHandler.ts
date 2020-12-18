@@ -13,8 +13,9 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
+import GuildChannel from "../../structures/guild/GuildChannel.ts";
 import { MessageContent } from "../../structures/Message.ts";
-import type { ApplicationCommandData, ApplicationData, ChannelData, CreateWebhookData, EmbedData, ExecuteWebhookData, InteractionResponse, MessageConstructorData, MessageData, Snowflake, WebhookData } from "../common/Types.ts";
+import type { ApplicationCommandData, ApplicationData, ChannelData, ChannelEditOption, CreateWebhookData, EmbedData, ExecuteWebhookData, GuildData, GuildEditOptions, InteractionResponse, MessageConstructorData, MessageData, Snowflake, WebhookData } from "../common/Types.ts";
 import Endpoints, { BASE_API_URL } from "./Endpoints.ts";
 import RequestHandler from "./RequestHandler.ts";
 
@@ -27,6 +28,53 @@ class DiscordRequestHandler extends RequestHandler {
 	public async deleteChannel(channelId: string): Promise<boolean> {
 		const res: Response = await this.makeAndSend(Endpoints.channel(channelId), 'DELETE');
 		return res.status === 200;
+	}
+
+	/**
+	 * Edit a channel
+	 * @param channelId 
+	 * @param o 
+	 */
+	public async editChannel(channelId: string, o: ChannelEditOption): Promise<ChannelData> {
+		const res: Response = await this.makeAndSend(Endpoints.channel(channelId), 'PATCH', {
+			name: o.name,
+			type: o.type,
+			position: o.position,
+			topic: o.topic,
+			nsfw: o.nsfw,
+			rate_limit_per_user: o.rateLimitPerUser,
+			bitrate: o.bitrate,
+			user_limit: o.userLimit,
+			permission_overwrites: o.permissionsOverwrites,
+			parent_id: o.parentID
+		});
+		return res.json()
+	}
+
+	/**
+	 * Edit a guild
+	 * @param guildId 
+	 * @param o 
+	 */
+	public async editGuild(guildId: string, o: GuildEditOptions): Promise<GuildData> {
+		const res: Response = await this.makeAndSend(Endpoints.guild(guildId), 'PATCH', {
+			name: o.name,
+			region: o.region,
+			verification_level: o.verificationLevel,
+			default_message_notifications: o.defaultMessageNotifications,
+			explicit_content_filter: o.explicitContentFilter,
+			afk_channel_id: o.afkChannelID,
+			afk_timeout: o.afkTimeout,
+			icon: o.icon,
+			owner_id: o.ownerID,
+			splash: o.splash,
+			banner: o.banner,
+			system_channel_id: o.systemChannelID,
+			rules_channel_id: o.rulesChannelID,
+			public_updates_channel_id: o.publicUpdatesChannelID,
+			preferred_locale: o.preferredLocale
+		});
+		return res.json()
 	}
 
 	/**

@@ -156,10 +156,10 @@ export default class Generic extends Connector {
 		}
 
 		if (packet.event === 'MESSAGE_UPDATE') {
-			const m: Message = new Message(this.#client, packet.data);
-			const cached = this.#client.dataManager?.messages.get(m.id);
-			this.#client.dataManager?.messages.set(m.id, m);
-			this.#client.dataManager?.users.set(m.author.id, m.author);
+			const m: Message | Partial<Message> = new Message(this.#client, packet.data);
+			const cached = this.#client.dataManager?.messages.get(m.id || '0');
+			this.#client.dataManager?.messages.set(m.id || '0', m);
+			this.#client.dataManager?.users.set(m.author?.id || '0', m.author);
 			this.#client.emit('messageUpdate', m, cached || null);
 		}
 
