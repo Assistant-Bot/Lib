@@ -45,7 +45,7 @@ export default class AppCommand extends Base {
 		this.description = data.name;
 		this.options = data.options || [];
 		this.application = data.application_id as string;
-		this.client.commands.set(data.id as string, this);
+		//this.client.commands.set(data.id as string, this);
 	}
 
 	public parse(): ApplicationCommandData {

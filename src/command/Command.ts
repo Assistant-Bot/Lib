@@ -58,11 +58,18 @@ abstract class Command {
     public permissions: Array<string | number | Permission>;
     public module: string;
 
-    public constructor(name: string, label: string, description: string, options: CommandOptions) {
+    public constructor(name: string, label: string, description: string, options: Partial<CommandOptions> = {}) {
         this.name = name;
         this.label = label;
         this.description = description;
-        this.commandOpts = options;
+        this.commandOpts = Object.assign({
+			cooldown: 0,
+			disabledEvents: [],
+			argOptions: {
+				api: 3,
+				wrap: false
+		   }
+		}, options);
         this.aliases = [];
         this.usage = [];
         this.permissions = [];
