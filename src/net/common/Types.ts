@@ -298,6 +298,7 @@ export interface MessageData extends BaseData {
 	mention_roles: RoleData[];
 	mention_channels?: ChannelData[];
 	attachments: AttachmentData[];
+	embed?: EmbedData;
 	embeds: EmbedData[];
 	reactions?: ReactionData[];
 	nonce?: number | string;
