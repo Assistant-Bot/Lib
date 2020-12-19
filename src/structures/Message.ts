@@ -41,7 +41,7 @@ export type MessageContent = string | {
 export default class Message extends Base {
 	public channel!: TextChannel;
 	public author!: User;
-	public content!: string;
+	public content?: string;
 	public timestamp!: number;
 	public prefix?: string;
 	public args!: string[];

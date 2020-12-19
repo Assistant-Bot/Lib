@@ -72,6 +72,7 @@ export default class CommandHandler {
     }
 
     public async processMessage(msg: Message): Promise<void> {
+		if (!msg.content) return;
         // create the message
         let prefix: string = (this.prefix instanceof Function)
             ? await this.prefix(msg)
