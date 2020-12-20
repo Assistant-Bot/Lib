@@ -47,7 +47,7 @@ export default class Endpoints {
 		return this.channel(id) + (!!msgId ? '/messages/' + msgId : '/messages');
 	}
 
-	public static channel_permissions(id: string, overwriteId: string): string {
+	public static channel_permission(id: string, overwriteId: string): string {
 		return this.channel(id) + "/permissions/" + overwriteId;
 	}
 

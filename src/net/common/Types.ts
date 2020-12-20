@@ -395,6 +395,16 @@ export interface InviteMetadata {
 	created_at: string;
 }
 
+export interface InviteCreateOptions {
+	maxAge?: number;
+	maxUses?: number;
+	temporary?: boolean;
+	unique?: boolean;
+	targetUser?: string;
+	targetUserType?: number;
+}
+
+/** Applications */
 export interface ApplicationData {
 	name: string;
 	icon: string;
