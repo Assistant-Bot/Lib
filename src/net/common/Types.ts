@@ -218,6 +218,14 @@ export interface RoleData extends BaseData {
 	mentionable: boolean;
 }
 
+export interface RoleEditOptions {
+	name?: string;
+	permissions?: string;
+	color?: number;
+	hoist?: boolean;
+	mentionable?: boolean;
+}
+
 /** Member */
 export interface MemberData extends BaseData {
 	user?: UserData;
@@ -387,6 +395,16 @@ export interface InviteMetadata {
 	created_at: string;
 }
 
+export interface InviteCreateOptions {
+	maxAge?: number;
+	maxUses?: number;
+	temporary?: boolean;
+	unique?: boolean;
+	targetUser?: string;
+	targetUserType?: number;
+}
+
+/** Applications */
 export interface ApplicationData {
 	name: string;
 	icon: string;

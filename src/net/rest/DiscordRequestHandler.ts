@@ -15,7 +15,7 @@
  */
 import GuildChannel from "../../structures/guild/GuildChannel.ts";
 import { MessageContent } from "../../structures/Message.ts";
-import type { ApplicationCommandData, ApplicationData, ChannelData, ChannelEditOption, CreateWebhookData, EmbedData, ExecuteWebhookData, GuildData, GuildEditOptions, InteractionResponse, MessageConstructorData, MessageData, Snowflake, WebhookData } from "../common/Types.ts";
+import type { ApplicationCommandData, ApplicationData, ChannelData, ChannelEditOption, CreateWebhookData, EmbedData, ExecuteWebhookData, GuildData, GuildEditOptions, InteractionResponse, InviteCreateOptions, InviteData, MessageConstructorData, MessageData, RoleData, RoleEditOptions, Snowflake, WebhookData } from "../common/Types.ts";
 import Endpoints, { BASE_API_URL } from "./Endpoints.ts";
 import RequestHandler from "./RequestHandler.ts";
 
@@ -51,6 +51,86 @@ class DiscordRequestHandler extends RequestHandler {
 		return res.json()
 	}
 
+	public async editChannelPermission(channelId: string, overwriteId: string, o: {allow: number, deny: number, type: 'member' | 'role'}): Promise<void> {
+		const res: Response = await this.makeAndSend(Endpoints.channel_permission(channelId, overwriteId), 'PUT', {
+			allow: o.allow,
+			deny: o.deny,
+			type: o.type === 'member' ? 1 : 0
+		});
+		return res.json();
+	}
+
+	public async deleteChannelPermission(channelId: string, overwriteId: string): Promise<void> {
+		const res: Response = await this.makeAndSend(Endpoints.channel_permission(channelId, overwriteId), 'DELETE');
+		return res.json();
+	}
+
+	public async getChannelInvites(channelId: string): Promise<InviteData[]> {
+		const res: Response = await this.makeAndSend(Endpoints.channel_invites(channelId), 'GET');
+		return res.json();
+	}
+
+	public async createChannelInvites(channelId: string, o?: InviteCreateOptions): Promise<InviteData> {
+		const res: Response = await this.makeAndSend(Endpoints.channel_invites(channelId), 'GET', o ? {
+			max_age: o.maxAge,
+			max_uses: o.maxUses,
+			temporary: o.temporary,
+			unique: o.unique,
+			target_user: o.targetUser,
+			target_user_type: o.targetUserType
+		} : {});
+		return res.json();
+	}
+
+	public async getChannelPins(channelId: string): Promise<MessageData[]> {
+		const res: Response = await this.makeAndSend(Endpoints.channel_pins(channelId), 'GET');
+		return res.json();
+	}
+
+	public async addPinChannelMessage(channelId: string, msgId: string): Promise<void> {
+		const res: Response = await this.makeAndSend(Endpoints.channel_pin(channelId, msgId), 'POST');
+		return res.json();
+	}
+
+	public async deletePinChannelMessage(channelId: string, msgId: string): Promise<void> {
+		const res: Response = await this.makeAndSend(Endpoints.channel_pin(channelId, msgId), 'DELETE');
+		return res.json()
+	}
+
+	public async createReaction(channelId: string, msgId: string, emojiId: string): Promise<void> {
+		const res: Response = await this.makeAndSend(Endpoints.me_reaction(channelId, msgId, emojiId), 'PUT')
+		return res.json()
+	}
+
+	public async deleteMeReaction(channelId: string, msgId: string, emojiId: string): Promise<void> {
+		const res: Response = await this.makeAndSend(Endpoints.me_reaction(channelId, msgId, emojiId), 'DELETE');
+		return res.json();
+	}
+
+	public async deleteUserReaction(channeld: string, msgId: string, emojiId: string, userId: string): Promise<void> {
+		const res: Response = await this.makeAndSend(Endpoints.user_reaction(channeld, msgId, emojiId, userId), "DELETE");
+		return res.json();
+	}
+
+	public async getReactions() {
+
+	}
+
+	public async deleteAllReactions(channelId: string, msgId: string): Promise<void> {
+		const res: Response = await this.makeAndSend(Endpoints.message_reactions(channelId, msgId), 'DELETE');
+		return res.json();
+	}
+
+	public async deleteAllReactionsEmoji(channelId: string, msgId: string, emojiId: string): Promise<void> {
+		const res: Response = await this.makeAndSend(Endpoints.message_reaction(channelId, msgId, emojiId), 'DELETE');
+		return res.json();
+	}
+
+	public async startTyping(channelId: string): Promise<void> {
+		const res: Response = await this.makeAndSend(Endpoints.typing_indicator(channelId), 'POST');
+		return res.json();
+	}
+
 	/**
 	 * Edit a guild
 	 * @param guildId 
@@ -75,6 +155,11 @@ class DiscordRequestHandler extends RequestHandler {
 			preferred_locale: o.preferredLocale
 		});
 		return res.json()
+	}
+
+	public async editRole(guildId: string, roleId: string, o: RoleEditOptions): Promise<RoleData> {
+		const res: Response = await this.makeAndSend(Endpoints.guild_role(guildId, roleId), 'PATCH', o);
+		return res.json();
 	}
 
 	/**
