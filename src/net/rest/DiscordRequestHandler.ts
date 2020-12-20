@@ -15,7 +15,7 @@
  */
 import GuildChannel from "../../structures/guild/GuildChannel.ts";
 import { MessageContent } from "../../structures/Message.ts";
-import type { ApplicationCommandData, ApplicationData, ChannelData, ChannelEditOption, CreateWebhookData, EmbedData, ExecuteWebhookData, GuildData, GuildEditOptions, InteractionResponse, MessageConstructorData, MessageData, Snowflake, WebhookData } from "../common/Types.ts";
+import type { ApplicationCommandData, ApplicationData, ChannelData, ChannelEditOption, CreateWebhookData, EmbedData, ExecuteWebhookData, GuildData, GuildEditOptions, InteractionResponse, MessageConstructorData, MessageData, RoleData, RoleEditOptions, Snowflake, WebhookData } from "../common/Types.ts";
 import Endpoints, { BASE_API_URL } from "./Endpoints.ts";
 import RequestHandler from "./RequestHandler.ts";
 
@@ -75,6 +75,11 @@ class DiscordRequestHandler extends RequestHandler {
 			preferred_locale: o.preferredLocale
 		});
 		return res.json()
+	}
+
+	public async editRole(guildId: string, roleId: string, o: RoleEditOptions): Promise<RoleData> {
+		const res: Response = await this.makeAndSend(Endpoints.guild_role(guildId, roleId), 'PATCH', o);
+		return res.json();
 	}
 
 	/**

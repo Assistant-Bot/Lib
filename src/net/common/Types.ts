@@ -218,6 +218,14 @@ export interface RoleData extends BaseData {
 	mentionable: boolean;
 }
 
+export interface RoleEditOptions {
+	name?: string;
+	permissions?: string;
+	color?: number;
+	hoist?: boolean;
+	mentionable?: boolean;
+}
+
 /** Member */
 export interface MemberData extends BaseData {
 	user?: UserData;
