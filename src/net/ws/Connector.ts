@@ -59,13 +59,13 @@ export abstract class Connector {
 		this.ws.onopen = () => {
 			this.#state = 'CONNECTED';
 		}
-		this.ws.onclose = () => {
+		this.ws.onclose = async () => {
 			this.#state = 'DISCONNECTED';
 			if (this.#heartInterval) {
 				clearInterval(this.#heartInterval);
 			}
 			if (!this.#shouldDisconnect) {
-				this.connect(token);
+				await this.connect(token);
 			}
 		}
 	}
@@ -141,7 +141,18 @@ export abstract class Connector {
 				} else {
 					this.#heartInterval = setInterval(() => {
 						// @ts-ignore
-						this.sendPacket(packet);
+						try {
+							this.sendPacket(packet);
+						} catch (e) {
+							// not connected?
+							if (this.ws.readyState > 1) {
+								console.error(new Error('Sent heartbeat while socket is disconnected. Reconnecting soon.'));
+								clearInterval(this.#heartInterval);
+								this.#state = 'DISCONNECTED';
+							} else {
+								console.error(e);
+							}
+						}
 					}, packet.interval);
 				}
 				// todo: Make intents a client option.
