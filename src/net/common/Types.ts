@@ -14,6 +14,7 @@
  * to remove this software from your device immediately.
  */
 import Member from "../../structures/guild/Member.ts";
+import User from "../../structures/User.ts";
 
 /**
  * HTTP status codes
@@ -143,6 +144,23 @@ export type ChannelTypesNumeric = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 export type ChannelTypes = "Text" | "DM" | "Voice" | "Group" | "Category" | "News" | "Store" | "Unknown";
 
+export interface GuildEditOptions {
+	name?: string;
+	region?: string;
+	verificationLevel?: string;
+	defaultMessageNotifications?: string;
+	explicitContentFilter?: string;
+	afkChannelID?: string;
+	afkTimeout?: string;
+	icon?: string;
+	ownerID?: string
+	splash?: string;
+	banner?: string;
+	systemChannelID?: string;
+	rulesChannelID?: string;
+	publicUpdatesChannelID?: string;
+	preferredLocale?: string
+}
 
 /** Channels */
 export interface PermissionOverwrites extends BaseData {
@@ -176,6 +194,19 @@ export interface ChannelData extends BaseData {
 	last_pin_timestamp?: string;
 }
 
+export interface ChannelEditOption {
+	name?: string;
+	type?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+	position?: number;
+	topic?: string;
+	nsfw?: boolean;
+	rateLimitPerUser?: number;
+	bitrate?: number;
+	userLimit?: number;
+	permissionsOverwrites?: PermissionOverwrites[];
+	parentID?: string;
+}
+
 /** Role */
 export interface RoleData extends BaseData {
 	name: string;
@@ -185,6 +216,14 @@ export interface RoleData extends BaseData {
 	permissions: string;
 	managed: boolean;
 	mentionable: boolean;
+}
+
+export interface RoleEditOptions {
+	name?: string;
+	permissions?: string;
+	color?: number;
+	hoist?: boolean;
+	mentionable?: boolean;
 }
 
 /** Member */
@@ -267,6 +306,7 @@ export interface MessageData extends BaseData {
 	mention_roles: RoleData[];
 	mention_channels?: ChannelData[];
 	attachments: AttachmentData[];
+	embed?: EmbedData;
 	embeds: EmbedData[];
 	reactions?: ReactionData[];
 	nonce?: number | string;
@@ -355,6 +395,16 @@ export interface InviteMetadata {
 	created_at: string;
 }
 
+export interface InviteCreateOptions {
+	maxAge?: number;
+	maxUses?: number;
+	temporary?: boolean;
+	unique?: boolean;
+	targetUser?: string;
+	targetUserType?: number;
+}
+
+/** Applications */
 export interface ApplicationData {
 	name: string;
 	icon: string;
@@ -462,6 +512,35 @@ export enum InteractionResponseType {
 	CHANNEL_MESSAGE = 3,
 	CHANNEL_MESSAGE_WITH_SOURCE = 4,
 	ACK_WITH_SOURCE = 5
+}
+
+export interface WebhookData {
+	id: string;
+	type: 1 | 2;
+	guild_id: string;
+	channel_id: string;
+	user?: User;
+	name: string;
+	avatar: string;
+	token?: String;
+	application_id: string;
+}
+
+export interface CreateWebhookData {
+	name: string,
+	avatar?: string;
+	channel_id: string;
+}
+
+export interface ExecuteWebhookData {
+	content: string;
+	username?: string;
+	avatar_url?: string;
+	tts?: boolean;
+	file?: Uint8Array; //??
+	embeds: EmbedData[];
+	payload_json?: string;
+	allowed_mentions?: ("roles" | "channels" | "members")[];
 }
 
 export interface VoiceState {

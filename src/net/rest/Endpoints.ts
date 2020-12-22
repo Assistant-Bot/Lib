@@ -47,12 +47,116 @@ export default class Endpoints {
 		return this.channel(id) + (!!msgId ? '/messages/' + msgId : '/messages');
 	}
 
+	public static channel_permission(id: string, overwriteId: string): string {
+		return this.channel(id) + "/permissions/" + overwriteId;
+	}
+
+	public static channel_invites(id: string): string {
+		return this.channel(id) + '/invites'; 
+	}
+
+	public static channel_pins(id: string): string {
+		return this.channel(id) + '/pins';
+	}
+
+	public static channel_pin(id: string, msgId: string): string {
+		return this.channel_pins(id) + "/" + msgId;
+	}
+
+	public static typing_indicator(id: string): string { 
+		return this.channel(id) + '/typing';
+	}
+
+	public static message_reactions(id: string, msgId: string): string {
+		return this.channel_messages(id, msgId) + "/reactions/"
+	}
+
+	public static message_reaction(id: string, msgId: string, emojiId: string): string {
+		return this.message_reactions(id, msgId) + encodeURIComponent(emojiId)
+	}
+
+	public static me_reaction(id: string, msgId: string, emojiId: string): string {
+		return this.message_reaction(id, msgId, emojiId) + '/@me';
+	}
+
+	public static user_reaction(id: string, msgId: string, emojiId: string, userId: string): string {
+		return this.message_reaction(id, msgId, emojiId) + "/" + userId; 
+	}
+
 	public static guild(id: string): string {
 		return '/guilds/' + id;
 	}
 
 	public static guild_resolve(id: string, ...additional: string[]): string {
 		return this.channel(id) + '/' + additional.join('/');
+	}
+
+	public static guild_channels(id: string): string {
+		return this.guild(id) + "/channels";
+	}
+
+	public static guild_roles(id: string): string {
+		return this.guild(id) + "/roles";
+	}
+
+  	public static guild_role(guildId: string, roleId: string): string {
+    	return this.guild_roles(guildId) + "/" + roleId;
+  	}
+	
+	public static guild_emojis(id: string): string {
+		return this.guild(id) + '/emojis';
+	}
+
+	public static guild_emoji(id: string, emojiId: string): string {
+		return this.guild_emojis(id) + '/' + emojiId;
+	}
+
+	public static guild_regions(id: string): string {
+		return this.guild(id) + "/regions";
+	}
+
+	public static guild_invites(id: string): string {
+		return this.guild(id) + "/invites";
+	}
+
+	public static guild_integrations(id: string): string {
+		return this.guild(id) + "/integrations";
+	}
+
+	public static guild_integration(id: string, intId: string): string {
+		return this.guild_integrations(id) + "/" + intId;
+	}
+
+	public static guild_widget(id: string): string {
+		return this.guild(id) + "/widget";
+	}
+
+	public static guild_vanity_url(id: string): string {
+		return this.guild(id) + "/vanity-url"
+	}
+
+	public static invite(code: string) {
+		return "/invites/" + code;
+	}
+
+	public static me_user() {
+		return "/users/@me";
+	}
+
+	public static me_guilds() {
+		return this.me_user() + "/guilds";
+	}
+
+	public static me_guild(id: string) {
+		return this.me_guilds() + "/" + id;
+	}
+
+	public static me_channels() {
+		return this.me_user() + "/channels";
+	}
+
+	public static user(id: string) {
+		return "/users/" + id;
 	}
 
 	public static rest_gateway(bot: boolean): string {
@@ -73,5 +177,17 @@ export default class Endpoints {
 
 	public static interactionResponse(id: string, token: string): string {
 		return "/interactions/" + id + "/" + token + "/callback";
+	}
+
+	public static createWehook(id: string): string {
+		return "/channels/" + id + "/webhooks";
+	}
+
+	public static executeWebhook(id: string, token: string) {
+		return "/webhooks" + id + "/" + token;
+	}
+
+	public static editWebhook(wID: string, token: string, mID: string) {
+		return this.executeWebhook(wID, token) + "/messages/" + mID;
 	}
 }

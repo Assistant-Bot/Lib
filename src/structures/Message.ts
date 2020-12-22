@@ -41,10 +41,12 @@ export type MessageContent = string | {
 export default class Message extends Base {
 	public channel!: TextChannel;
 	public author!: User;
-	public content!: string;
+	public content?: string;
 	public timestamp!: number;
 	public prefix?: string;
 	public args!: string[];
+	public embed?: EmbedData;
+	public embeds?: EmbedData[];
 
 	public constructor(client: Client, data: MessageData) {
 		super(client, data.id);
@@ -60,6 +62,14 @@ export default class Message extends Base {
 
 		if (data.content) {
 			this.content = data.content;
+		}
+
+		if (data.embeds) {
+			this.embeds = data.embeds;
+		}
+
+		if (data.embed) {
+			this.embed = data.embed;
 		}
 		this.timestamp = Date.parse(data.timestamp);
 	}

@@ -14,7 +14,7 @@
  * to remove this software from your device immediately.
  */
 import type Client from "../../Client.ts";
-import type { ChannelData } from "../../net/common/Types.ts";
+import type { ChannelData, ChannelEditOption } from "../../net/common/Types.ts";
 import Channel from "../channel/Channel.ts";
 import Guild from "./Guild.ts";
 
@@ -39,6 +39,13 @@ export default class GuildChannel extends Channel {
 		this.name = data.name || '';
 		this.position = data.position || -1;
 		this.permissions = data.permission_overwrites;
+	}
+
+	public async edit(o: ChannelEditOption): Promise<GuildChannel> {
+		const cData = await this.request.editChannel(this.id, o);
+		const ch = new GuildChannel(this.client, cData);
+		this.client.dataManager?.channels.set(ch.id, ch);
+		return ch;
 	}
 
 	public async delete(): Promise<boolean> {
