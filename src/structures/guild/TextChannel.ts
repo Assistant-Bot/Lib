@@ -73,7 +73,6 @@ export default class TextChannel extends GuildChannel {
 	 * Sends a codeblock
 	 * @param code
 	 * @param content
-	 * @deprecated
 	 */
 	public async sendBlock(code: string, content: string): Promise<Message> {
 		return this.send("```" + code + "\n" + content + "\n```");

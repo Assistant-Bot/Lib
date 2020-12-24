@@ -60,4 +60,14 @@ export default abstract class DataStore<K, V> {
 	 * @param structure
 	 */
 	public abstract set(id: K, structure: V): V | Promise<V | null> | null;
+
+	/**
+	 * Gets the amount of "keys" or data in a store.
+	 */
+	public abstract get size(): number;
+
+	/**
+	 * Gets the size limit for this store.
+	 */
+	public abstract get limit(): number;
 }

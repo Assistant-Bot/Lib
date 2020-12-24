@@ -17,6 +17,11 @@ import DataStore from "./DataStore.ts";
 
 export default abstract class DataManager {
 	/**
+	 * The limit on all stores.
+	 */
+	public abstract limit: number;
+
+	/**
 	 * Get all channels stored within the store.
 	 */
 	public abstract get channels(): DataStore<string, any>;

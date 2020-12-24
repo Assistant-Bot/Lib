@@ -23,13 +23,37 @@ import DataManager from "../DataManager.ts";
 import RuntimeStore from "./RuntimeStore.ts";
 
 export default class RuntimeManager extends DataManager {
-	#channels = new RuntimeStore<string, typeof Channel & Base>(Channel as typeof Channel & Base);
-	#emojis = new RuntimeStore<string, typeof Emoji & Base>(Emoji as typeof Emoji & Base);
-	#guilds = new RuntimeStore<string, typeof Guild & Base>(Guild as typeof Guild & Base);
-	#messages = new RuntimeStore<string, typeof Message & Base>(Message as typeof Message & Base);
-	#users = new RuntimeStore<string, typeof User & Base>(User as typeof User & Base);
-	// to-do Reactions!
-	#reactions = new RuntimeStore<string, typeof Channel & Base>(Channel as typeof Channel & Base);
+	public limit: number;
+
+	#channels: RuntimeStore<string, typeof Channel & Base>;
+	#emojis: RuntimeStore<string, typeof Emoji & Base>;
+	#guilds: RuntimeStore<string, typeof Guild & Base>;
+	#messages: RuntimeStore<string, typeof Message & Base>;
+	#users: RuntimeStore<string, typeof User & Base>;
+	#reactions: RuntimeStore<string, typeof Channel & Base>;
+
+	/**
+	 * Hard limit for how many structures are allowed in this store.
+	 */
+	private static hardLimit: number = 100;
+
+	public constructor(limit?: number) {
+		super();
+
+		if (limit) {
+			this.limit = limit;
+		} else {
+			this.limit = RuntimeManager.hardLimit;
+		}
+
+		this.#channels = new RuntimeStore<string, typeof Channel & Base>(Channel as typeof Channel & Base, this.limit);
+		this.#emojis = new RuntimeStore<string, typeof Emoji & Base>(Emoji as typeof Emoji & Base, this.limit);
+		this.#guilds = new RuntimeStore<string, typeof Guild & Base>(Guild as typeof Guild & Base, this.limit);
+		this.#messages = new RuntimeStore<string, typeof Message & Base>(Message as typeof Message & Base, this.limit);
+		this.#users = new RuntimeStore<string, typeof User & Base>(User as typeof User & Base, this.limit);
+		// to-do Reactions!
+		this.#reactions = new RuntimeStore<string, typeof Channel & Base>(Channel as typeof Channel & Base, this.limit);
+	}
 
 	/**
 	 * Deletes a structure in the datastore based on it's id.
