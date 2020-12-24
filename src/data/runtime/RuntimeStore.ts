@@ -19,24 +19,10 @@ import Collection from "../../util/Collection.ts";
 import DataStore from "../DataStore.ts";
 
 export default class RuntimeStore<K extends string, V extends Base> extends DataStore<K, V> {
-	/**
-	 * Hard limit for how many structures are allowed in this store.
-	 */
-	private static hardLimit: number = 100;
-
-	/**
-	 * The limit for how many structures are allowed in this store.
-	 */
-	#limit: number = RuntimeStore.hardLimit;
-
 	#dataSet: Collection<K, V> = new Collection();
 
 	public constructor(structure: V, limit?: number) {
-		super(structure);
-
-		if (limit) {
-			this.#limit = limit;
-		}
+		super(structure, limit);
 	}
 
 	/**
@@ -136,9 +122,5 @@ export default class RuntimeStore<K extends string, V extends Base> extends Data
 
 	public get size(): number {
 		return this.#dataSet.size;
-	}
-
-	public get limit(): number {
-		return this.#limit;
 	}
 }

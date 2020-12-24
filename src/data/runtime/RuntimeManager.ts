@@ -23,8 +23,6 @@ import DataManager from "../DataManager.ts";
 import RuntimeStore from "./RuntimeStore.ts";
 
 export default class RuntimeManager extends DataManager {
-	public limit: number;
-
 	#channels: RuntimeStore<string, typeof Channel & Base>;
 	#emojis: RuntimeStore<string, typeof Emoji & Base>;
 	#guilds: RuntimeStore<string, typeof Guild & Base>;
@@ -38,14 +36,7 @@ export default class RuntimeManager extends DataManager {
 	private static hardLimit: number = 100;
 
 	public constructor(limit?: number) {
-		super();
-
-		if (limit) {
-			this.limit = limit;
-		} else {
-			this.limit = RuntimeManager.hardLimit;
-		}
-
+		super(limit);
 		this.#channels = new RuntimeStore<string, typeof Channel & Base>(Channel as typeof Channel & Base, this.limit);
 		this.#emojis = new RuntimeStore<string, typeof Emoji & Base>(Emoji as typeof Emoji & Base, this.limit);
 		this.#guilds = new RuntimeStore<string, typeof Guild & Base>(Guild as typeof Guild & Base, this.limit);

@@ -19,7 +19,11 @@ export default abstract class DataManager {
 	/**
 	 * The limit on all stores.
 	 */
-	public abstract limit: number;
+	public limit: number;
+
+	public constructor(limit?: number) {
+		this.limit = limit || 100;
+	}
 
 	/**
 	 * Get all channels stored within the store.
