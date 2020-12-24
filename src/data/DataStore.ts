@@ -17,9 +17,11 @@ import type { Payload } from "../net/ws/packet/Packet.ts";
 
 export default abstract class DataStore<K, V> {
 	protected structure: V;
+	#limit: number;
 
-	public constructor(stucture: V) {
+	public constructor(stucture: V, limit?: number) {
 		this.structure = stucture;
+		this.#limit = limit || 100;
 	}
 
 	/**
@@ -69,5 +71,7 @@ export default abstract class DataStore<K, V> {
 	/**
 	 * Gets the size limit for this store.
 	 */
-	public abstract get limit(): number;
+	public get limit(): number {
+		return this.#limit;
+	}
 }
