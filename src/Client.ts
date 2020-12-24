@@ -247,6 +247,15 @@ export default class Client extends EventEmitter {
 	}
 
 	/**
+	 * Disconnects the bot.
+	 */
+	public async disconnect(): Promise<void> {
+		if (!this.#wsManager) throw new Error('Websocket already closed.');
+
+		await this.#wsManager.close();
+	}
+
+	/**
 	 * Gets the oauth application from discord.
 	 */
 	private async resolveApplication(): Promise<Application | null> {
