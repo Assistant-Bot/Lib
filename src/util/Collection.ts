@@ -155,6 +155,24 @@ export default class Collection<K, V> extends Map<K, V> {
 	}
 
 	/**
+	 * Shifts an element off the collection
+	 */
+	public shift(): [K, V] | null {
+		const asArray: [K, V][] = [];
+		for (let [key, val] of this) {
+			asArray.push([key, val]);
+		}
+		const SHIFT = asArray.shift();
+
+		this.clear();
+		asArray.forEach((arr: [K, V]) => {
+			this.set(arr[0], arr[1]);
+		});
+
+		return SHIFT || null;
+	}
+
+	/**
 	 * Obtains the last value(s) in this collection. This relies on {@link Collection#array}, and thus the caching
 	 * mechanism applies here as well.
 	 * @param {number} [amount] Amount of values to obtain from the end

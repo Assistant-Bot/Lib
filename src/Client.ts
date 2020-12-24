@@ -16,14 +16,14 @@
 import { EventEmitter, GenericFunction, WrappedFunction } from 'https://deno.land/std@0.78.0/node/events.ts';
 import DataManager from "./data/DataManager.ts";
 import type DataStore from "./data/DataStore.ts";
-import type { GatewayResponseBot, MessageData, RoleData, VoiceState } from "./net/common/Types.ts";
+import type { GatewayResponseBot, RoleData, VoiceState } from "./net/common/Types.ts";
 import DiscordRequestHandler from "./net/rest/DiscordRequestHandler.ts";
-import  Endpoints, { GATEWAY_URL } from "./net/rest/Endpoints.ts";
+import Endpoints, { GATEWAY_URL } from "./net/rest/Endpoints.ts";
 import RequestHandler, { RequestHandlerOptions } from "./net/rest/RequestHandler.ts";
 import type { Connector } from "./net/ws/Connector.ts";
 import Generic from "./net/ws/generic/Generic.ts";
 import type { Payload } from "./net/ws/packet/Packet.ts";
-import Interaction from "./structures/application/Interaction.ts";
+import type Interaction from "./structures/application/Interaction.ts";
 import type Channel from "./structures/channel/Channel.ts";
 import type ClientUser from "./structures/ClientUser.ts";
 import type Emoji from "./structures/guild/Emoji.ts";
@@ -141,8 +141,14 @@ export interface ClientOptions {
 
 		/**
 		 * The maximum amount of cached objects allowed
+		 * @deprecated
 		 */
 		max: number;
+
+		/**
+		 * The limit of cached structures in a single store.
+		 */
+		limit: number;
 	},
 	sharding: {
 		/**
@@ -191,7 +197,8 @@ export default class Client extends EventEmitter {
 			cache: {
 				memory: true,
 				updates: true,
-				max: -1
+				max: -1,
+				limit: 100
 			},
 			sharding: {
 				useDiscord: false
