@@ -115,7 +115,10 @@ export default class RuntimeStore<K extends string, V extends Base> extends Data
 	 * @param id
 	 * @param structure
 	 */
-	public set(id: K, structure: V): V | null {
+	public set(id: K, structure: V, overwrite: boolean = true): V | null {
+		if (this.size >= this.limit && overwrite) {
+			this.#dataSet.shift();
+		}
 		this.#dataSet.set(id, structure);
 		return structure || null;
 	}

@@ -164,9 +164,9 @@ export default class Collection<K, V> extends Map<K, V> {
 		}
 		const SHIFT = asArray.shift();
 
-		this.clear();
+		super.clear();
 		asArray.forEach((arr: [K, V]) => {
-			this.set(arr[0], arr[1]);
+			super.set(arr[0], arr[1]);
 		});
 
 		return SHIFT || null;

@@ -131,6 +131,10 @@ export default class RequestHandler {
 							this.#globalBlock = false;
 						}
 
+						if (this.#rateLimits[req.url]) {
+							wait = this.#rateLimits[req.url];
+						}
+
 						if (wait) {
 							await Sleep(wait);
 						}

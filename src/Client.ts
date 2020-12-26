@@ -132,23 +132,23 @@ export interface ClientOptions {
 		/**
 		 * Should objects be cached in memory?
 		 */
-		memory: boolean;
+		memory?: boolean;
 
 		/**
 		 * Should updates from the gateway be applied to cache?
 		 */
-		updates: boolean;
+		updates?: boolean;
 
 		/**
 		 * The maximum amount of cached objects allowed
 		 * @deprecated
 		 */
-		max: number;
+		max?: number;
 
 		/**
 		 * The limit of cached structures in a single store.
 		 */
-		limit: number;
+		limit?: number;
 	},
 	sharding: {
 		/**
