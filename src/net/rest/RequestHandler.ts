@@ -54,10 +54,15 @@ export interface Header {
 	value: string;
 }
 
+export interface RateLimit {
+	time: number;
+	remaining: number;
+}
+
 export default class RequestHandler {
 	#options: RequestHandlerOptions;
 	#headers: Header[];
-	#rateLimits: { [key: string]: number };
+	#rateLimits: { [key: string]: RateLimit };
 	#globalBlock: boolean | number;
 
 	public constructor(opts: Partial<RequestHandlerOptions>, specialHeaders: Header[]) {
@@ -132,11 +137,16 @@ export default class RequestHandler {
 						}
 
 						if (this.#rateLimits[req.url]) {
-							wait = this.#rateLimits[req.url];
+							if (this.#rateLimits[req.url].remaining == 0) {
+								wait = this.#rateLimits[req.url].time;
+								console.log(`%cWARN: %c${req.url} has a ratelimit of %c${wait} ms %cand is in progress`, "color: #fc3246;font-weight: bold;", "color: grey;", "color: #fc3246;", "color: white;");
+								this.#rateLimits[req.url].remaining = 5;
+							}
 						}
 
 						if (wait) {
 							await Sleep(wait);
+							wait = 0;
 						}
 
 						res = await fetch(req);
@@ -149,7 +159,10 @@ export default class RequestHandler {
 						}
 
 						if (ratelimit.limit) {
-							this.#rateLimits[req.url] = ratelimit.limit as number * 1000;
+							this.#rateLimits[req.url] = {
+								time: ratelimit.limit as number * 1000,
+								remaining: ratelimit.remaining === false ? 5 : ratelimit.remaining as number
+							}
 						}
 
 						if (ratelimit.global != null && ratelimit.resetAfter) {
@@ -163,7 +176,6 @@ export default class RequestHandler {
 						}
 
 						if (res.status === 400) {
-							console.log(req);
 							reject(new ResponseError('Bad Request', res));
 						}
 
