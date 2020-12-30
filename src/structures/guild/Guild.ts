@@ -14,7 +14,7 @@
  * to remove this software from your device immediately.
  */
 import type Client from "../../Client.ts";
-import type { GuildData, GuildEditOptions } from "../../net/common/Types.ts";
+import type { ChannelCreateOption, ChannelData, GuildData, GuildEditOptions, RoleCreateOptions, RoleData } from "../../net/common/Types.ts";
 import Collection from "../../util/Collection.ts";
 import Base from "../Base.ts";
 import GuildChannel from "../guild/GuildChannel.ts";
@@ -175,5 +175,15 @@ export default class Guild extends Base {
 			arr.push(this.client.dataManager?.channels.get(id));
 		}
 		return arr.filter(c => c !== undefined);
+	}
+
+	public async createChannel(o: ChannelCreateOption) {
+		const res: ChannelData = await this.request.createChannel(this.id, o);
+		return new GuildChannel(this.client, res);
+	}
+
+	public async createRole(o: RoleCreateOptions) {
+		const res: RoleData  = await this.request.createRole(this.id, o);
+		return new Role(this.client, res);
 	}
 }

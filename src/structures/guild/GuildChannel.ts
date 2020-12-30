@@ -14,9 +14,10 @@
  * to remove this software from your device immediately.
  */
 import type Client from "../../Client.ts";
-import type { ChannelData, ChannelEditOption } from "../../net/common/Types.ts";
+import type { ChannelData, ChannelEditOption, InviteCreateOptions, InviteData } from "../../net/common/Types.ts";
 import Channel from "../channel/Channel.ts";
 import Guild from "./Guild.ts";
+import Invite from "./Invite.ts";
 
 export default class GuildChannel extends Channel {
 	public name!: string;
@@ -56,5 +57,36 @@ export default class GuildChannel extends Channel {
 		}
 
 		return res;
+	}
+
+	
+	public async editPosition(pos: number): Promise<void> {
+		return await this.request.editChannelPosition(this.guild.id || this.#guild_id, this.id, pos);
+	}
+
+	public async editPermission(overwriteID: string, o: {allow: string, deny: string, type: "member" | "role"}): Promise<void> {
+		return await this.request.editChannelPermission(this.id, overwriteID, o)
+	}
+
+	public async deletePermission(overwriteID: string): Promise<void> {
+		return await this.request.deleteChannelPermission(this.id, overwriteID);
+	}
+
+	public async createInvite(o?: InviteCreateOptions): Promise<Invite> {
+		const res: InviteData = await this.request.createChannelInvites(this.id, o);
+		return new Invite(this.client, res);
+	}
+
+	public async getInvites(): Promise<Invite[]> {
+		const res: InviteData[] = await this.request.getChannelInvites(this.id);
+		return res.map(i => new Invite(this.client, i))
+	}
+
+	public async pinMessage(id: string): Promise<void> {
+		return await this.request.addPinChannelMessage(this.id, id);
+	}
+
+	public async unpinMessage(id: string): Promise<void> {
+		return await this.request.deletePinChannelMessage(this.id, id)
 	}
 }

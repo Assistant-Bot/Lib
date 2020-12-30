@@ -207,6 +207,8 @@ export interface ChannelEditOption {
 	parentID?: string;
 }
 
+export type ChannelCreateOption = ChannelEditOption;
+
 /** Role */
 export interface RoleData extends BaseData {
 	name: string;
@@ -225,6 +227,8 @@ export interface RoleEditOptions {
 	hoist?: boolean;
 	mentionable?: boolean;
 }
+
+export type RoleCreateOptions = RoleEditOptions;
 
 /** Member */
 export interface MemberData extends BaseData {
