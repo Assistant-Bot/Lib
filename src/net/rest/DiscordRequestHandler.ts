@@ -15,12 +15,12 @@
  */
 import GuildChannel from "../../structures/guild/GuildChannel.ts";
 import { MessageContent } from "../../structures/Message.ts";
-import type { ApplicationCommandData, ApplicationData, ChannelCreateOption, ChannelData, ChannelEditOption, CreateWebhookData, EmbedData, ExecuteWebhookData, GuildData, GuildEditOptions, InteractionResponse, InviteCreateOptions, InviteData, MessageConstructorData, MessageData, RoleCreateOptions, RoleData, RoleEditOptions, Snowflake, WebhookData } from "../common/Types.ts";
+import type { ApplicationCommandData, ApplicationData, ChannelData, ChannelEditOption, CreateWebhookData, EmbedData, ExecuteWebhookData, GuildData, GuildEditOptions, InteractionResponse, InviteCreateOptions, InviteData, MessageConstructorData, MessageData, RoleEditOptions, RoleData, Snowflake, WebhookData } from "../common/Types.ts";
 import Endpoints, { BASE_API_URL } from "./Endpoints.ts";
 import RequestHandler from "./RequestHandler.ts";
 
 class DiscordRequestHandler extends RequestHandler {
-	public async createChannel(guildId: string, o: ChannelCreateOption): Promise<ChannelData> {
+	public async createChannel(guildId: string, o: ChannelEditOption): Promise<ChannelData> {
 		const res: Response = await this.makeAndSend(Endpoints.guild_channels(guildId), 'POST', {
 			name: o.name,
 			type: o.type,
@@ -48,8 +48,8 @@ class DiscordRequestHandler extends RequestHandler {
 
 	/**
 	 * Edit a channel
-	 * @param channelId 
-	 * @param o 
+	 * @param channelId
+	 * @param o
 	 */
 	public async editChannel(channelId: string, o: ChannelEditOption): Promise<ChannelData> {
 		const res: Response = await this.makeAndSend(Endpoints.channel(channelId), 'PATCH', {
@@ -69,7 +69,7 @@ class DiscordRequestHandler extends RequestHandler {
 
 	public async editChannelPosition(guildId: string, channelId: string , pos: number): Promise<void> {
 		const res: Response = await this.makeAndSend(Endpoints.guild_channels(guildId), 'PATCH', {
-			id: channelId, 
+			id: channelId,
 			position: pos
 		});
 		return res.json();
@@ -91,6 +91,11 @@ class DiscordRequestHandler extends RequestHandler {
 
 	public async getChannelInvites(channelId: string): Promise<InviteData[]> {
 		const res: Response = await this.makeAndSend(Endpoints.channel_invites(channelId), 'GET');
+		return res.json();
+	}
+
+	public async getGuildInvites(guildId: string): Promise<InviteData[]> {
+		const res: Response = await this.makeAndSend(Endpoints.guild_invites(guildId), 'GET');
 		return res.json();
 	}
 
@@ -153,8 +158,8 @@ class DiscordRequestHandler extends RequestHandler {
 
 	/**
 	 * Edit a guild
-	 * @param guildId 
-	 * @param o 
+	 * @param guildId
+	 * @param o
 	 */
 	public async editGuild(guildId: string, o: GuildEditOptions): Promise<GuildData> {
 		const res: Response = await this.makeAndSend(Endpoints.guild(guildId), 'PATCH', {
@@ -177,7 +182,7 @@ class DiscordRequestHandler extends RequestHandler {
 		return res.json()
 	}
 
-	public async createRole(guildId: string, o: RoleCreateOptions): Promise<RoleData> {
+	public async createRole(guildId: string, o: RoleEditOptions): Promise<RoleData> {
 		const res: Response = await this.makeAndSend(Endpoints.guild_roles(guildId), 'POST', o);
 		return res.json();
 	}
@@ -249,7 +254,7 @@ class DiscordRequestHandler extends RequestHandler {
 		if (!res.ok) {
 			return false;
 		}
-		
+
 		return res.json();
 	}
 
@@ -336,7 +341,7 @@ class DiscordRequestHandler extends RequestHandler {
 	public async createWebhook(data: CreateWebhookData): Promise<WebhookData> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.createWehook(data.channel_id),
-			'POST', 
+			'POST',
 			{name: data.name, avatar: data.avatar}
 		);
 		return res.json();
@@ -354,7 +359,7 @@ class DiscordRequestHandler extends RequestHandler {
 	public async editWebhook(
 		wID: string,
 		token: string,
-		mID: string, 
+		mID: string,
 		data: {content: string, embeds?: EmbedData[], allowed_mentions?: ("roles" | "channels" | "members")[]}): Promise<WebhookData> /** correct ? */ {
 		const res: Response = await this.makeAndSend(
 			Endpoints.editWebhook(wID, token, mID),

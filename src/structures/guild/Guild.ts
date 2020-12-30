@@ -14,7 +14,7 @@
  * to remove this software from your device immediately.
  */
 import type Client from "../../Client.ts";
-import type { ChannelCreateOption, ChannelData, GuildData, GuildEditOptions, RoleCreateOptions, RoleData } from "../../net/common/Types.ts";
+import type { ChannelEditOption, ChannelData, GuildData, GuildEditOptions, RoleEditOptions, RoleData, InviteData } from "../../net/common/Types.ts";
 import Collection from "../../util/Collection.ts";
 import Base from "../Base.ts";
 import GuildChannel from "../guild/GuildChannel.ts";
@@ -26,6 +26,7 @@ import Role from "./Role.ts";
 import StoreChannel from "./StoreChannel.ts";
 import TextChannel from "./TextChannel.ts";
 import VoiceChannel from "./VoiceChannel.ts";
+import Invite from './Invite.ts';
 
 export default class Guild extends Base {
 	public name!: string;
@@ -160,6 +161,16 @@ export default class Guild extends Base {
 		this.client.dataManager?.guilds.set(this.id, this);
 	}
 
+	public async getInvites(): Promise<Invite[]> {
+		const inviteData: InviteData[] = await this.request.getGuildInvites(this.id);
+		const invites: Invite[] = [];
+
+		for (let inv of inviteData) {
+			invites.push(new Invite(this.client, inv));
+		}
+		return invites;
+	}
+
 	public async edit(o: GuildEditOptions) {
 		const gData = await this.request.editGuild(this.id, o);
 		const g = new Guild(this.client, gData);
@@ -177,12 +188,12 @@ export default class Guild extends Base {
 		return arr.filter(c => c !== undefined);
 	}
 
-	public async createChannel(o: ChannelCreateOption) {
+	public async createChannel(o: ChannelEditOption) {
 		const res: ChannelData = await this.request.createChannel(this.id, o);
 		return new GuildChannel(this.client, res);
 	}
 
-	public async createRole(o: RoleCreateOptions) {
+	public async createRole(o: RoleEditOptions) {
 		const res: RoleData  = await this.request.createRole(this.id, o);
 		return new Role(this.client, res);
 	}

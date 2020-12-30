@@ -81,7 +81,7 @@ export default class RequestHandler {
 	 * @param body
 	 * @param immediate
 	 */
-	public makeAndSend(url: string, method: HTTPMethod = "GET", body: any = {}, headers: Header[] = [], immediate: boolean = false): Promise<Response> {
+	public makeAndSend(url: string, method: HTTPMethod = "GET", body?: any, headers: Header[] = [], immediate: boolean = false): Promise<Response> {
 		url = BASE_URL + url;
 		const request: Request = new Request(url, { body: JSON.stringify(body), method });
 
@@ -163,6 +163,7 @@ export default class RequestHandler {
 						}
 
 						if (res.status === 400) {
+							console.log(req);
 							reject(new ResponseError('Bad Request', res));
 						}
 

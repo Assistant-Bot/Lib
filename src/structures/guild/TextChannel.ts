@@ -85,4 +85,16 @@ export default class TextChannel extends GuildChannel {
 	public async deleteMessages(messages: Snowflake<18>[]): Promise<boolean> {
 		return await this.request.deleteMessages(this.id, messages);
 	}
+
+	public async pinMessage(messageid: Snowflake<18>): Promise<void> {
+		await this.request.pinMessage(this.id, messageid);
+		return;
+	}
+
+	public async setRateLimit(time: number): Promise<boolean> {
+		let updated: GuildChannel = await super.edit({
+			rateLimitPerUser: time
+		});
+		return (updated as TextChannel).rateLimitPerUser === this.rateLimitPerUser;
+	}
 }
