@@ -2,7 +2,7 @@
  *                    _     _              _
  *      /\           (_)   | |            | |
  *     /  \   ___ ___ _ ___| |_ __ _ _ __ | |_
- *    / /\ \ / __/ __| / __| __/ _` | '_ \| __|
+ *    / /\ \ / __/ __| / __| __/ _` | "_ \| __|
  *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
  *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
  *
@@ -34,19 +34,19 @@ export type HTTPMethod =
  * Discord types
  */
 export type Snowflake<Length> = string & {
-	length: Length
+	length: Length;
 };
 
 export type GatewayResponseBot = {
-	url: string,
-	shards: number,
+	url: string;
+	shards: number;
 	session_start_limit: {
-		total: number,
-		remaining: number,
-		reset_after: number,
-		max_concurrency: number
-	}
-}
+		total: number;
+		remaining: number;
+		reset_after: number;
+		max_concurrency: number;
+	};
+};
 
 /**
  * Gateway types
@@ -102,7 +102,7 @@ export interface GuildData extends BaseData {
 	discovery_splash: string;
 	owner?: boolean; // We may not use ???
 	owner_id: string;
-	permissions: any // We may not use ???
+	permissions: any; // We may not use ???
 	region: any;
 	afk_channel_id: string;
 	afk_timeout: number;
@@ -114,21 +114,21 @@ export interface GuildData extends BaseData {
 	roles: RoleData[];
 	emojis: EmojiData[];
 	features: any[];
-	mfa_level: number // We may not use ???
-	application_id: string // We may not use ???
+	mfa_level: number; // We may not use ???
+	application_id: string; // We may not use ???
 	system_channel_id: string;
 	system_channel_flags: number;
 	rules_channel_id: string;
 	joined_at?: string;
 	large?: boolean;
-	unavailable?: boolean
+	unavailable?: boolean;
 	member_count?: number;
 	voice_states?: any[];
 	members?: MemberData[];
 	channels?: ChannelData[];
 	presences?: any[];
-	max_presences?: number
-	max_members?: number
+	max_presences?: number;
+	max_members?: number;
 	vanity_url_code?: string;
 	description?: string;
 	banner?: string;
@@ -138,11 +138,19 @@ export interface GuildData extends BaseData {
 	public_updates_channel_id: string;
 	max_video_channel_users?: number;
 	approximate_member_count?: number;
-	approximate_presence_count?: number
+	approximate_presence_count?: number;
 }
 export type ChannelTypesNumeric = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
-export type ChannelTypes = "Text" | "DM" | "Voice" | "Group" | "Category" | "News" | "Store" | "Unknown";
+export type ChannelTypes =
+	| "Text"
+	| "DM"
+	| "Voice"
+	| "Group"
+	| "Category"
+	| "News"
+	| "Store"
+	| "Unknown";
 
 export interface GuildEditOptions {
 	name?: string;
@@ -153,13 +161,133 @@ export interface GuildEditOptions {
 	afkChannelID?: string;
 	afkTimeout?: string;
 	icon?: string;
-	ownerID?: string
+	ownerID?: string;
 	splash?: string;
 	banner?: string;
 	systemChannelID?: string;
 	rulesChannelID?: string;
 	publicUpdatesChannelID?: string;
-	preferredLocale?: string
+	preferredLocale?: string;
+}
+
+export interface GuildAuditLog {
+	webhooks: WebhookData[];
+	users: User[];
+	entries: GuildAuditLogEntry[];
+	integration: unknown[]; // Add integrations later
+}
+
+export interface GuildAuditLogEntry {
+	id: string;
+	targetID?: string;
+	changes: GuildAuditLogEntryChange[];
+	userID: string;
+	type: number;
+	actionType: GuildAuditLogActionType;
+	options?: GuildAuditLogEntryOptional;
+	reason?: string;
+}
+
+export interface GuildAuditLogEntryOptional {
+	deleteMemberDays?: string;
+	membersRemoved?: string;
+	channelID: string;
+	messageID: string;
+	count: string;
+	id: string;
+	type: "0" | "1";
+	role_name?: string;
+}
+
+export type GuildAuditLogEntryChangeKey =
+	| "icon_hash"
+	| "splash_hash"
+	| "owner_id"
+	| "region"
+	| "afk_channel_id"
+	| "afk_timeout"
+	| "mfa_level"
+	| "verification_level"
+	| "explicit_content_filter"
+	| "default_message_notifications"
+	| "vanity_url_code"
+	| "$add"
+	| "$remove"
+	| "prune_delete_days"
+	| "widget_enabled"
+	| "widget_channel_id"
+	| "system_channel_id"
+	| "position"
+	| "topic"
+	| "bitrate"
+	| "permission_overwrites"
+	| "nsfw"
+	| "application_id"
+	| "rate_limit_per_user"
+	| "permissions"
+	| "color"
+	| "hoist"
+	| "mentionable"
+	| "allow"
+	| "deny"
+	| "code"
+	| "channel_id"
+	| "invite_id"
+	| "max_users"
+	| "uses"
+	| "max_age"
+	| "temporary"
+	| "deaf"
+	| "mute"
+	| "nick"
+	| "avatar_hash"
+	| "id"
+	| "enable_emoticons"
+	| "expire_behavior"
+	| "expire_grace_period";
+
+export enum GuildAuditLogActionType {
+	"GUILD_UPDATE" = 1,
+	"CHANNEL_CREATE" = 10,
+	"CHANNEL_UPDATE" = 11,
+	"CHANNEL_DELETE" = 12,
+	"CHANNEL_OVERWRITE_CREATE" = 13,
+	"CHANNEL_OVERWRITE_UPDATE" = 14,
+	"CHANNEL_OVERWRITE_DELETe" = 15,
+	"MEMBER_KICK" = 20,
+	"MEMBER_PRUNE" = 21,
+	"MEMBER_BAN_ADD" = 22,
+	"MEMBER_BAN_REMOVE" = 23,
+	"MEMBER_UPDATE" = 24,
+	"MEMBER_ROLE_UPDATE" = 25,
+	"MEMBER_MOVE" = 26,
+	"MEMBER_DISCONNECT" = 27,
+	"BOT_ADD" = 28,
+	"ROLE_CREATE" = 30,
+	"ROLE_UPDATE" = 31,
+	"ROLE_DELETE" = 32,
+	"INVITE_CREATE" = 40,
+	"INVITE_UPDATE" = 41,
+	"INVITE_DELETE" = 42,
+	"WEBHOOK_CREATE" = 50,
+	"WEBHOOK_UPDATE" = 51,
+	"WEBHOOK_DELETE" = 52,
+	"EMOJI_CREATE" = 60,
+	"EMOJI_UPDATE" = 61,
+	"EMOJI_DELETE" = 62,
+	"MESSAGE_DELETE" = 72,
+	"MESSAGE_BULK_DELETE" = 73,
+	"MESSAGE_PIN" = 74,
+	"MESSAGE_UNPIN" = 75,
+	"INTEGRATION_CREATE" = 80,
+	"INTEGRATION_UPDATE" = 81,
+	"INTEGRATION_DELETE" = 82,
+}
+
+export interface GuildAuditLogEntryChange {
+	new?: AnyStructureData | AnyStructureData[] | string | number | boolean; // Change this later
+	old?: AnyStructureData | AnyStructureData[] | string | number | boolean; // Change this later
+	key: GuildAuditLogEntryChangeKey;
 }
 
 /** Channels */
@@ -268,7 +396,7 @@ export interface EmbedData {
 		proxy_url?: string;
 		height?: number;
 		width?: number;
-	}
+	};
 	thumbnail?: {
 		url?: string;
 		height?: number;
@@ -293,7 +421,7 @@ export interface EmbedData {
 		name: string;
 		value: string;
 		inline?: boolean;
-	}>
+	}>;
 }
 
 export interface MessageData extends BaseData {
@@ -316,7 +444,24 @@ export interface MessageData extends BaseData {
 	nonce?: number | string;
 	pinned: boolean;
 	webhook_id?: string;
-	type: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 19;
+	type:
+		| 0
+		| 1
+		| 2
+		| 3
+		| 4
+		| 5
+		| 6
+		| 7
+		| 8
+		| 9
+		| 10
+		| 11
+		| 12
+		| 13
+		| 14
+		| 15
+		| 19;
 	activity?: {
 		type: 1 | 2 | 3 | 5;
 		party_id?: string;
@@ -507,7 +652,7 @@ export interface ApplicationCommandCallbackData {
 
 export enum InteractionType {
 	PING = 1,
-	APPLICATION_COMMAND = 2
+	APPLICATION_COMMAND = 2,
 }
 
 export enum InteractionResponseType {
@@ -515,7 +660,7 @@ export enum InteractionResponseType {
 	ACKNOWLEDGE = 2,
 	CHANNEL_MESSAGE = 3,
 	CHANNEL_MESSAGE_WITH_SOURCE = 4,
-	ACK_WITH_SOURCE = 5
+	ACK_WITH_SOURCE = 5,
 }
 
 export interface WebhookData {
@@ -531,7 +676,7 @@ export interface WebhookData {
 }
 
 export interface CreateWebhookData {
-	name: string,
+	name: string;
 	avatar?: string;
 	channel_id: string;
 }
@@ -550,7 +695,7 @@ export interface ExecuteWebhookData {
 export interface VoiceState {
 	guild_id?: string;
 	channel_id?: string;
-	user_id: string
+	user_id: string;
 	member?: Member;
 	session_id: string;
 	deaf: boolean;
@@ -559,7 +704,7 @@ export interface VoiceState {
 	self_mute: boolean;
 	self_stream: boolean;
 	self_video: boolean;
-	suppress: boolean
+	suppress: boolean;
 }
 
 /** Generalized Types */
