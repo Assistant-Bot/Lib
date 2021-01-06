@@ -170,11 +170,28 @@ export interface GuildEditOptions {
 	preferredLocale?: string;
 }
 
+export interface GuildAuditLogData {
+	webhooks: WebhookData[],
+	users: UserData[],
+	audit_log_entries: GuildAuditLogEntryData[],
+	integrations: unknown[]
+}
+
 export interface GuildAuditLog {
 	webhooks: WebhookData[];
 	users: User[];
 	entries: GuildAuditLogEntry[];
-	integration: unknown[]; // Add integrations later
+	integrations: unknown[]; // Add integrations later
+}
+
+export interface GuildAuditLogEntryData {
+	id: string;
+	target_id?: string;
+	changes: GuildAuditLogEntryChange[]
+	user_id: string;
+	action_type: number;
+	options?: GuildAuditLogEntryOptional,
+	reason?: string;
 }
 
 export interface GuildAuditLogEntry {
@@ -182,17 +199,16 @@ export interface GuildAuditLogEntry {
 	targetID?: string;
 	changes: GuildAuditLogEntryChange[];
 	userID: string;
-	type: number;
 	actionType: GuildAuditLogActionType;
 	options?: GuildAuditLogEntryOptional;
 	reason?: string;
 }
 
 export interface GuildAuditLogEntryOptional {
-	deleteMemberDays?: string;
-	membersRemoved?: string;
-	channelID: string;
-	messageID: string;
+	delete_member_days?: string;
+	members_removed?: string;
+	channel_id: string;
+	message_id: string;
 	count: string;
 	id: string;
 	type: "0" | "1";
@@ -285,9 +301,16 @@ export enum GuildAuditLogActionType {
 }
 
 export interface GuildAuditLogEntryChange {
-	new?: AnyStructureData | AnyStructureData[] | string | number | boolean; // Change this later
-	old?: AnyStructureData | AnyStructureData[] | string | number | boolean; // Change this later
+	new_value?: AnyStructureData | AnyStructureData[] | string | number | boolean; // Change this later
+	old_value?: AnyStructureData | AnyStructureData[] | string | number | boolean; // Change this later
 	key: GuildAuditLogEntryChangeKey;
+}
+
+export interface GuildAuditLogQueryParams {
+	userID?: string,
+	actionType?: number,
+	before?: string,
+	limit?: number
 }
 
 /** Channels */
