@@ -60,7 +60,7 @@ export interface RateLimit {
 }
 
 export interface IParams {
-	$params: { [key: string]: string, value: any }[];
+	$params: { [key: string]: string, value: any };
 }
 
 export default class RequestHandler {
@@ -95,7 +95,7 @@ export default class RequestHandler {
 
 		if (body.$params) {
 			// check instance
-			if (!(body.$params instanceof Array)) {
+			if (!(body.$params instanceof Object)) {
 				throw "$params must be an instance of IParams: { [key: string]: string, value: string };";
 			}
 
