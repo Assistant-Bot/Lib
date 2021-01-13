@@ -59,6 +59,10 @@ export interface RateLimit {
 	remaining: number;
 }
 
+export interface IParams {
+	$params: { [key: string]: string, value: any }[];
+}
+
 export default class RequestHandler {
 	#options: RequestHandlerOptions;
 	#headers: Header[];
@@ -88,6 +92,22 @@ export default class RequestHandler {
 	 */
 	public makeAndSend(url: string, method: HTTPMethod = "GET", body?: any, headers: Header[] = [], immediate: boolean = false): Promise<Response> {
 		url = BASE_URL + url;
+
+		if (body.$params) {
+			// check instance
+			if (!(body.$params instanceof Array)) {
+				throw "$params must be an instance of IParams: { [key: string]: string, value: string };";
+			}
+
+			for (let param of Object.keys(body.$params)) {
+				const value: any = body.$params[param];
+				const symbol: '?' | '&' = url.includes('?') ? '&' : '?';
+				url += `${symbol}${param}=${encodeURIComponent(JSON.stringify(value))}`;
+			}
+
+			body.$params = undefined;
+		}
+
 		const request: Request = new Request(url, { body: JSON.stringify(body), method });
 
 		for (let header of headers) {
