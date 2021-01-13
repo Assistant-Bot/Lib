@@ -14,7 +14,7 @@
  * to remove this software from your device immediately.
  */
 import type Client from "../../Client.ts";
-import type { ChannelEditOption, ChannelData, GuildData, GuildEditOptions, RoleEditOptions, RoleData, InviteData } from "../../net/common/Types.ts";
+import type { ChannelEditOption, ChannelData, GuildData, GuildEditOptions, RoleEditOptions, RoleData, InviteData, GuildAuditLog, GuildAuditLogEntry } from "../../net/common/Types.ts";
 import Collection from "../../util/Collection.ts";
 import Base from "../Base.ts";
 import GuildChannel from "../guild/GuildChannel.ts";
@@ -27,6 +27,7 @@ import StoreChannel from "./StoreChannel.ts";
 import TextChannel from "./TextChannel.ts";
 import VoiceChannel from "./VoiceChannel.ts";
 import Invite from './Invite.ts';
+import User from "../User.ts";
 
 export default class Guild extends Base {
 	public name!: string;
@@ -170,6 +171,26 @@ export default class Guild extends Base {
 		}
 		return invites;
 	}
+
+	public async getAuditLogs(): Promise<GuildAuditLog> {
+		const data = await this.request.getAuditLogs(this.id);
+		return {
+			entries: data.audit_log_entries.map(a => {
+				return {
+					id: a.id,
+					userID: a.user_id,
+					targetID: a.target_id,
+					actionType: a.action_type,
+					changes: a.changes,
+					options: a.options,
+					reason: a.reason
+				}
+			}),
+			integrations: data.integrations,
+			users: data.users.map(u => new User(this.client, u)),
+			webhooks: data.webhooks
+		}
+	} 
 
 	public async edit(o: GuildEditOptions) {
 		const gData = await this.request.editGuild(this.id, o);

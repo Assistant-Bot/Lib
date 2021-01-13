@@ -135,6 +135,10 @@ export default class Endpoints {
 		return this.guild(id) + "/vanity-url"
 	}
 
+	public static guild_audit_logs(id: string): string {
+		return this.guild(id) + '/audit-logs';
+	}
+
 	public static invite(code: string) {
 		return "/invites/" + code;
 	}

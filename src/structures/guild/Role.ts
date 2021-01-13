@@ -37,11 +37,11 @@ export default class Role extends Base {
 		this.color = data.color;
 		this.hoist = data.hoist;
 		this.mentionable = data.mentionable;
-  }
+	}
   
 	public async edit(guildID: string, o: RoleEditOptions): Promise<Role> {
 		const rData: RoleData = await this.request.editRole(guildID, this.id, o);
 		const r = new Role(this.client, rData);
 		return r;
-	}  
+	}
 }
