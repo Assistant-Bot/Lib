@@ -16,6 +16,7 @@
 import type Client from "../Client.ts";
 import type { UserData } from "../net/common/Types.ts";
 import Base from "./Base.ts";
+import { MessageContent } from "./Message.ts";
 
 export default class User extends Base {
 	public bot!: boolean;

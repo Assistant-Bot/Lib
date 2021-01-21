@@ -13,8 +13,9 @@
  * permission to view or modify this software you should take the appropriate actions
  * to remove this software from your device immediately.
  */
-import Channel from "./Channel.ts";
+import Channel from './Channel.ts';
 
-export default class DMChannel extends Channel { // TextChannel? // Just nullify guild
+export default class GroupChannel extends Channel {
+	// TextChannel? // Just nullify guild
 	// I don't forsee a use case for this?
 }
