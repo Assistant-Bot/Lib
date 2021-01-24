@@ -8,10 +8,10 @@
  *
  * Copyright (C) 2020 Bavfalcon9
  *
- * This is private software, you cannot redistribute and/or modify it in any way
- * unless given explicit permission to do so. If you have not been given explicit
- * permission to view or modify this software you should take the appropriate actions
- * to remove this software from your device immediately.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  */
 import GuildChannel from '../../structures/guild/GuildChannel.ts';
 import { MessageContent } from '../../structures/Message.ts';
@@ -175,13 +175,13 @@ class DiscordRequestHandler extends RequestHandler {
 			'GET',
 			o
 				? {
-						max_age: o.maxAge,
-						max_uses: o.maxUses,
-						temporary: o.temporary,
-						unique: o.unique,
-						target_user: o.targetUser,
-						target_user_type: o.targetUserType,
-				  }
+					max_age: o.maxAge,
+					max_uses: o.maxUses,
+					temporary: o.temporary,
+					unique: o.unique,
+					target_user: o.targetUser,
+					target_user_type: o.targetUserType,
+				}
 				: {}
 		);
 		return res.json();
@@ -318,20 +318,20 @@ class DiscordRequestHandler extends RequestHandler {
 		return res.json();
 	}
 
-	public async getAuditLogs(guildId: string, opt?: { 
-		user_id?: string, 
+	public async getAuditLogs(guildId: string, opt?: {
+		user_id?: string,
 		action_type?: GuildAuditLogActionType,
-		before?: number, 
+		before?: number,
 		limit?: number
 	}): Promise<GuildAuditLogData> {
 		const $params = {};
-		if(opt) {
-			for(let i of Object.keys(opt as Object)) {
+		if (opt) {
+			for (let i of Object.keys(opt as Object)) {
 				// @ts-ignore
-				if(!opt[i]) {
+				if (!opt[i]) {
 					continue;
 				}
-	
+
 				// @ts-ignore
 				$params[i] = opt[i];
 			}
@@ -377,13 +377,13 @@ class DiscordRequestHandler extends RequestHandler {
 		params?: { around?: number; before?: number; after?: number }
 	): Promise<MessageData[]> {
 		const $params: any = {};
-		if(params) {
-			for(let i of Object.keys(params as Object)) {
+		if (params) {
+			for (let i of Object.keys(params as Object)) {
 				// @ts-ignore
-				if(!params[i]) {
+				if (!params[i]) {
 					continue;
 				}
-	
+
 				// @ts-ignore
 				$params[i] = params[i];
 			}
