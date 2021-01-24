@@ -81,12 +81,4 @@ export default class GuildChannel extends Channel {
 		const res: InviteData[] = await this.request.getChannelInvites(this.id);
 		return res.map(i => new Invite(this.client, i))
 	}
-
-	public async pinMessage(id: string): Promise<void> {
-		return await this.request.addPinChannelMessage(this.id, id);
-	}
-
-	public async unpinMessage(id: string): Promise<void> {
-		return await this.request.deletePinChannelMessage(this.id, id)
-	}
 }

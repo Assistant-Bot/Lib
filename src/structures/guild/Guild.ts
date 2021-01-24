@@ -14,7 +14,7 @@
  * to remove this software from your device immediately.
  */
 import type Client from "../../Client.ts";
-import type { ChannelEditOption, ChannelData, GuildData, GuildEditOptions, RoleEditOptions, RoleData, InviteData, GuildAuditLog, GuildAuditLogEntry } from "../../net/common/Types.ts";
+import type { ChannelEditOption, ChannelData, GuildData, GuildEditOptions, RoleEditOptions, RoleData, InviteData, GuildAuditLog, GuildAuditLogEntry, GuildAuditLogActionType } from "../../net/common/Types.ts";
 import Collection from "../../util/Collection.ts";
 import Base from "../Base.ts";
 import GuildChannel from "../guild/GuildChannel.ts";
@@ -172,8 +172,13 @@ export default class Guild extends Base {
 		return invites;
 	}
 
-	public async getAuditLogs(): Promise<GuildAuditLog> {
-		const data = await this.request.getAuditLogs(this.id);
+	public async getAuditLogs(opt?: { 
+		user_id?: string, 
+		action_type?: GuildAuditLogActionType,
+		before?: number, 
+		limit?: number
+	}): Promise<GuildAuditLog> {
+		const data = await this.request.getAuditLogs(this.id, opt);
 		return {
 			entries: data.audit_log_entries.map(a => {
 				return {

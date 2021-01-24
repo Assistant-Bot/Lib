@@ -113,11 +113,6 @@ export default class TextChannel extends GuildChannel {
 		return new Message(this.client, res);
 	}
 
-	public async pinMessage(messageid: Snowflake<18>): Promise<void> {
-		await this.request.pinMessage(this.id, messageid);
-		return;
-	}
-
 	public async setRateLimit(time: number): Promise<boolean> {
 		let updated: GuildChannel = await super.edit({
 			rateLimitPerUser: time,
@@ -131,7 +126,8 @@ export default class TextChannel extends GuildChannel {
 		limit: number = 50,
 		params?: { around?: number; before?: number; after?: number }
 	): Promise<Message[]> {
-		const msgs = await this.request.getMessages(this.id, limit, params);
+		// @ts-ignore
+		const msgs = await this.request.getMessages(this.id, limit, { $params: params });
 		return msgs.map((m) => new Message(this.client, m));
 	}
 
@@ -176,5 +172,13 @@ export default class TextChannel extends GuildChannel {
 		} else {
 			return await this.request.deleteAllReactions(channelId, msgId);
 		}
+	}
+	
+	public async pinMessage(id: string): Promise<void> {
+		return await this.request.addPinChannelMessage(this.id, id);
+	}
+
+	public async unpinMessage(id: string): Promise<void> {
+		return await this.request.deletePinChannelMessage(this.id, id)
 	}
 }

@@ -36,6 +36,7 @@ import type {
 	WebhookData,
 	GuildAuditLog,
 	GuildAuditLogData,
+	GuildAuditLogActionType,
 } from '../common/Types.ts';
 import Endpoints, { BASE_API_URL } from './Endpoints.ts';
 import RequestHandler from './RequestHandler.ts';
@@ -317,10 +318,30 @@ class DiscordRequestHandler extends RequestHandler {
 		return res.json();
 	}
 
-	public async getAuditLogs(guildId: string): Promise<GuildAuditLogData> {
+	public async getAuditLogs(guildId: string, opt?: { 
+		user_id?: string, 
+		action_type?: GuildAuditLogActionType,
+		before?: number, 
+		limit?: number
+	}): Promise<GuildAuditLogData> {
+		const $params = {};
+		if(opt) {
+			for(let i of Object.keys(opt as Object)) {
+				// @ts-ignore
+				if(!opt[i]) {
+					continue;
+				}
+	
+				// @ts-ignore
+				$params[i] = opt[i];
+			}
+		}
 		const res: Response = await this.makeAndSend(
 			Endpoints.guild_audit_logs(guildId),
-			'GET'
+			'GET',
+			{
+				$params
+			}
 		);
 		return res.json();
 	}
@@ -355,16 +376,31 @@ class DiscordRequestHandler extends RequestHandler {
 		limit: number = 50,
 		params?: { around?: number; before?: number; after?: number }
 	): Promise<MessageData[]> {
+		const $params: any = {};
+		if(params) {
+			for(let i of Object.keys(params as Object)) {
+				// @ts-ignore
+				if(!params[i]) {
+					continue;
+				}
+	
+				// @ts-ignore
+				$params[i] = params[i];
+			}
+		}
+
+		console.log(Object.values($params).length)
+
 		const res: Response = await this.makeAndSend(
 			Endpoints.channel_messages(channelId),
 			'GET',
 			{
-				$params: {
+				$params: (Object.values($params).length) ? {
 					limit,
-					around: params?.around,
-					before: params?.before,
-					after: params?.after,
-				},
+					around: $params?.around,
+					before: $params?.before,
+					after: $params?.after,
+				} : {},
 			}
 		);
 		return res.json();
