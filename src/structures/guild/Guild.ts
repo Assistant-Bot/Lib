@@ -190,7 +190,7 @@ export default class Guild extends Base {
 			users: data.users.map(u => new User(this.client, u)),
 			webhooks: data.webhooks
 		}
-	} 
+	}
 
 	public async edit(o: GuildEditOptions) {
 		const gData = await this.request.editGuild(this.id, o);
