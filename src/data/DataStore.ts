@@ -74,4 +74,8 @@ export default abstract class DataStore<K, V> {
 	public get limit(): number {
 		return this.#limit;
 	}
+
+	[Symbol.iterator]: Iterable<V>
+	public abstract values(): Iterable<V>;
+
 }

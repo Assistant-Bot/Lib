@@ -126,4 +126,9 @@ export default class RuntimeStore<K extends string, V extends Base> extends Data
 	public get size(): number {
 		return this.#dataSet.size;
 	}
+
+	[Symbol.iterator]: IterableIterator<V>
+	public values(): IterableIterator<V> {
+		return this.#dataSet.values();
+	}
 }
