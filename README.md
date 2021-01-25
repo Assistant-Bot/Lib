@@ -1,7 +1,7 @@
 # Assistant v3
 
 Assistant v3 Library Source Code. <br />
-This code is licensed under the No License.
+This code is licensed under **GNU General Public License v2**.
 
 
 ## What is AssistantLib?
