@@ -204,9 +204,8 @@ export default class Client extends EventEmitter {
 			cache: {
 				memory: true,
 				updates: true,
-				max: -1,
-				limit: 700,
-				subLimit: 300
+				limit: 300,
+				subLimit: 700
 			},
 			sharding: {
 				useDiscord: false

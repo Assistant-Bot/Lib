@@ -13,6 +13,7 @@
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
  */
+import { AnyStructureData } from "../../net/common/Types.ts";
 import type { Payload } from "../../net/ws/packet/Packet.ts";
 import type Base from "../../structures/Base.ts";
 import Collection from "../../util/Collection.ts";
@@ -35,7 +36,7 @@ export default class RuntimeStore<K extends string, V extends Base> extends Data
 	public update(structure: V): V {
 		if (this.has(structure.id as K)) {
 			let cache: V = (this.get(structure.id as K) as V);
-			cache.update(Object.assign(cache, structure as any));
+			cache.update(structure as unknown as AnyStructureData);
 			return cache;
 		} else {
 			this.#dataSet.set(structure.id as K, structure);

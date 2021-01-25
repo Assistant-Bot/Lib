@@ -13,8 +13,9 @@
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
  */
-import GuildChannel from '../../structures/guild/GuildChannel.ts';
+import Emoji from "../../structures/guild/Emoji.ts";
 import { MessageContent } from '../../structures/Message.ts';
+import { isOkay } from "../../util/Miscellaneous.ts";
 import type {
 	ApplicationCommandData,
 	ApplicationData,
@@ -215,25 +216,31 @@ class DiscordRequestHandler extends RequestHandler {
 	public async createReaction(
 		channelId: string,
 		msgId: string,
-		emojiId: string
+		emojiId: string | Emoji
 	): Promise<boolean> {
+		if (emojiId instanceof Emoji) {
+			emojiId = emojiId.id;
+		}
 		const res: Response = await this.makeAndSend(
 			Endpoints.me_reaction(channelId, msgId, emojiId),
 			'PUT'
 		);
-		return res.json();
+		return isOkay(res.status);
 	}
 
 	public async deleteMeReaction(
 		channelId: string,
 		msgId: string,
-		emojiId: string
-	): Promise<void> {
+		emojiId: string | Emoji
+	): Promise<boolean> {
+		if (emojiId instanceof Emoji) {
+			emojiId = emojiId.id;
+		}
 		const res: Response = await this.makeAndSend(
 			Endpoints.me_reaction(channelId, msgId, emojiId),
 			'DELETE'
-		);
-		return res.json();
+		)
+		return isOkay(res.status);
 	}
 
 	public async deleteUserReaction(
@@ -241,12 +248,12 @@ class DiscordRequestHandler extends RequestHandler {
 		msgId: string,
 		emojiId: string,
 		userId: string
-	): Promise<void> {
+	): Promise<boolean> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.user_reaction(channeld, msgId, emojiId, userId),
 			'DELETE'
 		);
-		return res.json();
+		return isOkay(res.status);
 	}
 
 	public async deleteAllReactions(

@@ -139,8 +139,7 @@ export default class TextChannel extends GuildChannel {
 		userId: string = '@',
 		msgId: string,
 		emoji: string
-	): Promise<void> {
-		// TO DO: Redo this with the request handler
+	): Promise<boolean> {
 		if (userId === '@') {
 			return await this.request.deleteMeReaction(this.id, msgId, emoji);
 		} else {
@@ -173,7 +172,7 @@ export default class TextChannel extends GuildChannel {
 			return await this.request.deleteAllReactions(channelId, msgId);
 		}
 	}
-	
+
 	public async pinMessage(id: string): Promise<void> {
 		return await this.request.addPinChannelMessage(this.id, id);
 	}

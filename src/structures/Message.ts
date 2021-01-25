@@ -129,9 +129,9 @@ export default class Message extends Base {
 		return await this.request.pinMessage(this.channel.id, this.id);
 	}
 
-	public async react(emoji: Emoji): Promise<boolean> {
-		return false
-		//return await this.request.createReaction(this.channel.id, this.id, emoji);
+	public async react(emoji: Emoji | string): Promise<boolean> {
+		// todo: should this return a reaction object?
+		return await this.request.createReaction(this.channel.id, this.id, emoji);
 	}
 
 	/**

@@ -93,7 +93,7 @@ export default class RequestHandler {
 	public makeAndSend(url: string, method: HTTPMethod = "GET", body?: any, headers: Header[] = [], immediate: boolean = false): Promise<Response> {
 		url = BASE_URL + url;
 
-		if (body.$params) {
+		if (body?.$params) {
 			// check instance
 			if (!(body.$params instanceof Object)) {
 				throw "$params must be an instance of IParams: { [key: string]: string, value: string };";

@@ -42,11 +42,10 @@ export default class GuildChannel extends Channel {
 		this.permissions = data.permission_overwrites;
 	}
 
-	public async edit(o: ChannelEditOption): Promise<GuildChannel> {
+	public async edit(o: ChannelEditOption): Promise<this> {
 		const cData = await this.request.editChannel(this.id, o);
-		const ch = new GuildChannel(this.client, cData);
-		this.client.dataManager?.channels.set(ch.id, ch);
-		return ch;
+		this.client.dataManager?.channels.update(cData);
+		return this;
 	}
 
 	public async delete(): Promise<boolean> {
