@@ -42,10 +42,7 @@ import Endpoints, { BASE_API_URL } from './Endpoints.ts';
 import RequestHandler from './RequestHandler.ts';
 
 class DiscordRequestHandler extends RequestHandler {
-	public async createChannel(
-		guildId: string,
-		o: ChannelEditOption
-	): Promise<ChannelData> {
+	public async createChannel(guildId: string, o: ChannelEditOption): Promise<ChannelData> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.guild_channels(guildId),
 			'POST',
@@ -221,7 +218,7 @@ class DiscordRequestHandler extends RequestHandler {
 		channelId: string,
 		msgId: string,
 		emojiId: string
-	): Promise<void> {
+	): Promise<boolean> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.me_reaction(channelId, msgId, emojiId),
 			'PUT'
@@ -526,10 +523,7 @@ class DiscordRequestHandler extends RequestHandler {
 		return res.json();
 	}
 
-	public async createAppGlobalCommand(
-		id: string,
-		command: ApplicationCommandData
-	): Promise<ApplicationCommandData | false> {
+	public async createAppGlobalCommand(id: string, command: ApplicationCommandData): Promise<ApplicationCommandData | false> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.applicationCommand(id),
 			'POST',
@@ -542,10 +536,7 @@ class DiscordRequestHandler extends RequestHandler {
 		return res.json();
 	}
 
-	public async deleteAppGlobalCommand(
-		id: string,
-		command: ApplicationCommandData
-	): Promise<ApplicationCommandData | false> {
+	public async deleteAppGlobalCommand(id: string, command: ApplicationCommandData): Promise<ApplicationCommandData | false> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.applicationCommand(id) + '/commands/' + command.id,
 			'POST'

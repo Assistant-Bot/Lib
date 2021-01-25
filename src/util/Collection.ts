@@ -22,9 +22,13 @@ export default class Collection<K, V> extends Map<K, V> {
 	private _array!: V[] | null;
 	private _keyArray!: K[] | null;
 	public static readonly default: typeof Collection = Collection;
+	public static MAX_SIZE: number = Infinity;
 	public ['constructor']: typeof Collection;
 
 	public constructor(entries?: ReadonlyArray<readonly [K, V]> | null) {
+		if ((entries?.length || 0) >= Collection.MAX_SIZE) {
+			entries = entries?.slice(0, Collection.MAX_SIZE);
+		}
 		super(entries);
 
 		/**
@@ -64,6 +68,7 @@ export default class Collection<K, V> extends Map<K, V> {
 	public set(key: K, value: V): this {
 		this._array = null;
 		this._keyArray = null;
+		if (Collection.MAX_SIZE <= this.size) return this;
 		return super.set(key, value);
 	}
 

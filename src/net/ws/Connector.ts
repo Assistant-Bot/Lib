@@ -136,6 +136,7 @@ export abstract class Connector {
 			case OPCode.HELLO:
 				packet = HeartBeatPacket.from(payload);
 				if (!!this.#heartInterval) {
+					console.log(payload)
 					this.close();
 					throw new Error('Got op: 1 while already connected.');
 				} else {

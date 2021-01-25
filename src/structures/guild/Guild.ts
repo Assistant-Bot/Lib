@@ -172,10 +172,10 @@ export default class Guild extends Base {
 		return invites;
 	}
 
-	public async getAuditLogs(opt?: { 
-		user_id?: string, 
+	public async getAuditLogs(opt?: {
+		user_id?: string,
 		action_type?: GuildAuditLogActionType,
-		before?: number, 
+		before?: number,
 		limit?: number
 	}): Promise<GuildAuditLog> {
 		const data = await this.request.getAuditLogs(this.id, opt);

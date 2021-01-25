@@ -102,14 +102,11 @@ export default class RequestHandler {
 			for (let param of Object.keys(body.$params)) {
 				const value: any = body.$params[param];
 				const symbol: '?' | '&' = url.includes('?') ? '&' : '?';
-				url += `${symbol}${param}=${encodeURIComponent(JSON.stringify(value))}`;
+				url += `${symbol}${param}=${encodeURIComponent(JSON.stringify(value).replace(/("|')+/igm, ''))}`;
 			}
-			console.log(url)
 
 			body.$params = undefined;
 		}
-
-		console.log(url)
 
 		const request: Request = new Request(url, { body: JSON.stringify(body), method });
 

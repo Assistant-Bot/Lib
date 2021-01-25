@@ -18,6 +18,7 @@ import type { EmojiData } from "../../net/common/Types.ts";
 import Base from "../Base.ts";
 
 export default class Emoji extends Base {
+	private static clientInstance: Client;
 	public roles?: string[];
 	public requireColons?: boolean;
 	public name!: string | null;
@@ -28,6 +29,7 @@ export default class Emoji extends Base {
 	public constructor(client: Client, data: EmojiData) {
 		super(client, data.id || '');
 		this.update(data);
+		Emoji.clientInstance = client;
 	}
 
 	public update(data: EmojiData): void {
@@ -37,5 +39,29 @@ export default class Emoji extends Base {
 		this.managed = data.managed;
 		this.available = data.available;
 		this.animated = data.animated;
+	}
+
+	public get system(): boolean {
+		return /\w/.test(this.name || "") && this.id === null;
+	}
+
+	public static parse(emoji: string): Emoji {
+		const webEncoded: boolean = /%/.test(emoji);
+
+		if (webEncoded) {
+			emoji = decodeURIComponent(emoji);
+		}
+
+		const matches = emoji.match(/<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/);
+
+		if (!matches) {
+			throw "Invalid emoji, can not be parsed";
+		}
+
+		return new Emoji(Emoji.clientInstance, {
+			animated: Boolean(matches[1]),
+			name: matches[2] || emoji,
+			id: matches[3] || null
+		});
 	}
 }

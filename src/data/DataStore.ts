@@ -78,4 +78,10 @@ export default abstract class DataStore<K, V> {
 	[Symbol.iterator]: Iterable<V>
 	public abstract values(): Iterable<V>;
 
+	/**
+	 * Converts the object into an array.
+	 */
+	public toArray(): V[] {
+		return [...this.values()];
+	}
 }
