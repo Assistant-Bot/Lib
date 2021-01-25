@@ -8,10 +8,10 @@
  *
  * Copyright (C) 2020 Bavfalcon9
  *
- * This is private software, you cannot redistribute and/or modify it in any way
- * unless given explicit permission to do so. If you have not been given explicit
- * permission to view or modify this software you should take the appropriate actions
- * to remove this software from your device immediately.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  */
 import { Sleep } from "../../util/Async.ts";
 import type { HTTPMethod } from "../common/Types.ts";
@@ -102,14 +102,11 @@ export default class RequestHandler {
 			for (let param of Object.keys(body.$params)) {
 				const value: any = body.$params[param];
 				const symbol: '?' | '&' = url.includes('?') ? '&' : '?';
-				url += `${symbol}${param}=${encodeURIComponent(JSON.stringify(value))}`;
+				url += `${symbol}${param}=${encodeURIComponent(JSON.stringify(value).replace(/("|')+/igm, ''))}`;
 			}
-			console.log(url)
 
 			body.$params = undefined;
 		}
-
-		console.log(url)
 
 		const request: Request = new Request(url, { body: JSON.stringify(body), method });
 

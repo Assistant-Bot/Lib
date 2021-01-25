@@ -8,10 +8,10 @@
  *
  * Copyright (C) 2020 Bavfalcon9
  *
- * This is private software, you cannot redistribute and/or modify it in any way
- * unless given explicit permission to do so. If you have not been given explicit
- * permission to view or modify this software you should take the appropriate actions
- * to remove this software from your device immediately.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  */
 import type { Payload } from "../net/ws/packet/Packet.ts";
 
@@ -78,4 +78,10 @@ export default abstract class DataStore<K, V> {
 	[Symbol.iterator]: Iterable<V>
 	public abstract values(): Iterable<V>;
 
+	/**
+	 * Converts the object into an array.
+	 */
+	public toArray(): V[] {
+		return [...this.values()];
+	}
 }

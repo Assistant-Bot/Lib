@@ -8,10 +8,10 @@
  *
  * Copyright (C) 2020 Bavfalcon9
  *
- * This is private software, you cannot redistribute and/or modify it in any way
- * unless given explicit permission to do so. If you have not been given explicit
- * permission to view or modify this software you should take the appropriate actions
- * to remove this software from your device immediately.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  */
 /**
  * @author discord.js
@@ -22,9 +22,13 @@ export default class Collection<K, V> extends Map<K, V> {
 	private _array!: V[] | null;
 	private _keyArray!: K[] | null;
 	public static readonly default: typeof Collection = Collection;
+	public static MAX_SIZE: number = Infinity;
 	public ['constructor']: typeof Collection;
 
 	public constructor(entries?: ReadonlyArray<readonly [K, V]> | null) {
+		if ((entries?.length || 0) >= Collection.MAX_SIZE) {
+			entries = entries?.slice(0, Collection.MAX_SIZE);
+		}
 		super(entries);
 
 		/**
@@ -64,6 +68,7 @@ export default class Collection<K, V> extends Map<K, V> {
 	public set(key: K, value: V): this {
 		this._array = null;
 		this._keyArray = null;
+		if (Collection.MAX_SIZE <= this.size) return this;
 		return super.set(key, value);
 	}
 

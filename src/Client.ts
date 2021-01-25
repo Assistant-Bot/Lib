@@ -8,10 +8,10 @@
  *
  * Copyright (C) 2020 Bavfalcon9
  *
- * This is private software, you cannot redistribute and/or modify it in any way
- * unless given explicit permission to do so. If you have not been given explicit
- * permission to view or modify this software you should take the appropriate actions
- * to remove this software from your device immediately.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  */
 import { EventEmitter, GenericFunction, WrappedFunction } from 'https://deno.land/std@0.78.0/node/events.ts';
 import DataManager from "./data/DataManager.ts";
@@ -34,6 +34,7 @@ import type Role from "./structures/guild/Role.ts";
 import type Message from "./structures/Message.ts";
 import Application from "./structures/oauth/Application.ts";
 import type User from "./structures/User.ts";
+import Collection from "./util/Collection.ts";
 
 /**
  * Events emitted when recieved from the websocket.
@@ -149,6 +150,12 @@ export interface ClientOptions {
 		 * The limit of cached structures in a single store.
 		 */
 		limit?: number;
+
+		/**
+		 * The maximum limit of children structures in a single structure
+		 * IE: Guild#roles, Member#roles, Guild#emojis
+		 */
+		subLimit?: number;
 	},
 	sharding: {
 		/**
@@ -198,7 +205,8 @@ export default class Client extends EventEmitter {
 				memory: true,
 				updates: true,
 				max: -1,
-				limit: 100
+				limit: 700,
+				subLimit: 300
 			},
 			sharding: {
 				useDiscord: false
@@ -207,6 +215,7 @@ export default class Client extends EventEmitter {
 
 		this.options = Object.assign(defaults, opts);
 		this.application = null;
+		Collection.MAX_SIZE = this.options.cache.subLimit || 300;
 
 		if (customStore) {
 			this.#dataManager = customStore;
