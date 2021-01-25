@@ -13,4 +13,26 @@
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
-const table = new WebAssembly.Table({ initial: 7, maximum: 7+0, element: "anyfunc" });
+
+/**
+ * Checks whether or not the cache feature is functioning as should be.
+ * @template cache
+ */
+import Client from "../src/Client.ts";
+import Message from "../src/structures/Message.ts";
+
+const client = new Client({
+	cache: {
+		limit: 1
+	}
+});
+
+client.on('message', (message: Message)=> {
+	console.log("Current Cache size for Messages: " + client.messages.size);
+});
+
+client.on('ready', () => {
+	console.log("Current limit is: " + client.dataManager?.limit || 0);
+});
+
+client.connect(JSON.parse(new TextDecoder().decode(Deno.readFileSync('./tests/config.json'))).token);

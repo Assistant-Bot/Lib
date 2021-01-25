@@ -8,22 +8,22 @@
  *
  * Copyright (C) 2020 Bavfalcon9
  *
- * This is private software, you cannot redistribute and/or modify it in any way
- * unless given explicit permission to do so. If you have not been given explicit
- * permission to view or modify this software you should take the appropriate actions
- * to remove this software from your device immediately.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
  */
 import { EventEmitter, GenericFunction, WrappedFunction } from 'https://deno.land/std@0.78.0/node/events.ts';
 import DataManager from "./data/DataManager.ts";
 import type DataStore from "./data/DataStore.ts";
-import type { GatewayResponseBot, MessageData, RoleData, VoiceState } from "./net/common/Types.ts";
+import type { GatewayResponseBot, RoleData, VoiceState } from "./net/common/Types.ts";
 import DiscordRequestHandler from "./net/rest/DiscordRequestHandler.ts";
-import  Endpoints, { GATEWAY_URL } from "./net/rest/Endpoints.ts";
+import Endpoints, { GATEWAY_URL } from "./net/rest/Endpoints.ts";
 import RequestHandler, { RequestHandlerOptions } from "./net/rest/RequestHandler.ts";
 import type { Connector } from "./net/ws/Connector.ts";
 import Generic from "./net/ws/generic/Generic.ts";
 import type { Payload } from "./net/ws/packet/Packet.ts";
-import Interaction from "./structures/application/Interaction.ts";
+import type Interaction from "./structures/application/Interaction.ts";
 import type Channel from "./structures/channel/Channel.ts";
 import type ClientUser from "./structures/ClientUser.ts";
 import type Emoji from "./structures/guild/Emoji.ts";
@@ -34,6 +34,7 @@ import type Role from "./structures/guild/Role.ts";
 import type Message from "./structures/Message.ts";
 import Application from "./structures/oauth/Application.ts";
 import type User from "./structures/User.ts";
+import Collection from "./util/Collection.ts";
 
 /**
  * Events emitted when recieved from the websocket.
@@ -132,17 +133,29 @@ export interface ClientOptions {
 		/**
 		 * Should objects be cached in memory?
 		 */
-		memory: boolean;
+		memory?: boolean;
 
 		/**
 		 * Should updates from the gateway be applied to cache?
 		 */
-		updates: boolean;
+		updates?: boolean;
 
 		/**
 		 * The maximum amount of cached objects allowed
+		 * @deprecated
 		 */
-		max: number;
+		max?: number;
+
+		/**
+		 * The limit of cached structures in a single store.
+		 */
+		limit?: number;
+
+		/**
+		 * The maximum limit of children structures in a single structure
+		 * IE: Guild#roles, Member#roles, Guild#emojis
+		 */
+		subLimit?: number;
 	},
 	sharding: {
 		/**
@@ -191,7 +204,8 @@ export default class Client extends EventEmitter {
 			cache: {
 				memory: true,
 				updates: true,
-				max: -1
+				limit: 300,
+				subLimit: 700
 			},
 			sharding: {
 				useDiscord: false
@@ -200,6 +214,7 @@ export default class Client extends EventEmitter {
 
 		this.options = Object.assign(defaults, opts);
 		this.application = null;
+		Collection.MAX_SIZE = this.options.cache.subLimit || 300;
 
 		if (customStore) {
 			this.#dataManager = customStore;
@@ -237,6 +252,15 @@ export default class Client extends EventEmitter {
 
 		this.application = await this.resolveApplication();
 		this.#wsManager.connect(token);
+	}
+
+	/**
+	 * Disconnects the bot.
+	 */
+	public async disconnect(): Promise<void> {
+		if (!this.#wsManager) throw new Error('Websocket already closed.');
+
+		await this.#wsManager.close();
 	}
 
 	/**

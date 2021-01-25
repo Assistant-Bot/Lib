@@ -8,10 +8,10 @@
  *
  * Copyright (C) 2020 Bavfalcon9
  *
- * This is private software, you cannot redistribute and/or modify it in any way
- * unless given explicit permission to do so. If you have not been given explicit
- * permission to view or modify this software you should take the appropriate actions
- * to remove this software from your device immediately.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
  */
 import { Sleep } from "../../util/Async.ts";
 import type { HTTPMethod } from "../common/Types.ts";
@@ -54,10 +54,19 @@ export interface Header {
 	value: string;
 }
 
+export interface RateLimit {
+	time: number;
+	remaining: number;
+}
+
+export interface IParams {
+	$params: { [key: string]: string, value: any };
+}
+
 export default class RequestHandler {
 	#options: RequestHandlerOptions;
 	#headers: Header[];
-	#rateLimits: { [key: string]: number };
+	#rateLimits: { [key: string]: RateLimit };
 	#globalBlock: boolean | number;
 
 	public constructor(opts: Partial<RequestHandlerOptions>, specialHeaders: Header[]) {
@@ -81,8 +90,24 @@ export default class RequestHandler {
 	 * @param body
 	 * @param immediate
 	 */
-	public makeAndSend(url: string, method: HTTPMethod = "GET", body: any = {}, headers: Header[] = [], immediate: boolean = false): Promise<Response> {
+	public makeAndSend(url: string, method: HTTPMethod = "GET", body?: any, headers: Header[] = [], immediate: boolean = false): Promise<Response> {
 		url = BASE_URL + url;
+
+		if (body?.$params) {
+			// check instance
+			if (!(body.$params instanceof Object)) {
+				throw "$params must be an instance of IParams: { [key: string]: string, value: string };";
+			}
+
+			for (let param of Object.keys(body.$params)) {
+				const value: any = body.$params[param];
+				const symbol: '?' | '&' = url.includes('?') ? '&' : '?';
+				url += `${symbol}${param}=${encodeURIComponent(JSON.stringify(value).replace(/("|')+/igm, ''))}`;
+			}
+
+			body.$params = undefined;
+		}
+
 		const request: Request = new Request(url, { body: JSON.stringify(body), method });
 
 		for (let header of headers) {
@@ -131,8 +156,17 @@ export default class RequestHandler {
 							this.#globalBlock = false;
 						}
 
+						if (this.#rateLimits[req.url]) {
+							if (this.#rateLimits[req.url].remaining == 0) {
+								wait = this.#rateLimits[req.url].time;
+								console.log(`%cWARN: %c${req.url} has a ratelimit of %c${wait} ms %cand is in progress`, "color: #fc3246;font-weight: bold;", "color: grey;", "color: #fc3246;", "color: white;");
+								this.#rateLimits[req.url].remaining = 5;
+							}
+						}
+
 						if (wait) {
 							await Sleep(wait);
+							wait = 0;
 						}
 
 						res = await fetch(req);
@@ -145,7 +179,10 @@ export default class RequestHandler {
 						}
 
 						if (ratelimit.limit) {
-							this.#rateLimits[req.url] = ratelimit.limit as number * 1000;
+							this.#rateLimits[req.url] = {
+								time: ratelimit.limit as number * 1000,
+								remaining: ratelimit.remaining === false ? 5 : ratelimit.remaining as number
+							}
 						}
 
 						if (ratelimit.global != null && ratelimit.resetAfter) {

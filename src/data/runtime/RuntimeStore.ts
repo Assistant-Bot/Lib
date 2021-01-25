@@ -8,11 +8,12 @@
  *
  * Copyright (C) 2020 Bavfalcon9
  *
- * This is private software, you cannot redistribute and/or modify it in any way
- * unless given explicit permission to do so. If you have not been given explicit
- * permission to view or modify this software you should take the appropriate actions
- * to remove this software from your device immediately.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
  */
+import { AnyStructureData } from "../../net/common/Types.ts";
 import type { Payload } from "../../net/ws/packet/Packet.ts";
 import type Base from "../../structures/Base.ts";
 import Collection from "../../util/Collection.ts";
@@ -21,8 +22,8 @@ import DataStore from "../DataStore.ts";
 export default class RuntimeStore<K extends string, V extends Base> extends DataStore<K, V> {
 	#dataSet: Collection<K, V> = new Collection();
 
-	public constructor(structure: V) {
-		super(structure);
+	public constructor(structure: V, limit?: number) {
+		super(structure, limit);
 	}
 
 	/**
@@ -35,7 +36,7 @@ export default class RuntimeStore<K extends string, V extends Base> extends Data
 	public update(structure: V): V {
 		if (this.has(structure.id as K)) {
 			let cache: V = (this.get(structure.id as K) as V);
-			cache.update(Object.assign(cache, structure as any));
+			cache.update(structure as unknown as AnyStructureData);
 			return cache;
 		} else {
 			this.#dataSet.set(structure.id as K, structure);
@@ -69,7 +70,12 @@ export default class RuntimeStore<K extends string, V extends Base> extends Data
 	/**
 	 * Add the structure from the store
 	 */
-	public add(idOrData: K | Payload): V | null {
+	public add(idOrData: K | Payload, append: boolean = true): V | null {
+		if (this.size >= this.limit && append) {
+			this.#dataSet.shift();
+		} else {
+			return null;
+		}
 		if (typeof idOrData === 'string') {
 			if (this.has(idOrData)) {
 				return null;
@@ -110,8 +116,20 @@ export default class RuntimeStore<K extends string, V extends Base> extends Data
 	 * @param id
 	 * @param structure
 	 */
-	public set(id: K, structure: V): V | null {
+	public set(id: K, structure: V, overwrite: boolean = true): V | null {
+		if (this.size >= this.limit && overwrite) {
+			this.#dataSet.shift();
+		}
 		this.#dataSet.set(id, structure);
 		return structure || null;
+	}
+
+	public get size(): number {
+		return this.#dataSet.size;
+	}
+
+	[Symbol.iterator]: IterableIterator<V>
+	public values(): IterableIterator<V> {
+		return this.#dataSet.values();
 	}
 }

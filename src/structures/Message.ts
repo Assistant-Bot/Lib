@@ -8,18 +8,19 @@
  *
  * Copyright (C) 2020 Bavfalcon9
  *
- * This is private software, you cannot redistribute and/or modify it in any way
- * unless given explicit permission to do so. If you have not been given explicit
- * permission to view or modify this software you should take the appropriate actions
- * to remove this software from your device immediately.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
  */
 import type Client from "../Client.ts";
-import type { EmbedData, MessageConstructorData, MessageData } from "../net/common/Types.ts";
+import type { EmbedData, MessageConstructorData, MessageData, MessageType } from "../net/common/Types.ts";
 import Base from "./Base.ts";
 import TextChannel from "./guild/TextChannel.ts";
 import Guild from "./guild/Guild.ts";
 import GuildChannel from "./guild/GuildChannel.ts";
 import User from "./User.ts";
+import Emoji from "./guild/Emoji.ts";
 
 export type MessageContent = string | {
 	embed?: EmbedData[];
@@ -47,6 +48,7 @@ export default class Message extends Base {
 	public args!: string[];
 	public embed?: EmbedData;
 	public embeds?: EmbedData[];
+	public type!: MessageType;
 
 	public constructor(client: Client, data: MessageData) {
 		super(client, data.id);
@@ -56,6 +58,8 @@ export default class Message extends Base {
 	public update(data: MessageData): void {
 		// todo: make this be fetched if it does not exist (some how)
 		this.channel = this.client.dataManager?.channels.get(data.channel_id) || null;
+		this.type = data.type;
+
 		if (data.author) {
 			this.author = new User(this.client, data.author);
 		}
@@ -123,6 +127,11 @@ export default class Message extends Base {
 
 	public async pin(): Promise<void> {
 		return await this.request.pinMessage(this.channel.id, this.id);
+	}
+
+	public async react(emoji: Emoji | string): Promise<boolean> {
+		// todo: should this return a reaction object?
+		return await this.request.createReaction(this.channel.id, this.id, emoji);
 	}
 
 	/**

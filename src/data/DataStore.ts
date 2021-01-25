@@ -8,18 +8,20 @@
  *
  * Copyright (C) 2020 Bavfalcon9
  *
- * This is private software, you cannot redistribute and/or modify it in any way
- * unless given explicit permission to do so. If you have not been given explicit
- * permission to view or modify this software you should take the appropriate actions
- * to remove this software from your device immediately.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
  */
 import type { Payload } from "../net/ws/packet/Packet.ts";
 
 export default abstract class DataStore<K, V> {
 	protected structure: V;
+	#limit: number;
 
-	public constructor(stucture: V) {
+	public constructor(stucture: V, limit?: number) {
 		this.structure = stucture;
+		this.#limit = limit || 100;
 	}
 
 	/**
@@ -60,4 +62,26 @@ export default abstract class DataStore<K, V> {
 	 * @param structure
 	 */
 	public abstract set(id: K, structure: V): V | Promise<V | null> | null;
+
+	/**
+	 * Gets the amount of "keys" or data in a store.
+	 */
+	public abstract get size(): number;
+
+	/**
+	 * Gets the size limit for this store.
+	 */
+	public get limit(): number {
+		return this.#limit;
+	}
+
+	[Symbol.iterator]: Iterable<V>
+	public abstract values(): Iterable<V>;
+
+	/**
+	 * Converts the object into an array.
+	 */
+	public toArray(): V[] {
+		return [...this.values()];
+	}
 }
