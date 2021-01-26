@@ -103,20 +103,20 @@ export default class Message extends Base {
 
 	public async reply(content: MessageContent): Promise<Message> {
 		if (typeof content === 'string') {
-            		content = {
-                		content: content,
-                		message_reference: {
-                    			guild_id: this.channel.guild.id,
-                    			channel_id: this.channel.id,
-                    			message_id: this.id
-                		}
-            		}
-        	} else {
-            		content.message_reference = {
-                		guild_id: this.channel.guild.id as string,
-                		channel_id: this.channel.id,
-                		message_id: this.id
-            		}
+			content = {
+				content: content,
+				message_reference: {
+					guild_id: this.channel.guild.id,
+					channel_id: this.channel.id,
+					message_id: this.id
+				}
+			}
+		} else {
+			content.message_reference = {
+				guild_id: this.channel.guild.id as string,
+				channel_id: this.channel.id,
+				message_id: this.id
+			}
 		}
 		return this.channel.send(content);
 	}
@@ -136,14 +136,14 @@ export default class Message extends Base {
 
 	/**
 	 * [UTILITY]
-	 * Gets the command from the sent message. (will be deprecated in the future)
+	 * Gets the command from the sent message. (may be deprecated in the future)
 	 * @param prefix
 	 */
 	public getCommand(prefix: string = "!"): string {
-        if (this.content && this.content.indexOf(prefix) === 0) {
-            this.args = this.content.slice(prefix.length).trim().split(/ +/g);
-            return this.args.shift()?.toLowerCase() || "";
-        }
-        return "";
+		if (this.content && this.content.indexOf(prefix) === 0) {
+			this.args = this.content.slice(prefix.length).trim().split(/ +/g);
+			return this.args.shift()?.toLowerCase() || "";
+		}
+		return "";
 	}
 }
