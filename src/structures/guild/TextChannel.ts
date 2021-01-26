@@ -20,6 +20,7 @@ import type {
 	MessageData,
 	Snowflake,
 } from '../../net/common/Types.ts';
+import Webhook from "../channel/Webhook.ts";
 import Message, { MessageContent } from '../Message.ts';
 import GuildChannel from './GuildChannel.ts';
 
@@ -179,5 +180,13 @@ export default class TextChannel extends GuildChannel {
 
 	public async unpinMessage(id: string): Promise<void> {
 		return await this.request.deletePinChannelMessage(this.id, id)
+	}
+
+	public async createWebhook(name: string, avatar?: string): Promise<Webhook> {
+		return Webhook.create(this.client, {
+			channel_id: this.id,
+			name: name,
+			avatar: avatar
+		});
 	}
 }

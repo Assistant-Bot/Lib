@@ -613,17 +613,23 @@ class DiscordRequestHandler extends RequestHandler {
 		return res.json();
 	}
 
+	public async deleteWebhook(id: string, token: string): Promise<Response> {
+		return await this.makeAndSend(
+			Endpoints.executeWebhook(id, token),
+			'DELETE'
+		);
+	}
+
 	public async executeWebhook(
 		id: string,
 		token: string,
 		data: ExecuteWebhookData
-	): Promise<WebhookData> /** correct ? */ {
-		const res: Response = await this.makeAndSend(
+	): Promise<Response> {
+		return await this.makeAndSend(
 			Endpoints.executeWebhook(id, token),
 			'POST',
 			data
 		);
-		return res.json();
 	}
 
 	public async editWebhook(

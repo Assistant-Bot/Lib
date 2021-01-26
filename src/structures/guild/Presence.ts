@@ -29,7 +29,7 @@ interface Activity {
 	emoji?: {
 		id: string;
 		name: string;
-		animated: string;	
+		animated: string;
 	};
 	party: {
 		id: string

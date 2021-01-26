@@ -188,7 +188,7 @@ export default class Endpoints {
 	}
 
 	public static executeWebhook(id: string, token: string) {
-		return "/webhooks" + id + "/" + token;
+		return "/webhooks/" + id + "/" + token;
 	}
 
 	public static editWebhook(wID: string, token: string, mID: string) {
