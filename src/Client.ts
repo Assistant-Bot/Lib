@@ -10,7 +10,7 @@
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
+ * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
 import { EventEmitter, GenericFunction, WrappedFunction } from 'https://deno.land/std@0.78.0/node/events.ts';
@@ -204,9 +204,8 @@ export default class Client extends EventEmitter {
 			cache: {
 				memory: true,
 				updates: true,
-				max: -1,
-				limit: 700,
-				subLimit: 300
+				limit: 300,
+				subLimit: 700
 			},
 			sharding: {
 				useDiscord: false

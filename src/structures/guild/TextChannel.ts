@@ -10,7 +10,7 @@
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
+ * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
 import Client from '../../Client.ts';
@@ -20,6 +20,7 @@ import type {
 	MessageData,
 	Snowflake,
 } from '../../net/common/Types.ts';
+import Webhook from "../channel/Webhook.ts";
 import Message, { MessageContent } from '../Message.ts';
 import GuildChannel from './GuildChannel.ts';
 
@@ -139,8 +140,7 @@ export default class TextChannel extends GuildChannel {
 		userId: string = '@',
 		msgId: string,
 		emoji: string
-	): Promise<void> {
-		// TO DO: Redo this with the request handler
+	): Promise<boolean> {
 		if (userId === '@') {
 			return await this.request.deleteMeReaction(this.id, msgId, emoji);
 		} else {
@@ -173,12 +173,20 @@ export default class TextChannel extends GuildChannel {
 			return await this.request.deleteAllReactions(channelId, msgId);
 		}
 	}
-	
+
 	public async pinMessage(id: string): Promise<void> {
 		return await this.request.addPinChannelMessage(this.id, id);
 	}
 
 	public async unpinMessage(id: string): Promise<void> {
 		return await this.request.deletePinChannelMessage(this.id, id)
+	}
+
+	public async createWebhook(name: string, avatar?: string): Promise<Webhook> {
+		return Webhook.create(this.client, {
+			channel_id: this.id,
+			name: name,
+			avatar: avatar
+		});
 	}
 }

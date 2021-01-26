@@ -10,7 +10,7 @@
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
+ * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
 import type Client from "../../Client.ts";
@@ -42,11 +42,10 @@ export default class GuildChannel extends Channel {
 		this.permissions = data.permission_overwrites;
 	}
 
-	public async edit(o: ChannelEditOption): Promise<GuildChannel> {
+	public async edit(o: ChannelEditOption): Promise<this> {
 		const cData = await this.request.editChannel(this.id, o);
-		const ch = new GuildChannel(this.client, cData);
-		this.client.dataManager?.channels.set(ch.id, ch);
-		return ch;
+		this.client.dataManager?.channels.update(cData);
+		return this;
 	}
 
 	public async delete(): Promise<boolean> {
@@ -59,7 +58,7 @@ export default class GuildChannel extends Channel {
 		return res;
 	}
 
-	
+
 	public async editPosition(pos: number): Promise<void> {
 		return await this.request.editChannelPosition(this.guild.id || this.#guild_id, this.id, pos);
 	}

@@ -10,11 +10,12 @@
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
+ * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
-import GuildChannel from '../../structures/guild/GuildChannel.ts';
+import Emoji from "../../structures/guild/Emoji.ts";
 import { MessageContent } from '../../structures/Message.ts';
+import { isOkay } from "../../util/Miscellaneous.ts";
 import type {
 	ApplicationCommandData,
 	ApplicationData,
@@ -42,21 +43,21 @@ import Endpoints, { BASE_API_URL } from './Endpoints.ts';
 import RequestHandler from './RequestHandler.ts';
 
 class DiscordRequestHandler extends RequestHandler {
-	public async createChannel(guildId: string, o: ChannelEditOption): Promise<ChannelData> {
+	public async createChannel(guildId: string, opts: ChannelEditOption): Promise<ChannelData> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.guild_channels(guildId),
 			'POST',
 			{
-				name: o.name,
-				type: o.type,
-				position: o.position,
-				topic: o.topic,
-				nsfw: o.nsfw,
-				rate_limit_per_user: o.rateLimitPerUser,
-				bitrate: o.bitrate,
-				user_limit: o.userLimit,
-				permission_overwrites: o.permissionsOverwrites,
-				parent_id: o.parentID,
+				name: opts.name,
+				type: opts.type,
+				position: opts.position,
+				topic: opts.topic,
+				nsfw: opts.nsfw,
+				rate_limit_per_user: opts.rateLimitPerUser,
+				bitrate: opts.bitrate,
+				user_limit: opts.userLimit,
+				permission_overwrites: opts.permissionsOverwrites,
+				parent_id: opts.parentID,
 			}
 		);
 		return res.json();
@@ -82,22 +83,22 @@ class DiscordRequestHandler extends RequestHandler {
 	 */
 	public async editChannel(
 		channelId: string,
-		o: ChannelEditOption
+		opts: ChannelEditOption
 	): Promise<ChannelData> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.channel(channelId),
 			'PATCH',
 			{
-				name: o.name,
-				type: o.type,
-				position: o.position,
-				topic: o.topic,
-				nsfw: o.nsfw,
-				rate_limit_per_user: o.rateLimitPerUser,
-				bitrate: o.bitrate,
-				user_limit: o.userLimit,
-				permission_overwrites: o.permissionsOverwrites,
-				parent_id: o.parentID,
+				name: opts.name,
+				type: opts.type,
+				position: opts.position,
+				topic: opts.topic,
+				nsfw: opts.nsfw,
+				rate_limit_per_user: opts.rateLimitPerUser,
+				bitrate: opts.bitrate,
+				user_limit: opts.userLimit,
+				permission_overwrites: opts.permissionsOverwrites,
+				parent_id: opts.parentID,
 			}
 		);
 		return res.json();
@@ -122,15 +123,15 @@ class DiscordRequestHandler extends RequestHandler {
 	public async editChannelPermission(
 		channelId: string,
 		overwriteId: string,
-		o: { allow: string; deny: string; type: 'member' | 'role' }
+		opts: { allow: string; deny: string; type: 'member' | 'role' }
 	): Promise<void> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.channel_permission(channelId, overwriteId),
 			'PUT',
 			{
-				allow: o.allow,
-				deny: o.deny,
-				type: o.type === 'member' ? 1 : 0,
+				allow: opts.allow,
+				deny: opts.deny,
+				type: opts.type === 'member' ? 1 : 0,
 			}
 		);
 		return res.json();
@@ -165,21 +166,19 @@ class DiscordRequestHandler extends RequestHandler {
 
 	public async createChannelInvites(
 		channelId: string,
-		o?: InviteCreateOptions
+		opts?: InviteCreateOptions
 	): Promise<InviteData> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.channel_invites(channelId),
 			'GET',
-			o
-				? {
-					max_age: o.maxAge,
-					max_uses: o.maxUses,
-					temporary: o.temporary,
-					unique: o.unique,
-					target_user: o.targetUser,
-					target_user_type: o.targetUserType,
-				}
-				: {}
+			opts ? {
+					max_age: opts.maxAge,
+					max_uses: opts.maxUses,
+					temporary: opts.temporary,
+					unique: opts.unique,
+					target_user: opts.targetUser,
+					target_user_type: opts.targetUserType,
+			} : {}
 		);
 		return res.json();
 	}
@@ -217,25 +216,31 @@ class DiscordRequestHandler extends RequestHandler {
 	public async createReaction(
 		channelId: string,
 		msgId: string,
-		emojiId: string
+		emojiId: string | Emoji
 	): Promise<boolean> {
+		if (emojiId instanceof Emoji) {
+			emojiId = emojiId.id;
+		}
 		const res: Response = await this.makeAndSend(
 			Endpoints.me_reaction(channelId, msgId, emojiId),
 			'PUT'
 		);
-		return res.json();
+		return isOkay(res.status);
 	}
 
 	public async deleteMeReaction(
 		channelId: string,
 		msgId: string,
-		emojiId: string
-	): Promise<void> {
+		emojiId: string | Emoji
+	): Promise<boolean> {
+		if (emojiId instanceof Emoji) {
+			emojiId = emojiId.id;
+		}
 		const res: Response = await this.makeAndSend(
 			Endpoints.me_reaction(channelId, msgId, emojiId),
 			'DELETE'
-		);
-		return res.json();
+		)
+		return isOkay(res.status);
 	}
 
 	public async deleteUserReaction(
@@ -243,12 +248,12 @@ class DiscordRequestHandler extends RequestHandler {
 		msgId: string,
 		emojiId: string,
 		userId: string
-	): Promise<void> {
+	): Promise<boolean> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.user_reaction(channeld, msgId, emojiId, userId),
 			'DELETE'
 		);
-		return res.json();
+		return isOkay(res.status);
 	}
 
 	public async deleteAllReactions(
@@ -289,27 +294,27 @@ class DiscordRequestHandler extends RequestHandler {
 	 */
 	public async editGuild(
 		guildId: string,
-		o: GuildEditOptions
+		opts: GuildEditOptions
 	): Promise<GuildData> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.guild(guildId),
 			'PATCH',
 			{
-				name: o.name,
-				region: o.region,
-				verification_level: o.verificationLevel,
-				default_message_notifications: o.defaultMessageNotifications,
-				explicit_content_filter: o.explicitContentFilter,
-				afk_channel_id: o.afkChannelID,
-				afk_timeout: o.afkTimeout,
-				icon: o.icon,
-				owner_id: o.ownerID,
-				splash: o.splash,
-				banner: o.banner,
-				system_channel_id: o.systemChannelID,
-				rules_channel_id: o.rulesChannelID,
-				public_updates_channel_id: o.publicUpdatesChannelID,
-				preferred_locale: o.preferredLocale,
+				name: opts.name,
+				region: opts.region,
+				verification_level: opts.verificationLevel,
+				default_message_notifications: opts.defaultMessageNotifications,
+				explicit_content_filter: opts.explicitContentFilter,
+				afk_channel_id: opts.afkChannelID,
+				afk_timeout: opts.afkTimeout,
+				icon: opts.icon,
+				owner_id: opts.ownerID,
+				splash: opts.splash,
+				banner: opts.banner,
+				system_channel_id: opts.systemChannelID,
+				rules_channel_id: opts.rulesChannelID,
+				public_updates_channel_id: opts.publicUpdatesChannelID,
+				preferred_locale: opts.preferredLocale,
 			}
 		);
 		return res.json();
@@ -345,12 +350,12 @@ class DiscordRequestHandler extends RequestHandler {
 
 	public async createRole(
 		guildId: string,
-		o: RoleEditOptions
+		opts: RoleEditOptions
 	): Promise<RoleData> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.guild_roles(guildId),
 			'POST',
-			o
+			opts
 		);
 		return res.json();
 	}
@@ -358,12 +363,12 @@ class DiscordRequestHandler extends RequestHandler {
 	public async editRole(
 		guildId: string,
 		roleId: string,
-		o: RoleEditOptions
+		opts: RoleEditOptions
 	): Promise<RoleData> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.guild_role(guildId, roleId),
 			'PATCH',
-			o
+			opts
 		);
 		return res.json();
 	}
@@ -608,17 +613,23 @@ class DiscordRequestHandler extends RequestHandler {
 		return res.json();
 	}
 
+	public async deleteWebhook(id: string, token: string): Promise<Response> {
+		return await this.makeAndSend(
+			Endpoints.executeWebhook(id, token),
+			'DELETE'
+		);
+	}
+
 	public async executeWebhook(
 		id: string,
 		token: string,
 		data: ExecuteWebhookData
-	): Promise<WebhookData> /** correct ? */ {
-		const res: Response = await this.makeAndSend(
+	): Promise<Response> {
+		return await this.makeAndSend(
 			Endpoints.executeWebhook(id, token),
 			'POST',
 			data
 		);
-		return res.json();
 	}
 
 	public async editWebhook(

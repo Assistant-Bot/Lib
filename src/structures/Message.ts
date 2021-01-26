@@ -10,7 +10,7 @@
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
+ * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
 import type Client from "../Client.ts";
@@ -103,20 +103,20 @@ export default class Message extends Base {
 
 	public async reply(content: MessageContent): Promise<Message> {
 		if (typeof content === 'string') {
-            		content = {
-                		content: content,
-                		message_reference: {
-                    			guild_id: this.channel.guild.id,
-                    			channel_id: this.channel.id,
-                    			message_id: this.id
-                		}
-            		}
-        	} else {
-            		content.message_reference = {
-                		guild_id: this.channel.guild.id as string,
-                		channel_id: this.channel.id,
-                		message_id: this.id
-            		}
+			content = {
+				content: content,
+				message_reference: {
+					guild_id: this.channel.guild.id,
+					channel_id: this.channel.id,
+					message_id: this.id
+				}
+			}
+		} else {
+			content.message_reference = {
+				guild_id: this.channel.guild.id as string,
+				channel_id: this.channel.id,
+				message_id: this.id
+			}
 		}
 		return this.channel.send(content);
 	}
@@ -129,21 +129,21 @@ export default class Message extends Base {
 		return await this.request.pinMessage(this.channel.id, this.id);
 	}
 
-	public async react(emoji: Emoji): Promise<boolean> {
-		return false
-		//return await this.request.createReaction(this.channel.id, this.id, emoji);
+	public async react(emoji: Emoji | string): Promise<boolean> {
+		// todo: should this return a reaction object?
+		return await this.request.createReaction(this.channel.id, this.id, emoji);
 	}
 
 	/**
 	 * [UTILITY]
-	 * Gets the command from the sent message. (will be deprecated in the future)
+	 * Gets the command from the sent message. (may be deprecated in the future)
 	 * @param prefix
 	 */
 	public getCommand(prefix: string = "!"): string {
-        if (this.content && this.content.indexOf(prefix) === 0) {
-            this.args = this.content.slice(prefix.length).trim().split(/ +/g);
-            return this.args.shift()?.toLowerCase() || "";
-        }
-        return "";
+		if (this.content && this.content.indexOf(prefix) === 0) {
+			this.args = this.content.slice(prefix.length).trim().split(/ +/g);
+			return this.args.shift()?.toLowerCase() || "";
+		}
+		return "";
 	}
 }

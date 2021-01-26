@@ -694,10 +694,10 @@ export interface WebhookData {
 	type: 1 | 2;
 	guild_id: string;
 	channel_id: string;
-	user?: User;
+	user?: UserData;
 	name: string;
-	avatar: string;
-	token?: String;
+	avatar?: string;
+	token?: string;
 	application_id: string;
 }
 
@@ -713,7 +713,7 @@ export interface ExecuteWebhookData {
 	avatar_url?: string;
 	tts?: boolean;
 	file?: Uint8Array; //??
-	embeds: EmbedData[];
+	embeds?: EmbedData[];
 	payload_json?: string;
 	allowed_mentions?: ("roles" | "channels" | "members")[];
 }
@@ -751,4 +751,5 @@ export type AnyStructureData =
 	| InviteData
 	| InviteMetadata
 	| EmojiData
-	| ApplicationCommandData;
+	| ApplicationCommandData
+	| WebhookData;

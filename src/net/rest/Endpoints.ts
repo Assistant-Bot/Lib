@@ -10,7 +10,7 @@
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
+ * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
 import type { Snowflake } from "../common/Types.ts";
@@ -188,7 +188,7 @@ export default class Endpoints {
 	}
 
 	public static executeWebhook(id: string, token: string) {
-		return "/webhooks" + id + "/" + token;
+		return "/webhooks/" + id + "/" + token;
 	}
 
 	public static editWebhook(wID: string, token: string, mID: string) {

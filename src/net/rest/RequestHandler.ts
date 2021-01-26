@@ -10,7 +10,7 @@
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
+ * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
 import { Sleep } from "../../util/Async.ts";
@@ -93,7 +93,7 @@ export default class RequestHandler {
 	public makeAndSend(url: string, method: HTTPMethod = "GET", body?: any, headers: Header[] = [], immediate: boolean = false): Promise<Response> {
 		url = BASE_URL + url;
 
-		if (body.$params) {
+		if (body?.$params) {
 			// check instance
 			if (!(body.$params instanceof Object)) {
 				throw "$params must be an instance of IParams: { [key: string]: string, value: string };";
