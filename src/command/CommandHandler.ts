@@ -39,11 +39,13 @@ export default class CommandHandler {
     public prefix: PrefixResolveFunction | string;
     public client: Client;
     public options: CommandHandlerOptions;
+	#floatingCommands: Command[];
     #modules: Module[];
 
     public constructor(client: Client, options: CommandHandlerOptions) {
         const defaults: CommandHandlerOptions = CommandHandler.getDefaults();
         this.#modules = [];
+		this.#floatingCommands = [];
 
         for (let option of Object.keys(defaults)) {
             if (!(options as any)[option]) {
@@ -94,7 +96,7 @@ export default class CommandHandler {
         if (msg.content.indexOf(prefix) !== 0) return;
         if (this.options.allowBots === false && msg.author.bot) return;
 
-        const command: Command|undefined = this.commands.filter(c => c.label === commandString || c.aliases.includes(commandString as string))[0];
+        const command: Command|undefined = this.commands.find(c => c.label === commandString || c.aliases.includes(commandString as string));
 
         if (!command) return; // not found :(
 
@@ -167,6 +169,14 @@ export default class CommandHandler {
         return true;
     }
 
+	public registerCommand(command: Command): boolean {
+		if (!this.commands.filter(c => c.label === command.label)) {
+			this.#floatingCommands.push(command);
+			return true;
+		}
+		return false;
+	}
+
     public unregisterCommand(command: Command): boolean {
         for (let mod of this.#modules) {
             if (mod.hasCommand(command)) {
@@ -174,13 +184,19 @@ export default class CommandHandler {
                 return true;
             }
         }
+
+		if (this.#floatingCommands.find(c => c.label === command.label)) {
+			this.#floatingCommands = this.#floatingCommands.filter(c => c.label !== command.label);
+			return true;
+		}
+
         return false;
     }
 
     public get commands(): Command[] {
         // if this has proven to defect performance,
         // I will change it
-        let commands: Command[] = [];
+        let commands: Command[] = [...this.#floatingCommands];
 
         for (let mod of this.#modules) {
             commands.push(...mod.commands);
