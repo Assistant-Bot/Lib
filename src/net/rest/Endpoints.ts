@@ -52,7 +52,7 @@ export default class Endpoints {
 	}
 
 	public static channel_invites(id: string): string {
-		return this.channel(id) + '/invites'; 
+		return this.channel(id) + '/invites';
 	}
 
 	public static channel_pins(id: string): string {
@@ -63,7 +63,7 @@ export default class Endpoints {
 		return this.channel_pins(id) + "/" + msgId;
 	}
 
-	public static typing_indicator(id: string): string { 
+	public static typing_indicator(id: string): string {
 		return this.channel(id) + '/typing';
 	}
 
@@ -80,7 +80,7 @@ export default class Endpoints {
 	}
 
 	public static user_reaction(id: string, msgId: string, emojiId: string, userId: string): string {
-		return this.message_reaction(id, msgId, emojiId) + "/" + userId; 
+		return this.message_reaction(id, msgId, emojiId) + "/" + userId;
 	}
 
 	public static guild(id: string): string {
@@ -102,7 +102,7 @@ export default class Endpoints {
   	public static guild_role(guildId: string, roleId: string): string {
     	return this.guild_roles(guildId) + "/" + roleId;
   	}
-	
+
 	public static guild_emojis(id: string): string {
 		return this.guild(id) + '/emojis';
 	}

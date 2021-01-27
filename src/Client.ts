@@ -35,6 +35,7 @@ import type Message from "./structures/Message.ts";
 import Application from "./structures/oauth/Application.ts";
 import type User from "./structures/User.ts";
 import Collection from "./util/Collection.ts";
+import Intents, { IntentTypes } from "./util/Intents.ts";
 
 /**
  * Events emitted when recieved from the websocket.
@@ -128,7 +129,7 @@ export interface ClientOptions {
 		 * Emits the "ws" event (when enabled)
 		 */
 		emitPayloads: boolean;
-	},
+	};
 	cache: {
 		/**
 		 * Should objects be cached in memory?
@@ -156,14 +157,15 @@ export interface ClientOptions {
 		 * IE: Guild#roles, Member#roles, Guild#emojis
 		 */
 		subLimit?: number;
-	},
+	};
 	sharding: {
 		/**
 		 * Whether or not to use discord recommended Sharding and Cluster count.
 		 */
 		useDiscord: boolean;
 	},
-	rest?: RequestHandlerOptions
+	rest?: RequestHandlerOptions;
+	intents?: IntentTypes[] | Number;
 }
 
 /**
@@ -180,6 +182,7 @@ export type ClientShardMode = 'Nodes' | 'Shards' | 'Clusters';
 
 export default class Client extends EventEmitter {
 	public readonly options: ClientOptions;
+	public readonly intents: Intents;
 	public application: Application | null;
 	public requestHandler!: RequestHandler;
 	public discordHandler!: DiscordRequestHandler;
@@ -209,11 +212,13 @@ export default class Client extends EventEmitter {
 			},
 			sharding: {
 				useDiscord: false
-			}
+			},
+			intents: Intents.defaults().parse()
 		}
 
 		this.options = Object.assign(defaults, opts);
 		this.application = null;
+		this.intents = (this.options.intents instanceof Array) ? new Intents(this.options.intents) : Intents.from(this.options.intents as number);
 		Collection.MAX_SIZE = this.options.cache.subLimit || 300;
 
 		if (customStore) {
@@ -251,7 +256,7 @@ export default class Client extends EventEmitter {
 		}
 
 		this.application = await this.resolveApplication();
-		this.#wsManager.connect(token);
+		this.#wsManager.connect(token, this.intents);
 	}
 
 	/**

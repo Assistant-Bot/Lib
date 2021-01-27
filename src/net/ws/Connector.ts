@@ -34,6 +34,7 @@ export abstract class Connector {
 	#shouldDisconnect: boolean;
 	#state: ConnectionStates;
 	#heartInterval?: number;
+	#intents: Intents;
 
 	public constructor(gateway: string) {
 		this.#gateway = gateway;
@@ -43,14 +44,16 @@ export abstract class Connector {
 		this.#lastAck = -1;
 		this.#state = 'INITIALIZED';
 		this.#shouldDisconnect = false;
+		this.#intents = Intents.defaults();
 	}
 
 	/**
 	 * Connects to the discord websocket based on the token.
 	 * @param token - The token to pass to the Discord gateway
 	 */
-	public async connect(token: string): Promise<void> {
+	public async connect(token: string, intents: Intents): Promise<void> {
 		this.#token = token;
+		this.#intents = intents;
 		this.#state = 'CONNECTING';
 		this.#lastSeq = 0;
 		this.ws = new WebSocket(this.#gateway);
@@ -65,7 +68,7 @@ export abstract class Connector {
 				clearInterval(this.#heartInterval);
 			}
 			if (!this.#shouldDisconnect) {
-				await this.connect(token);
+				await this.connect(token, intents);
 			}
 		}
 	}
@@ -157,7 +160,7 @@ export abstract class Connector {
 					}, packet.interval);
 				}
 				// todo: Make intents a client option.
-				this.sendPacket(new LoginPacket(this.#token, false, Intents.defaults().parse(), false));
+				this.sendPacket(new LoginPacket(this.#token, false, this.#intents.parse(), false));
 				return;
 			case OPCode.RECONNECT:
 				packet = new ResumePacket(this.#token, this.sessionId, this.#lastSeq);
