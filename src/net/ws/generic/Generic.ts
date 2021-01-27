@@ -255,7 +255,7 @@ export default class Generic extends Connector {
 
 		if (packet.event === "GUILD_MEMBER_UPDATE") {
 			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
-			const member: Member | undefined = guild.members.get(packet.data.user.id);
+			const member: Member | undefined = guild?.members.get(packet.data.user.id);
 
 			this.#client.emit('memberUpdate', member || new Member(this.#client, packet.data), guild);
 		}

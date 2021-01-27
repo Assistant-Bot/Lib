@@ -5,29 +5,33 @@ import { acceptWebSocket }from 'https://deno.land/std@0.84.0/ws/mod.ts';
 export default class ModuleReloader {
 	private client: Client;
 	private dir?: string; // Optionally only filter one directory
+	private main: string;
 
-	public constructor(client: Client, dir: string = Deno.cwd()) {
+	private static authed: boolean = false;
+
+	public constructor(client: Client, dir: string = Deno.cwd(), main: string) {
 		this.client = client;
-		this.dir = dir;	
+		this.dir = dir;
+		this.main = main;	
 	}
+
 	/**
 	 * ModuleReloader start function (Websocket based)
 	 */
-	public async start() {
-		const http = serve({port: 8080});
-		const ws = new WebSocket('ws://localhost:8080/assistant-dev');
+	public async start(token: string) {
+		if(await Deno.readTextFile(Deno.cwd() + "/auth.lock") !== '1') {this.client.connect(token);};
+		await Deno.writeTextFile(Deno.cwd() + "/auth.lock", '1');
 		const watcher = Deno.watchFs(this.dir ?? Deno.cwd(), { recursive: true });
-
-		for await (const req of http) {
-			const { conn, r: bufReader, w: bufWriter, headers } = req;
-			const ws = await acceptWebSocket({
-				conn,
-				bufReader,
-				bufWriter,
-				headers,
-			});
+		try {
+			let worker: Worker = new Worker(new URL(this.main, import.meta.url).href, {deno: true, name: "Assistant Hot Reload" , type: 'module'});
+			for await (const e of watcher) { 
+				if(e.kind === 'modify') {
+					// worker = new Worker(new URL(this.main, import.meta.url).href, {deno: true, name: "Assistant Hot Reload" , type: 'module'});
+				}
+			}
+		} catch (err) {
+			console.log(`<Hot Reload Error>: ${err.message}`);
 		}
-
 	}
 	/**
 	 * ModuleReloader start function (IPC based)
@@ -36,3 +40,5 @@ export default class ModuleReloader {
 
 	}
 }
+
+
