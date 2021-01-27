@@ -11,3 +11,12 @@ This framework is currently being developed and will be used for **Assistant Bot
 
 ### API
 **DataStores:** Datastores are stores that handle runtime data, such as client.guilds
+
+### CLI
+Use the following command to download the Assistant CLI!
+```bash
+deno install -A -f -n ast https://raw.githubusercontent.com/Assistant-Bot/Lib/dev/src/util/cli.ts
+
+# Then use the following to create a boilerplate
+ast gen MyEpicBot TOKEN
+```
