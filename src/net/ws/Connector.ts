@@ -26,25 +26,28 @@ export type ConnectionStates = 'CONNECTED' | 'CONNECTING' | 'DISCONNECTED' | 'IN
 export abstract class Connector {
 	public ws!: WebSocket;
 	public sequence: number;
-	public sessionId: string;
+	public sessionId?: string;
 	#gateway: string;
 	#token!: string;
 	#lastSeq: number;
 	#lastAck: number;
 	#shouldDisconnect: boolean;
+	#shouldReconnect: boolean;
 	#state: ConnectionStates;
 	#heartInterval?: number;
 	#intents: Intents;
+	#shard: number;
 
 	public constructor(gateway: string) {
 		this.#gateway = gateway;
 		this.sequence = 0;
-		this.sessionId = 'INITIALIZED';
 		this.#lastSeq = 0;
 		this.#lastAck = -1;
 		this.#state = 'INITIALIZED';
 		this.#shouldDisconnect = false;
+		this.#shouldReconnect = false;
 		this.#intents = Intents.defaults();
+		this.#shard = 0;
 	}
 
 	/**
@@ -83,7 +86,7 @@ export abstract class Connector {
 			this.ws.send(JSON.stringify(payload));
 			return;
 		} catch (e) {
-			console.error(e);
+			//console.error(e);
 			return;
 		}
 	}
@@ -105,6 +108,12 @@ export abstract class Connector {
 		} catch (e) {
 			return;
 		}
+	}
+
+	public async reconnect(): Promise<void> {
+		this.close();
+		this.#shouldReconnect = true;
+		this.connect(this.#token, this.#intents);
 	}
 
 	/**
@@ -138,29 +147,29 @@ export abstract class Connector {
 		switch (payload.op) {
 			case OPCode.HELLO:
 				packet = HeartBeatPacket.from(payload);
-				if (!!this.#heartInterval) {
-					console.log(payload)
-					this.close();
-					throw new Error('Got op: 1 while already connected.');
-				} else {
-					this.#heartInterval = setInterval(() => {
-						// @ts-ignore
-						try {
-							this.sendPacket(packet);
-						} catch (e) {
-							// not connected?
-							if (this.ws.readyState > 1) {
-								console.error(new Error('Sent heartbeat while socket is disconnected. Reconnecting soon.'));
-								clearInterval(this.#heartInterval);
-								this.#state = 'DISCONNECTED';
-							} else {
-								console.error(e);
-							}
+				this.#shouldReconnect = !this.#shouldReconnect ? !!this.#heartInterval : this.#shouldReconnect;
+				this.#heartInterval = setInterval(() => {
+					// @ts-ignore
+					try {
+						this.sendPacket(packet);
+					} catch (e) {
+						// not connected?
+						if (this.ws.readyState !== this.ws.OPEN) {
+							console.error(new Error('Sent heartbeat while socket is disconnected. Reconnecting soon.'));
+							this.#state = 'DISCONNECTED';
+						} else {
+							console.error(e);
 						}
-					}, packet.interval);
+					}
+				}, packet.interval);
+				if (this.#shouldReconnect) {
+					this.sendPacket(new ResumePacket(this.#token, this.sessionId, this.sequence));
+					if (!!this.#heartInterval) {
+						clearInterval(this.#heartInterval);
+					}
+				} else {
+					this.sendPacket(new LoginPacket(this.#token, false, this.#intents.parse(), false));
 				}
-				// todo: Make intents a client option.
-				this.sendPacket(new LoginPacket(this.#token, false, this.#intents.parse(), false));
 				return;
 			case OPCode.RECONNECT:
 				packet = new ResumePacket(this.#token, this.sessionId, this.#lastSeq);
@@ -169,9 +178,12 @@ export abstract class Connector {
 			case OPCode.DISPATCH:
 				packet = EventPacket.from(payload);
 				this.#lastSeq = packet.sequence || this.#lastSeq;
+				this.sequence = this.#lastSeq;
 
 				if (packet.event === 'READY') {
 					this.sessionId = packet.data.session_id;
+					this.#shard = packet.data.shard;
+					// todo: Handle multiple guilds
 				}
 				break;
 			case OPCode.HEARTBEAT:

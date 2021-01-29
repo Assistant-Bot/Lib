@@ -481,6 +481,10 @@ export default class Client extends EventEmitter {
 		return this.#dataManager || null;
 	}
 
+	public get ws(): Connector {
+		return this.#wsManager;
+	}
+
 	/**
 	 * Sets the data store (once).
 	 */

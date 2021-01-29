@@ -12,7 +12,7 @@ export default class ModuleReloader {
 	public constructor(client: Client, dir: string = Deno.cwd(), main: string) {
 		this.client = client;
 		this.dir = dir;
-		this.main = main;	
+		this.main = main;
 	}
 
 	/**

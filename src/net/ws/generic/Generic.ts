@@ -63,7 +63,7 @@ export default class Generic extends Connector {
 
 		if (packet.event === "READY") {
 			this.#client.user = new ClientUser(this.#client, packet.data.user);
-			this.#client.emit('ready');
+			this.#client.emit('ready', payload.d.session_id, payload.d.shard, payload.d.v);
 
 			for (let guild of packet.data.guilds) {
 				if (guild.unavailable === true) {
@@ -183,8 +183,9 @@ export default class Generic extends Connector {
 		}
 
 		if(packet.event === 'MESSAGE_REACTION_REMOVE') {
+			if (!packet.data.member) { return };
 			const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
-			const mm: Member = this.#client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.member.id);
+			const mm: Member = this.#client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.member?.id);
 			const e: Partial<Emoji> = new Emoji(this.#client, packet.data)
 			this.#client.emit('reactionRemove', m, mm, e);
 		}
