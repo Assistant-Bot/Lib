@@ -19,18 +19,18 @@ export default class ModuleReloader {
 	 * ModuleReloader start function (Websocket based)
 	 */
 	public async start(token: string) {
-		if(await Deno.readTextFile(Deno.cwd() + "/auth.lock") !== '1') {this.client.connect(token);};
-		await Deno.writeTextFile(Deno.cwd() + "/auth.lock", '1');
-		const watcher = Deno.watchFs(this.dir ?? Deno.cwd(), { recursive: true });
-		try {
-			let worker: Worker = new Worker(new URL(this.main, import.meta.url).href, {deno: true, name: "Assistant Hot Reload" , type: 'module'});
-			for await (const e of watcher) { 
-				if(e.kind === 'modify') {
-					// worker = new Worker(new URL(this.main, import.meta.url).href, {deno: true, name: "Assistant Hot Reload" , type: 'module'});
+		if(import.meta.url) {
+			const watcher = Deno.watchFs(this.dir ?? Deno.cwd(), { recursive: true });
+			try {
+				let worker: Worker = new Worker(new URL(this.main, import.meta.url).href, {deno: true, name: "Assistant Hot Reload" , type: 'module'});
+				for await (const e of watcher) { 
+					if(e.kind === 'modify') {
+						// worker = new Worker(new URL(this.main, import.meta.url).href, {deno: true, name: "Assistant Hot Reload" , type: 'module'});
+					}
 				}
+			} catch (err) {
+				console.log(`<Hot Reload Error>: ${err.message}`);
 			}
-		} catch (err) {
-			console.log(`<Hot Reload Error>: ${err.message}`);
 		}
 	}
 	/**
