@@ -14,9 +14,11 @@
  * of the License, or (at your option) any later version.
  */
 import type Client from "../../Client.ts";
-import type { MemberData, Snowflake } from "../../net/common/Types.ts";
+import { MemberData, Permissions, Snowflake } from "../../net/common/Types.ts";
 import Base from "../Base.ts";
 import User from "../User.ts";
+import Guild from "./Guild.ts";
+import Role from "./Role.ts";
 
 export default class Member extends Base {
 	public user!: User;
@@ -27,10 +29,12 @@ export default class Member extends Base {
 	public mute!: boolean;
 	public joinedAt!: string;
 	public deaf!: boolean;
+	#guild_id: string
 
 	public constructor(client: Client, data: MemberData) {
-		super(client, data.id);
+		super(client, data.user!.id);
 		this.update(data);
+		this.#guild_id = data.guild_id as string;
 	}
 
 	public update(data: MemberData): void {
@@ -42,4 +46,12 @@ export default class Member extends Base {
 		this.joinedAt = data.joined_at;
 		this.deaf = data.deaf;
 	}
+
+	public get guild(): Guild {
+		return this.client.dataManager?.guilds.get(this.#guild_id);
+	}
+
+	// public resolveRoles(): Role[] {
+	// 	return this.roles.map(id => this.guild.roles.get(id)!);
+	// }
 }

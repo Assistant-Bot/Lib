@@ -208,8 +208,9 @@ export default class Generic extends Connector {
 		}
 
 		if(packet.event === 'TYPINGS_START') {
-			const m: Member = new Member(this.#client, packet.data.member);
 			const ch: TextChannel = this.#client.dataManager?.channels.get(packet.data.channel_id);
+			packet.data.guild_id = ch.guild.id;
+			const m: Member = new Member(this.#client, packet.data.member);
 			this.#client.emit('typingStart', m, ch, packet.data.timestamp as number)
 		}
 
@@ -249,6 +250,7 @@ export default class Generic extends Connector {
 
 		if (packet.event === "GUILD_MEMBER_ADD") {
 			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
+			packet.data.guild_id = guild.id
 			const member: Member = new Member(this.#client, packet.data);
 			guild.members.set(packet.data.id, member);
 			this.#client.emit('memberJoin', member, guild);
@@ -257,6 +259,7 @@ export default class Generic extends Connector {
 		if (packet.event === "GUILD_MEMBER_UPDATE") {
 			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
 			const member: Member | undefined = guild?.members.get(packet.data.user.id);
+			packet.data.guild_id = guild.id;
 
 			this.#client.emit('memberUpdate', member || new Member(this.#client, packet.data), guild);
 		}

@@ -148,8 +148,9 @@ export default class Guild extends Base {
 
 		if (data.members) {
 			for (let _ of data.members) {
+				_.guild_id = this.id;
 				const m = new Member(this.client, _);
-				this.members.set(m.id, m)
+				this.members.set(m.user.id, m)
 			}
 		}
 

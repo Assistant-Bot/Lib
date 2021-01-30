@@ -224,6 +224,8 @@ export default class Client extends EventEmitter {
 		if (customStore) {
 			this.#dataManager = customStore;
 		}
+
+		Collection.MAX_SIZE = this.options.cache.limit ?? Infinity // Add this, IDK why but guild.members doesnt work w/out it
 	}
 
 	/**

@@ -83,7 +83,7 @@ export default class Message extends Base {
 	 * @todo
 	 */
 	public get member(): Member {
-		return this.channel.guild.members.get(this.id)!;
+		return this.channel.guild.members.get(this.author.id)!;
 	}
 
 	public get guild(): Guild | null {
