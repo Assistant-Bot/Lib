@@ -21,6 +21,7 @@ import Guild from "./guild/Guild.ts";
 import GuildChannel from "./guild/GuildChannel.ts";
 import User from "./User.ts";
 import Emoji from "./guild/Emoji.ts";
+import Member from "./guild/Member.ts";
 
 export type MessageContent = string | {
 	embed?: EmbedData[];
@@ -81,8 +82,8 @@ export default class Message extends Base {
 	/**
 	 * @todo
 	 */
-	public get member(): any {
-		return {};
+	public get member(): Member {
+		return this.channel.guild.members.get(this.id)!;
 	}
 
 	public get guild(): Guild | null {

@@ -753,3 +753,13 @@ export type AnyStructureData =
 	| EmojiData
 	| ApplicationCommandData
 	| WebhookData;
+
+export type PresenceOptions = {
+	afk?: boolean,
+	game: {
+		name: string,
+		type: 0 | 1 | 2 | 4 | 5
+	},
+	since?: number,
+	status: "online" | "dnd" | "idle" | "invisible" | "offline",
+}

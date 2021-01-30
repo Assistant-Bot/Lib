@@ -183,7 +183,7 @@ export default class Endpoints {
 		return "/interactions/" + id + "/" + token + "/callback";
 	}
 
-	public static createWehook(id: string): string {
+	public static createWebhook(id: string): string {
 		return "/channels/" + id + "/webhooks";
 	}
 
@@ -193,5 +193,9 @@ export default class Endpoints {
 
 	public static editWebhook(wID: string, token: string, mID: string) {
 		return this.executeWebhook(wID, token) + "/messages/" + mID;
+	}
+
+	public static getDMChannel(id: string) {
+		return this.user(id) + '/channels';
 	}
 }

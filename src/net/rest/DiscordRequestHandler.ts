@@ -591,7 +591,7 @@ class DiscordRequestHandler extends RequestHandler {
 
 	public async createWebhook(data: CreateWebhookData): Promise<WebhookData> {
 		const res: Response = await this.makeAndSend(
-			Endpoints.createWehook(data.channel_id),
+			Endpoints.createWebhook(data.channel_id),
 			'POST',
 			{ name: data.name, avatar: data.avatar }
 		);
@@ -633,6 +633,16 @@ class DiscordRequestHandler extends RequestHandler {
 			data
 		);
 		return res.json();
+	}
+
+	public async getDMChannel(id: string): Promise<ChannelData> {
+		const res: Response = await this.makeAndSend(
+			Endpoints.getDMChannel('@me'), 'POST', {
+				recipients: [id],
+				type: 1
+			}
+		)
+		return res.json()
 	}
 }
 

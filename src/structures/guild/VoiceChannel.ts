@@ -39,6 +39,24 @@ export default class VoiceChannel extends GuildChannel {
 		}
 	}
 
+	public async setBitrate(bitrate: number): Promise<boolean> {
+		let updated: GuildChannel = await super.edit({
+			bitrate: bitrate,
+		});
+		return (
+			(updated as VoiceChannel).bitrate === this.bitrate
+		);
+	}
+
+	public async setUserLimit(userLimit: number): Promise<boolean> {
+		let updated: GuildChannel = await super.edit({
+			userLimit: userLimit,
+		});
+		return (
+			(updated as VoiceChannel).userLimit === this.userLimit
+		);
+	}
+
 	public async join(opt?: Partial<{mute: boolean, deaf: boolean}>) {
 		await this.client.ws.send({op: 4, d: {
 			guild_id: this.guild.id,

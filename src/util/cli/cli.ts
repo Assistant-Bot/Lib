@@ -1,5 +1,5 @@
 import * as colors from "https://deno.land/std@0.84.0/fmt/colors.ts";
-import generateDefault from "./generateDefault.ts";
+import generateDefault from "./generators/generateDefault.ts";
 
 const COLOR = 0x455a8b;
 

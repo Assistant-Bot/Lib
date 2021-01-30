@@ -14,12 +14,12 @@
  * of the License, or (at your option) any later version.
  */
 import type Client from "../../Client.ts";
-import type { RoleData, RoleEditOptions } from "../../net/common/Types.ts";
+import type { RoleData } from "../../net/common/Types.ts";
 import Base from "../Base.ts";
 
 export default class Role extends Base {
 	public name!: string;
-	public permissions: any;
+	public permissions!: number;
 	public position!: number;
 	public color!: number;
 	public hoist!: boolean;
@@ -32,16 +32,10 @@ export default class Role extends Base {
 
 	public update(data: RoleData): void {
 		this.name = data.name;
-		this.permissions = data.permissions;
+		this.permissions = parseInt(data.permissions);
 		this.position = data.position;
 		this.color = data.color;
 		this.hoist = data.hoist;
 		this.mentionable = data.mentionable;
-	}
-
-	public async edit(guildID: string, o: RoleEditOptions): Promise<Role> {
-		const rData: RoleData = await this.request.editRole(guildID, this.id, o);
-		const r = new Role(this.client, rData);
-		return r;
 	}
 }

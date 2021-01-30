@@ -16,7 +16,8 @@
 import type Client from "../Client.ts";
 import type { UserData } from "../net/common/Types.ts";
 import Base from "./Base.ts";
-import { MessageContent } from "./Message.ts";
+import DMChannel from "./channel/DMChannel.ts";
+import Message, { MessageContent } from "./Message.ts";
 
 export default class User extends Base {
 	public bot!: boolean;
@@ -24,6 +25,7 @@ export default class User extends Base {
 	public discriminator!: string;
 	public avatar!: string;
 	public system!: boolean;
+	#dm?: DMChannel;
 
 	public constructor(client: Client, data: UserData) {
 		super(client, data.id);
@@ -36,6 +38,21 @@ export default class User extends Base {
 		this.discriminator = data.discriminator;
 		this.avatar = data.avatar || '';
 		this.system = !!data.system;
+	}
+
+	public async send(content: MessageContent): Promise<Message> {
+		if(this.#dm) {
+			return this.#dm.send(content);
+		} else {
+			return (await this.getDMChannel()).send(content);
+		}
+	}
+
+	public async getDMChannel(): Promise<DMChannel> {
+		const data = await this.request.getDMChannel(this.id);
+		const ch = new DMChannel(this.client, data);
+		this.#dm = ch;
+		return ch;
 	}
 
 	/**

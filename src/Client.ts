@@ -16,7 +16,7 @@
 import { EventEmitter, GenericFunction, WrappedFunction } from 'https://deno.land/std@0.78.0/node/events.ts';
 import DataManager from "./data/DataManager.ts";
 import type DataStore from "./data/DataStore.ts";
-import type { GatewayResponseBot, RoleData, VoiceState } from "./net/common/Types.ts";
+import type { GatewayResponseBot, PresenceOptions, RoleData, VoiceState } from "./net/common/Types.ts";
 import DiscordRequestHandler from "./net/rest/DiscordRequestHandler.ts";
 import Endpoints, { GATEWAY_URL } from "./net/rest/Endpoints.ts";
 import RequestHandler, { RequestHandlerOptions } from "./net/rest/RequestHandler.ts";
@@ -266,6 +266,21 @@ export default class Client extends EventEmitter {
 		if (!this.#wsManager) throw new Error('Websocket already closed.');
 
 		await this.#wsManager.close();
+	}
+
+	public async editStatus(opt: PresenceOptions) {
+		await this.ws.send({
+			op: 3,
+			d: {
+				since: opt.since ?? 0,
+				game: {
+					name: opt.game.name,
+					type: opt.game.type,
+				},
+				afk: opt.afk ?? false,
+				status: opt.status
+			}
+		})
 	}
 
 	/**
