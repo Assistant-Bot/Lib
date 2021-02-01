@@ -13,3 +13,33 @@
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
+import { Sleep } from "../src/util/Async.ts";
+import * as Hello from './Hello.ts';
+export interface TestOptions {
+	name: string;
+	description: string;
+	timeout?: number;
+}
+
+const commonOpts = {
+	sanitizeResources: false,
+	sanitizeOps: false
+}
+
+const tests: { settings: TestOptions, default: Function }[] = [
+	Hello
+];
+
+for await (let test of tests) {
+	Deno.test({
+		name: test.settings.name,
+		fn: Hello.default,
+		...commonOpts
+	});
+}
+Deno.test({
+	name: "Completed",
+	fn() {
+		Deno.exit();
+	}
+})

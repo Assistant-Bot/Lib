@@ -114,7 +114,7 @@ export default class Guild extends Base {
 			for (let _ of data.channels) {
 				_.guild_id = this.id;
 				let ch: GuildChannel;
-				switch(_.type) {
+				switch (_.type) {
 					case 0:
 						ch = new TextChannel(this.client, _);
 						break;
@@ -221,7 +221,7 @@ export default class Guild extends Base {
 	}
 
 	public async createRole(o: RoleEditOptions) {
-		const res: RoleData  = await this.request.createRole(this.id, o);
+		const res: RoleData = await this.request.createRole(this.id, o);
 		return new Role(this.client, res);
 	}
 }

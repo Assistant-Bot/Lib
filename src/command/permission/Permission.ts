@@ -13,7 +13,7 @@
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
-import { MemberData } from "../../net/common/Types.ts";
+import { Member } from "../../../mod.ts";
 import type Message from "../../structures/Message.ts";
 
 abstract class Permission {
@@ -31,9 +31,9 @@ abstract class Permission {
      * Whether or not the user passes this permission.
      * You should change this
      */
-    public abstract can(msg: Message, user: MemberData): boolean;
+    public abstract can(msg: Message, user: Member): boolean;
 
-    public resolve(msg: Message, user: MemberData): boolean {
+    public resolve(msg: Message, user: Member): boolean {
         if (this.match) {
             return this.match.test(user.id);
         } else {

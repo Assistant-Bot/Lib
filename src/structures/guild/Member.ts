@@ -14,7 +14,7 @@
  * of the License, or (at your option) any later version.
  */
 import type Client from "../../Client.ts";
-import { MemberData, Permissions, Snowflake } from "../../net/common/Types.ts";
+import { MemberData } from "../../net/common/Types.ts";
 import Base from "../Base.ts";
 import User from "../User.ts";
 import Guild from "./Guild.ts";
