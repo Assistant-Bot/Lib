@@ -73,6 +73,7 @@ export abstract class Connector {
 			if (!this.#shouldDisconnect) {
 				await this.connect(token, intents);
 			}
+			Deno.exit(1);
 		}
 	}
 

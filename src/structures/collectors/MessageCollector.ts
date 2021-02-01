@@ -2,7 +2,7 @@ import Message from "../Message.ts";
 import Client from "../../Client.ts";
 import { MuxAsyncIterator } from "https://deno.land/std/async/mod.ts";
 
-export type MessageFilterType = (msg: Message) => boolean;
+export type MessageFilterType = (msg: Message) => boolean | ((msg: Message) => Promise<boolean>);
 
 /**
  * Example:
@@ -19,7 +19,6 @@ export type MessageFilterType = (msg: Message) => boolean;
  * 	}
  * })
  */
-
 export default class MessageCollector implements AsyncIterable<Message> {
 	private client: Client;
 	private limit: number
@@ -32,7 +31,9 @@ export default class MessageCollector implements AsyncIterable<Message> {
 	}
 
 	private async *iterateMessages(iter: MuxAsyncIterator<Message>): AsyncIterableIterator<Message> {
+	}
 
+	private async handleMessage(msg: Message) {
 	}
 
 	[Symbol.asyncIterator](): AsyncIterableIterator<Message> {
