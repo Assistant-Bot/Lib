@@ -51,7 +51,7 @@ export default class Member extends Base {
 		return this.client.dataManager?.guilds.get(this.#guild_id);
 	}
 
-	// public resolveRoles(): Role[] {
-	// 	return this.roles.map(id => this.guild.roles.get(id)!);
-	// }
+	public resolveRoles(): Role[] {
+	 	return this.roles.map(id => this.guild.roles.get(id)!);
+	}
 }
