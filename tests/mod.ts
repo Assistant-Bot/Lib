@@ -37,6 +37,7 @@ for await (let test of tests) {
 		...commonOpts
 	});
 }
+await Sleep(tests.length * 1000);
 Deno.test({
 	name: "Completed",
 	fn() {
