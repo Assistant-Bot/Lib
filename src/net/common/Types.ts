@@ -33,6 +33,10 @@ export type HTTPMethod =
 /**
  * Discord types
  */
+
+/**
+ * @deprecated
+ */
 export type Snowflake<Length> = string & {
 	length: Length;
 };

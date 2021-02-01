@@ -96,39 +96,39 @@ export interface ClientOptions {
 		/**
 		 * Whether or not to reconnect if disconnected.
 		 */
-		autoReconnect: boolean;
+		autoReconnect?: boolean;
 
 		/**
 		 * Amount of attempts to reconnect
 		 */
-		maxReconnectTries: number;
+		maxReconnectTries?: number;
 
 		/**
 		 * Amount of attempts to resume the session from discord.
 		 */
-		maxResumeTries: number;
+		maxResumeTries?: number;
 
 		/**
 		 * Whether or not to compress data from discord
 		 */
-		compress: boolean;
+		compress?: boolean;
 
 		/**
 		 * The amount of time until the client auto disconnects;
 		 * If no response to discord is recieved.
 		 */
-		timeout: number;
+		timeout?: number;
 
 		/**
 		 * Whether or not to respect discord response to connecting through the bot gateway.
 		 * This should be "true" if you want to shard, or cluster
 		 */
-		respectDiscordGateway: boolean;
+		respectDiscordGateway?: boolean;
 
 		/**
 		 * Emits the "ws" event (when enabled)
 		 */
-		emitPayloads: boolean;
+		emitPayloads?: boolean;
 	};
 	cache: {
 		/**
