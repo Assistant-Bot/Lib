@@ -1,31 +1,31 @@
+/***
+ *                    _     _              _
+ *      /\           (_)   | |            | |
+ *     /  \   ___ ___ _ ___| |_ __ _ _ __ | |_
+ *    / /\ \ / __/ __| / __| __/ _` | '_ \| __|
+ *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
+ *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
+ *
+ * Copyright (C) 2020 Bavfalcon9
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ */
 import Message from "../../structures/Message.ts";
 import Client from "../../Client.ts";
-import { MuxAsyncIterator } from "https://deno.land/std/async/mod.ts";
+import Collector from "./Collector.ts";
 
 export type MessageFilterType = (msg: Message) => boolean;
 
-/**
- * Example:
- * client.on('message', msg => {
- * 	if(msg.content === '!await') {
- * 		const collector = new MessageCollector(client, (msg) => {
- * 			if(msg.author.id === msg.author.id) return true;
- * 			return false;
- * 		});
- * 
- * 		for await (const msg of collector) {
- * 			console.log(msg.content);
- * 		}
- * 	}
- * })
- */
-
-export default class MessageCollector implements AsyncIterable<Message> {
+export default class MessageCollector extends Collector<Message> {
 	#client: Client;
 	#limit: number
 	#filter?: MessageFilterType
 
 	public constructor(client: Client, limit: number = 10, filter?: MessageFilterType) {
+		super(client, limit);
 		this.#client = client;
 		this.#limit = limit;
 		this.#filter = filter;
