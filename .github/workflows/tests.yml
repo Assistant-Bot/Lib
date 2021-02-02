@@ -31,7 +31,7 @@ jobs:
           deno-version: ${{ matrix.deno }} # tests across multiple Deno versions
 
       - name: Cache Module
-        run: deno cache -A mod.ts
+        run: deno cache mod.ts
 
       - name: Run Tests
         run: deno test -A --unstable ./tests/mod.ts
