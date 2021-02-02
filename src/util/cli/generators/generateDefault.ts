@@ -11,5 +11,5 @@ export default async function generateDefault(name: string, token: string,) {
 	Deno.writeTextFile('./config.json', JSON.stringify({
 		name,
 		token
-	}))
+	}));
 }
