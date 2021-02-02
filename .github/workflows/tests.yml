@@ -24,7 +24,6 @@ jobs:
         os: [windows-latest, ubuntu-latest]
 
     steps:
-      - run: echo "${{ secrets.DISCORD_TOKEN }}" >> $GITHUB_ENV
       - uses: actions/checkout@v2
       - uses: denolib/setup-deno@v2
         with:
@@ -35,3 +34,5 @@ jobs:
 
       - name: Run Tests
         run: deno test -A --unstable ./tests/mod.ts
+        env: 
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
