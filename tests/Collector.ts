@@ -45,7 +45,7 @@ export default async function() {
 
 	let messages: Message[] = [];
 
-	await new Promise((resolve, reject) => {
+	await new Promise(async (resolve, reject) => {
 
 		setTimeout(async () => {
 			const msgData: MessageData = {
