@@ -42,4 +42,11 @@ export default abstract class Collector<T> implements AsyncIterable<T> {
 	 * Listener should auto handle timeouts!
 	 */
 	protected abstract listener(): Promise<T>;
+
+	/**
+	 * Stop collector whether or not its complete
+	 */
+	public kill(): void {
+		this.limit = 0;
+	}
 }
