@@ -225,4 +225,18 @@ export default class Permission {
 			return (this.parse() & bitOrName) === bitOrName;
 		}
 	}
+
+	public get allow(): Permission {
+		return Permission.from(this.parse());
+	}
+
+	public get deny(): Permission {
+		let perm = 0;
+		(Object.values(PermissionBits) as PermissionBits[]).map(bit => {
+			if((bit & (this.allow.parse() as number)) !== (bit as number)) {
+				perm |= bit
+			}
+		});
+		return Permission.from(perm);
+	}
 }

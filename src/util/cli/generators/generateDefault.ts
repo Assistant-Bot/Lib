@@ -16,7 +16,7 @@ export default async function generateDefault(name: string, token: string,) {
 	Deno.writeTextFile('src/mod.ts', 
 	`import { Client, CommandHandler, Message, Intents } from 'https://raw.githubusercontent.com/Assistant-Bot/Lib/master/mod.ts'
 	
-const client = new Client(${token || 'TOKEN'}, {intents: Intents.all().parse()});
+const client = new Client({intents: Intents.all().parse()});
 const commandHandler = new CommandHandler(client, {prefix: "!"});
 
 client.on('ready', () => {

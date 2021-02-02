@@ -16,10 +16,11 @@
 import type Client from "../../Client.ts";
 import type { RoleData } from "../../net/common/Types.ts";
 import Base from "../Base.ts";
+import Permission from "./permission/Permission.ts";
 
 export default class Role extends Base {
 	public name!: string;
-	public permissions!: number;
+	public permissions!: Permission;
 	public position!: number;
 	public color!: number;
 	public hoist!: boolean;
@@ -32,7 +33,7 @@ export default class Role extends Base {
 
 	public update(data: RoleData): void {
 		this.name = data.name;
-		this.permissions = parseInt(data.permissions);
+		this.permissions = Permission.from(parseInt(data.permissions));
 		this.position = data.position;
 		this.color = data.color;
 		this.hoist = data.hoist;

@@ -18,6 +18,7 @@ import { MemberData } from "../../net/common/Types.ts";
 import Base from "../Base.ts";
 import User from "../User.ts";
 import Guild from "./Guild.ts";
+import Permission, { PermissionBits } from "./permission/Permission.ts";
 import Role from "./Role.ts";
 
 export default class Member extends Base {
@@ -51,7 +52,26 @@ export default class Member extends Base {
 		return this.client.dataManager?.guilds.get(this.#guild_id);
 	}
 
-	public resolveRoles(): Role[] {
-	 	return this.roles.map(id => this.guild.roles.get(id)!);
+	public get permissions(): Permission {
+		if(this.id === this.guild.ownerID) {
+			return new Permission(['administrator']);
+		} else {
+			const roles = this.guild.roles;
+			let permissions = roles.find(r => r.id === this.guild.id)!.permissions.allow.parse();
+			for(let id of this.roles) { 
+				const role = roles.find(r => r.id === id);
+				if(!role) continue;
+
+				const allow = role.permissions.allow.parse();
+
+				if(allow & PermissionBits.ADMINISTRATOR) {
+					permissions = new Permission(['administrator']).parse();
+					break;
+				} else {
+					permissions |= allow;
+				}
+			}
+			return Permission.from(permissions);
+		}
 	}
 }
