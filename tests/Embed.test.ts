@@ -13,29 +13,23 @@
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
-import { Sleep } from "../src/util/Async.ts";
-import * as Collector from "./Collector.ts";
-import * as Hello from './Hello.ts';
-export interface TestOptions {
-	name: string;
-	description: string;
-	timeout?: number;
-}
+import {
+	Embed
+} from "../mod.ts";
+import {
+	assertEquals,
+  } from "https://deno.land/std@0.85.0/testing/asserts.ts";
 
 const commonOpts = {
-	sanitizeResources: false,
-	sanitizeOps: false
+	sanitizeResources: true,
+	sanitizeOps: true
 }
-
-const tests: { settings: TestOptions, default: Function }[] = [
-	Hello,
-	Collector
-];
-
-for await (let test of tests) {
-	Deno.test({
-		name: test.settings.name,
-		fn: Hello.default,
-		...commonOpts
-	});
-}
+Deno.test({
+	name: "Embed",
+	fn() {
+		let em: Embed = new Embed();
+		em.setTitle("test");
+		assertEquals(em.embed, { title: "test" });
+	},
+	...commonOpts
+});
