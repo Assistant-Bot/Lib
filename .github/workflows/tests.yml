@@ -34,5 +34,5 @@ jobs:
 
       - name: Run Tests
         run: deno test -A --unstable ./tests/mod.ts
-        env: 
-          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+    env: 
+      DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
