@@ -1,6 +1,5 @@
 import Message from "../../structures/Message.ts";
 import Client from "../../Client.ts";
-import { MuxAsyncIterator } from "https://deno.land/std/async/mod.ts";
 
 export type MessageFilterType = (msg: Message) => boolean;
 
