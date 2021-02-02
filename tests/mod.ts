@@ -14,6 +14,7 @@
  * of the License, or (at your option) any later version.
  */
 import { Sleep } from "../src/util/Async.ts";
+import * as Collector from "./Collector.ts";
 import * as Hello from './Hello.ts';
 export interface TestOptions {
 	name: string;
@@ -27,7 +28,8 @@ const commonOpts = {
 }
 
 const tests: { settings: TestOptions, default: Function }[] = [
-	Hello
+	Hello,
+	Collector
 ];
 
 for await (let test of tests) {

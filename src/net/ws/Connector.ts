@@ -149,7 +149,6 @@ export abstract class Connector {
 				packet = HeartBeatPacket.from(payload);
 				this.#shouldReconnect = !this.#shouldReconnect ? !!this.#heartInterval : this.#shouldReconnect;
 				this.#heartInterval = setInterval(() => {
-					// @ts-ignore
 					try {
 						this.sendPacket(packet);
 					} catch (e) {

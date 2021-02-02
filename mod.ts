@@ -97,3 +97,4 @@ export { default as Collection } from './src/util/Collection.ts';
 export { default as Embed } from './src/util/Embed.ts';
 export { default as Intents } from './src/util/Intents.ts';
 export { default as Queue } from './src/util/Queue.ts';
+export { default as MessageCollector } from './src/util/collectors/MessageCollector.ts';

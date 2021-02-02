@@ -487,7 +487,7 @@ export interface MessageData extends BaseData {
 	mention_channels?: ChannelData[];
 	attachments: AttachmentData[];
 	embed?: EmbedData;
-	embeds: EmbedData[];
+	embeds?: EmbedData[];
 	reactions?: ReactionData[];
 	nonce?: number | string;
 	pinned: boolean;
