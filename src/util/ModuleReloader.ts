@@ -1,6 +1,4 @@
 import Client from "../Client.ts";
-import { serve }from 'https://deno.land/std@0.84.0/http/mod.ts';
-import { acceptWebSocket }from 'https://deno.land/std@0.84.0/ws/mod.ts';
 
 export default class ModuleReloader {
 	private client: Client;
