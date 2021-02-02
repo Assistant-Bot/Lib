@@ -15,24 +15,22 @@
  */
 import Message from "../../structures/Message.ts";
 import Client from "../../Client.ts";
-import Collector from "./Collector.ts";
+import Collector, { CollectorOptions } from "./Collector.ts";
 
 export type MessageFilterType = (msg: Message) => boolean;
 
 export default class MessageCollector extends Collector<Message> {
 	#client: Client;
-	#limit: number
-	#filter?: MessageFilterType
+	#filter?: MessageFilterType;
 
-	public constructor(client: Client, limit: number = 10, filter?: MessageFilterType) {
-		super(client, limit);
+	public constructor(client: Client, opts?: CollectorOptions, filter?: MessageFilterType) {
+		super(client, opts || {});
 		this.#client = client;
-		this.#limit = limit;
 		this.#filter = filter;
 	}
 
-	private async *listener(): AsyncGenerator<Message> {
-		yield await new Promise((resolve, reject) => {
+	protected async listener(): Promise<Message> {
+		return new Promise((resolve, reject) => {
 			let lstnr = (msg: Message) => {
 				if (this.#filter && this.#filter(msg)) {
 					this.#client.removeListener('message', lstnr);
@@ -44,12 +42,5 @@ export default class MessageCollector extends Collector<Message> {
 			}
 			this.#client.on('message', lstnr);
 		});
-	}
-
-	async *[Symbol.asyncIterator](): AsyncGenerator<Message> {
-		if (this.#limit-- !== 0) {
-			yield* this.listener();
-		}
-		return { done: true };
 	}
 }

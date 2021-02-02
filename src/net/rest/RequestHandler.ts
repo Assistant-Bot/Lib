@@ -93,7 +93,7 @@ export default class RequestHandler {
 	public makeAndSend(url: string, method: HTTPMethod = "GET", body?: any, headers: Header[] = [], immediate: boolean = false): Promise<Response> {
 		url = BASE_URL + url;
 
-		if (body.$params || Object.keys(body.$params ?? {}).length) {
+		if (body && (body.$params || Object.keys(body.$params ?? {}).length)) {
 			// check instance
 			if (!(body.$params instanceof Object)) {
 				throw  "$params must be an instance of IParams: { [key: string]: string, value: string };";
@@ -107,7 +107,11 @@ export default class RequestHandler {
 			}
 
 			// delete body.$params;
-			body = undefined;
+			if (Object.keys(body).length === 1) {
+				body = undefined;
+			} else {
+				delete body.$params;
+			}
 		}
 
 		const request: Request = new Request(url, { body: JSON.stringify(body), method });

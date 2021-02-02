@@ -14,23 +14,32 @@
  * of the License, or (at your option) any later version.
  */
 import Client from "../../Client.ts";
+import { Promiseable } from "../../net/common/Types.ts";
+
+export interface CollectorOptions {
+	limit?: number;
+	timeout?: number;
+}
 
 export default abstract class Collector<T> implements AsyncIterable<T> {
-	#client: Client;
-	#limit: number;
+	protected client: Client;
+	protected limit: number;
+	protected timeout: number;
 
-	public constructor(client: Client, limit: number = 10) {
-		this.#client = client;
-		this.#limit = limit;
+	public constructor(client: Client, opts: CollectorOptions = {}) {
+		this.client = client;
+		this.limit = opts.limit || 10;
+		this.timeout = opts.timeout || 60000;
 	}
 
-	// @ts-ignore
-	private async listener(): AsyncGenerator<T, any, unknown>;
-
-	async *[Symbol.asyncIterator](): AsyncGenerator<T> {
-		if (this.#limit-- !== 0) {
-			yield* await this.listener();
+	async* [Symbol.asyncIterator](): AsyncGenerator<T> {
+		for (let i = 0; i < this.limit; i++) {
+			yield this.listener();
 		}
-		return { done: true };
 	}
+
+	/**
+	 * Listener should auto handle timeouts!
+	 */
+	protected abstract listener(): Promise<T>;
 }

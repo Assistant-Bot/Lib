@@ -16,6 +16,8 @@
 import Member from "../../structures/guild/Member.ts";
 import User from "../../structures/User.ts";
 
+export type Promiseable<T> = T | Promise<T>;
+
 /**
  * HTTP status codes
  */
