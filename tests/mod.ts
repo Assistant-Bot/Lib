@@ -39,10 +39,3 @@ for await (let test of tests) {
 		...commonOpts
 	});
 }
-await Sleep(10000);
-Deno.test({
-	name: "Completed",
-	fn() {
-		Deno.exit();
-	}
-})

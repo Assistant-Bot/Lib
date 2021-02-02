@@ -43,7 +43,8 @@ export default async function() {
 		bot.once('ready', (id: string) => {
 			bot.disconnect();
 			assertEquals<number>(id.length, 32, "Invalid session id. (Discord might be offline!)")
-			resolve(assertEquals(typeof id, "string", "Could not find bot session id."));
+			assertEquals(typeof id, "string", "Could not find bot session id.");
+			resolve(id);
 		});
 	});
 }
