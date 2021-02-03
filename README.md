@@ -17,7 +17,7 @@ This framework is currently being developed and will be used for **Assistant Bot
 - Benchmarks with incredible gateway speeds
 	- 250-500 m/s gateway login speeds!
 - Enhanced for speed and memory
-	- Uses 10-15x less memory that Node.JS libraries
+	- Uses 10-15x less memory that Node.JS libraries!
 - Includes multiple developer utilities such as live module reloader and a CLI
 - Optimal API Coverage
 - Has full fledged slash (/) command support
