@@ -17,7 +17,7 @@ import Message from "../../structures/Message.ts";
 import Client from "../../Client.ts";
 import Collector, { CollectorOptions } from "./Collector.ts";
 
-export type MessageFilterType = (msg: Message) => boolean;
+export type MessageFilterType = (msg: Message) => Promise<boolean> | boolean;
 
 export default class MessageCollector extends Collector<Message> {
 	#client: Client;

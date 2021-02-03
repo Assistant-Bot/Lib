@@ -178,7 +178,14 @@ export default class Generic extends Connector {
 		if(packet.event === 'MESSAGE_REACTION_ADD') {
 			const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
 			const mm: Member = this.#client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.user_id);
-			const e: Partial<Emoji> = new Emoji(this.#client, packet.data)
+			const e: Partial<Emoji> = new Emoji(this.#client, packet.data.emoji)
+
+			if(m && m.reactions) {
+				m.reactions.push({count: 1, emoji: e, me: mm.id === this.#client.user.id })
+			} else {
+				m.reactions = [];
+				m.reactions.push({count: 1, emoji: e, me: mm.id === this.#client.user.id })
+			}
 			this.#client.emit('reactionAdd', m, mm, e);
 		}
 

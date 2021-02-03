@@ -30,7 +30,9 @@ import type Emoji from "./structures/guild/Emoji.ts";
 import type Guild from "./structures/guild/Guild.ts";
 import type Invite from "./structures/guild/Invite.ts";
 import type Member from "./structures/guild/Member.ts";
+import Presence from "./structures/guild/Presence.ts";
 import type Role from "./structures/guild/Role.ts";
+import TextChannel from "./structures/guild/TextChannel.ts";
 import type Message from "./structures/Message.ts";
 import Application from "./structures/oauth/Application.ts";
 import type User from "./structures/User.ts";
@@ -359,7 +361,42 @@ export default class Client extends EventEmitter {
 	/**
 	 * Emitted when (bulk) messages are deleted
 	 */
-	public on(event: "messageDeleteBulk", listener: (messages: (Message | string)[]) => any): this
+	public on(event: "messageDeleteBulk", listener: (messages: (Message | string)[]) => any): this;
+
+	/**
+	 * Emitted when a reaction is added
+	 */
+	public on(event: "reactionAdd", listener: (message: Partial<Message> | Message, member: Partial<Member> | Member, emoji: Partial<Emoji> | Emoji) => any): this;
+
+	/**
+	 * Emitted when a reaction is removed
+	 */
+	public on(event: "reactionRemove", listener: (message: Partial<Message> | Message, member: Partial<Member> | Member, emoji: Partial<Emoji> | Emoji) => any): this;
+
+	/**
+	 * Emitted when all reactions are removed
+	 */
+	public on(event: "reactionRemoveAll", listener: (message: Partial<Message> | Message) => any): this;
+
+	/**
+	 * Emitted when a specific emoji reaction is removed
+	 */
+	public on(event: "reactionRemoveEmoji", listener: (message: Partial<Message> | Message, member: Partial<Member> | Member, emoji: Partial<Emoji> | Emoji) => any): this;
+
+	/**
+	 * Emitted when a presence is updated
+	 */
+	public on(event: "presenceUpdate", listener: (presence: Presence) => any): this;
+
+	/**
+	 * Emitted when typing starts
+	 */
+	public on(event: "typingStart", listener: (member: Partial<Member> | Member, channel: TextChannel, timestamp: number) => any): this;
+
+	/**
+	 * Emitted when a user is updated
+	 */
+	public on(event: "userUpdate", listener: (user: User) => any): this;
 
 	/**
 	 * Emitted when a user is banned from a guild

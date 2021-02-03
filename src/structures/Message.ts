@@ -14,7 +14,7 @@
  * of the License, or (at your option) any later version.
  */
 import type Client from "../Client.ts";
-import type { EmbedData, MessageConstructorData, MessageData, MessageType } from "../net/common/Types.ts";
+import type { EmbedData, MessageConstructorData, MessageData, MessageType, ReactionData } from "../net/common/Types.ts";
 import Base from "./Base.ts";
 import TextChannel from "./guild/TextChannel.ts";
 import Guild from "./guild/Guild.ts";
@@ -49,6 +49,7 @@ export default class Message extends Base {
 	public args!: string[];
 	public embed?: EmbedData;
 	public embeds?: EmbedData[];
+	public reactions?: ReactionData[];
 	public type!: MessageType;
 
 	public constructor(client: Client, data: MessageData) {
@@ -76,6 +77,11 @@ export default class Message extends Base {
 		if (data.embed) {
 			this.embed = data.embed;
 		}
+
+		if(data.reactions) {
+			this.reactions = data.reactions;
+		}
+
 		this.timestamp = Date.parse(data.timestamp);
 	}
 
