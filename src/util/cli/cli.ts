@@ -18,7 +18,7 @@ function blue(s: string) {
 			await generateDefault(name, token);	
 			console.log(colors.bold(colors.green(`Successfully created Assistant Project! (Name: ${name})`)));	
 			break;	
-		}	
+		}
 
 		default:	
 			const msg: string[] = [	
