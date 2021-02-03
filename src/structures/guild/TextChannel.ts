@@ -162,7 +162,7 @@ export default class TextChannel extends GuildChannel {
 		channelId: string,
 		msgId: string,
 		emoji?: string
-	): Promise<void> {
+	): Promise<boolean> {
 		if (emoji) {
 			return await this.request.deleteAllReactionsEmoji(
 				channelId,
@@ -174,11 +174,11 @@ export default class TextChannel extends GuildChannel {
 		}
 	}
 
-	public async pinMessage(id: string): Promise<void> {
+	public async pinMessage(id: string): Promise<boolean> {
 		return await this.request.addPinChannelMessage(this.id, id);
 	}
 
-	public async unpinMessage(id: string): Promise<void> {
+	public async unpinMessage(id: string): Promise<boolean> {
 		return await this.request.deletePinChannelMessage(this.id, id)
 	}
 

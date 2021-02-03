@@ -179,12 +179,13 @@ export default class Generic extends Connector {
 			const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
 			const mm: Member = this.#client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.user_id);
 			const e: Partial<Emoji> = new Emoji(this.#client, packet.data.emoji)
+			let count: number = m.reactions?.find(e => e.emoji === e)?.count ?? 0
 
 			if(m && m.reactions) {
-				m.reactions.push({count: 1, emoji: e, me: mm.id === this.#client.user.id })
+				m?.reactions.push({count: count++, emoji: e, me: mm.id === this.#client.user.id })
 			} else {
-				m.reactions = [];
-				m.reactions.push({count: 1, emoji: e, me: mm.id === this.#client.user.id })
+				m!.reactions = [];
+				m?.reactions.push({count: count++, emoji: e, me: mm.id === this.#client.user.id })
 			}
 			this.#client.emit('reactionAdd', m, mm, e);
 		}

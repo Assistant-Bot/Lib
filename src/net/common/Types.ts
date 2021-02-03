@@ -319,6 +319,12 @@ export interface GuildAuditLogQueryParams {
 	limit?: number
 }
 
+export interface BanData {
+	reason?: string,
+	user: UserData
+}
+
+
 /** Channels */
 export interface PermissionOverwrites extends BaseData {
 	type: 0 | 1; // 0 (role) or 1 (member)

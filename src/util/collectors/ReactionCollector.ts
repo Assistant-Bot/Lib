@@ -27,7 +27,7 @@ export default class ReactionCollector extends Collector<ReactionData> {
 							resolve({
 								count: reaction.count,
 								me: reaction.me,
-								emoji: reaction.emoji
+								emoji: emoji
 							});
 						}
 					});
@@ -37,7 +37,7 @@ export default class ReactionCollector extends Collector<ReactionData> {
 						resolve({
 							count: reaction.count,
 							me: reaction.me,
-							emoji: reaction.emoji
+							emoji: emoji
 						});
 					});
 				}

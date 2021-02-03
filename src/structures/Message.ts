@@ -132,7 +132,7 @@ export default class Message extends Base {
 		return await this.request.deleteMessage(this.channel.id, this.id);
 	}
 
-	public async pin(): Promise<void> {
+	public async pin(): Promise<boolean> {
 		return await this.request.pinMessage(this.channel.id, this.id);
 	}
 

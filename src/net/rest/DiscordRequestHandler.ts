@@ -14,6 +14,7 @@
  * of the License, or (at your option) any later version.
  */
 import Emoji from "../../structures/guild/Emoji.ts";
+import Permission from "../../structures/guild/permission/Permission.ts";
 import { MessageContent } from '../../structures/Message.ts';
 import { isOkay } from "../../util/Miscellaneous.ts";
 import type {
@@ -38,6 +39,7 @@ import type {
 	GuildAuditLog,
 	GuildAuditLogData,
 	GuildAuditLogActionType,
+	BanData,
 } from '../common/Types.ts';
 import Endpoints, { BASE_API_URL } from './Endpoints.ts';
 import RequestHandler from './RequestHandler.ts';
@@ -108,7 +110,7 @@ class DiscordRequestHandler extends RequestHandler {
 		guildId: string,
 		channelId: string,
 		pos: number
-	): Promise<void> {
+	): Promise<boolean> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.guild_channels(guildId),
 			'PATCH',
@@ -117,14 +119,14 @@ class DiscordRequestHandler extends RequestHandler {
 				position: pos,
 			}
 		);
-		return res.json();
+		return res.status === 200;
 	}
 
 	public async editChannelPermission(
 		channelId: string,
 		overwriteId: string,
-		opts: { allow: string; deny: string; type: 'member' | 'role' }
-	): Promise<void> {
+		opts: Permission & { type: "member" | "role" }
+	): Promise<boolean> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.channel_permission(channelId, overwriteId),
 			'PUT',
@@ -134,18 +136,18 @@ class DiscordRequestHandler extends RequestHandler {
 				type: opts.type === 'member' ? 1 : 0,
 			}
 		);
-		return res.json();
+		return res.status === 200;
 	}
 
 	public async deleteChannelPermission(
 		channelId: string,
 		overwriteId: string
-	): Promise<void> {
+	): Promise<boolean> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.channel_permission(channelId, overwriteId),
 			'DELETE'
 		);
-		return res.json();
+		return res.status === 200;
 	}
 
 	public async getChannelInvites(channelId: string): Promise<InviteData[]> {
@@ -194,23 +196,23 @@ class DiscordRequestHandler extends RequestHandler {
 	public async addPinChannelMessage(
 		channelId: string,
 		msgId: string
-	): Promise<void> {
+	): Promise<boolean> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.channel_pin(channelId, msgId),
 			'POST'
 		);
-		return res.json();
+		return res.status === 200;
 	}
 
 	public async deletePinChannelMessage(
 		channelId: string,
 		msgId: string
-	): Promise<void> {
+	): Promise<boolean> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.channel_pin(channelId, msgId),
 			'DELETE'
 		);
-		return res.json();
+		return res.status === 200;
 	}
 
 	public async createReaction(
@@ -259,32 +261,32 @@ class DiscordRequestHandler extends RequestHandler {
 	public async deleteAllReactions(
 		channelId: string,
 		msgId: string
-	): Promise<void> {
+	): Promise<boolean> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.message_reactions(channelId, msgId),
 			'DELETE'
 		);
-		return res.json();
+		return res.status === 200;
 	}
 
 	public async deleteAllReactionsEmoji(
 		channelId: string,
 		msgId: string,
 		emojiId: string
-	): Promise<void> {
+	): Promise<boolean> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.message_reaction(channelId, msgId, emojiId),
 			'DELETE'
 		);
-		return res.json();
+		return res.status === 200;
 	}
 
-	public async startTyping(channelId: string): Promise<void> {
+	public async startTyping(channelId: string): Promise<boolean> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.typing_indicator(channelId),
 			'POST'
 		);
-		return res.json();
+		return res.status === 200;
 	}
 
 	/**
@@ -371,6 +373,14 @@ class DiscordRequestHandler extends RequestHandler {
 			opts
 		);
 		return res.json();
+	}
+
+	public async deleteRole(guildId: string, id: string): Promise<boolean> {
+		const res: Response = await this.makeAndSend(
+			Endpoints.guild_role(guildId, id),
+			'DELETE'
+		);
+		return res.status === 200;
 	}
 
 	public async getMessages(
@@ -472,11 +482,12 @@ class DiscordRequestHandler extends RequestHandler {
 	public async pinMessage(
 		channelId: string,
 		messageId: string
-	): Promise<void> {
-		await this.makeAndSend(
+	): Promise<boolean> {
+		const res: Response = await this.makeAndSend(
 			Endpoints.channel_messages(channelId, messageId),
 			'PUT'
 		);
+		return res.status === 200;
 	}
 
 	public async getChannel(channelId: string): Promise<ChannelData | false> {
@@ -642,7 +653,40 @@ class DiscordRequestHandler extends RequestHandler {
 				type: 1
 			}
 		)
+
 		return res.json()
+	}
+
+	public async getGuildBans(id: string): Promise<BanData[]> {
+		const res: Response = await this.makeAndSend(
+			Endpoints.guild_bans(id)
+		);
+
+		return res.json();
+	} 
+
+	public async banGuildMember(guildId: string, id: string, deleteMessagesDays?: number, reason?: string): Promise<boolean> {
+		const res: Response = await this.makeAndSend(
+			Endpoints.guild_ban(guildId, id), 'PUT', {
+				reason: reason || 'No Reason Specified',
+				delete_message_days: deleteMessagesDays ?? 0
+			}
+		)
+		return res.status === 200;
+	}
+
+	public async unbanGuildMember(guildId: string, id: string): Promise<boolean> {
+		const res: Response = await this.makeAndSend(
+			Endpoints.guild_ban(guildId, id), 'DELETE'
+		);
+		return res.json();
+	}
+
+	public async kickMember(guildId: string, id: string): Promise<boolean> {
+		const res: Response = await this.makeAndSend(
+			Endpoints.guild_member(guildId, id), 'DELETE'
+		);
+		return res.status === 200;
 	}
 }
 

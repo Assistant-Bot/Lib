@@ -13,11 +13,17 @@
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
-import type { Snowflake } from "../../net/common/Types.ts";
+import Client from "../../Client.ts";
+import { ChannelData } from "../../net/common/Types.ts";
 import TextChannel from "./TextChannel.ts";
 
 export default class NewsChannel extends TextChannel {
-	public async crosspostMessage(id: Snowflake<18>) {
+
+	public constructor(client: Client, data: ChannelData) {
+		super(client, data);
+	}
+
+	public async crosspostMessage(id: string) {
 		// return this.request.crosspostMessage();
 	}
 }

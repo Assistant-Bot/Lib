@@ -139,6 +139,22 @@ export default class Endpoints {
 		return this.guild(id) + '/audit-logs';
 	}
 
+	public static guild_members(id: string) {
+		return this.guild(id) + "/members"
+	}
+
+	public static guild_member(guildId: string, id: string) {
+		return this.guild_members(guildId) + "/" + id;
+	}
+
+	public static guild_bans(id: string) {
+		return this.guild(id) + '/bans';
+	} 
+
+	public static guild_ban(id: string, userId: string) {
+		return this.guild_bans(id) + "/" + userId;
+	}
+
 	public static invite(code: string) {
 		return "/invites/" + code;
 	}

@@ -74,4 +74,16 @@ export default class Member extends Base {
 			return Permission.from(permissions);
 		}
 	}
+
+	public async ban(): Promise<boolean> {
+		return this.guild.banMember(this);
+	}
+
+	public async unban(): Promise<boolean> {
+		return this.guild.unbanMember(this)
+	}
+
+	public async kick(): Promise<boolean> {
+		return this.guild.kickMember(this);
+	}
 }
