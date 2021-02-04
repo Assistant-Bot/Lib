@@ -375,6 +375,7 @@ export type ChannelCreateOption = ChannelEditOption;
 /** Role */
 export interface RoleData extends BaseData {
 	name: string;
+	guild_id: string;
 	color: number;
 	hoist: boolean;
 	position: number;

@@ -125,15 +125,15 @@ class DiscordRequestHandler extends RequestHandler {
 	public async editChannelPermission(
 		channelId: string,
 		overwriteId: string,
-		opts: Permission & { type: "member" | "role" }
+		o: {allow: number, deny: number, type: "member" | "role" }
 	): Promise<boolean> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.channel_permission(channelId, overwriteId),
 			'PUT',
 			{
-				allow: opts.allow,
-				deny: opts.deny,
-				type: opts.type === 'member' ? 1 : 0,
+				allow: o.allow,
+				deny: o.deny,
+				type: o.type === 'member' ? 1 : 0,
 			}
 		);
 		return res.status === 200;

@@ -230,7 +230,7 @@ export default class Guild extends Base {
 		return await this.request.editChannelPosition(this.id, id instanceof GuildChannel ? id.id : id, pos);
 	}
 
-	public async editChannelPermission(id: GuildChannel | string, overwriteID: string, o: Permission & { type: "member" | "role" }) {
+	public async editChannelPermission(id: GuildChannel | string, overwriteID: string, o: {allow: number, deny: number, type: "member" | "role" }) {
 		return await this.request.editChannelPermission(id instanceof GuildChannel ? id.id : id, overwriteID, o)
 	}
 
@@ -242,9 +242,18 @@ export default class Guild extends Base {
 		return await this.request.deleteChannel(id instanceof GuildChannel ? id.id : id);
 	}
 
-	public async createRole(o: RoleEditOptions) {
+	public async createRole(o: RoleEditOptions): Promise<Role> {
 		const res: RoleData = await this.request.createRole(this.id, o);
 		return new Role(this.client, res);
+	}
+
+	public async editRole(id: Role | string, o: RoleEditOptions): Promise<Role> {
+		const res: RoleData = await this.request.editRole(this.id, id instanceof Role ? id.id : id, o);
+		return new Role(this.client, res);
+	}
+
+	public async deleteRole(id: Role | string): Promise<boolean> {
+		return await this.request.deleteRole(this.id, id instanceof Role ? id.id : id);
 	}
 
 	public async getBans(filter?: (data: BanData) => Promise<boolean> | boolean): Promise<BanData[]> {

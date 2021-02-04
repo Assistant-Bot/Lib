@@ -64,7 +64,7 @@ export default class GuildChannel extends Channel {
 		return await this.guild.editChannelPosition(this, pos);
 	}
 
-	public async editPermission(overwriteID: string, o: Permission & { type: "member" | "role" }): Promise<boolean> {
+	public async editPermission(overwriteID: string, o: {allow: number, deny: number, type: "member" | "role" }): Promise<boolean> {
 		return await this.guild.editChannelPermission(this, overwriteID, o)
 	}
 

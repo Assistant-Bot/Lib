@@ -292,6 +292,7 @@ export default class Generic extends Connector {
 
 		if (packet.event === "GUILD_ROLE_CREATE") {
 			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
+			packet.data.role.guild_id = packet.data.guild_id;
 			const role: Role = new Role(this.#client, packet.data.role);
 			guild.roles.set(packet.data.role.id, role);
 			this.#client.emit('roleCreate', role, guild);
@@ -299,6 +300,7 @@ export default class Generic extends Connector {
 
 		if (packet.event === "GUILD_ROLE_UPDATE") {
 			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
+			packet.data.role.guild_id = packet.data.guild_id;
 			const role: Role = guild.roles.get(packet.data.role.id) || new Role(this.#client, packet.data.role);
 			role.update(Object.assign(role, packet.data));
 			this.#client.emit('roleUpdate', role, guild);
