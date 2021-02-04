@@ -116,3 +116,20 @@ class AdminCommand extends Command {
 const commandHandler = new CommandHandler(client, {prefix: "!"});
 commandHandler.registerModule(new Module('Admin', [new AdminCommand()], [new AdminPermission()], true));
 ```
+
+Secure environment variable storage!
+```ts
+const env = new EnvStore();
+env.set("API_KEY", "12345678910");
+// !eval env
+// Oh no! I evalled my env variable!
+// Don't fear it's hashed in a UInt8Array 
+
+// Also!
+const env2 = new EnvStore();
+env2.set("API_KEY", "12345678910");
+console.log(env.get("API_KEY") === env2.get("API_KEY"));
+// Returns false!
+// New salts (numbers used to hash) 
+// are made everyone EnvStore instance!
+```
