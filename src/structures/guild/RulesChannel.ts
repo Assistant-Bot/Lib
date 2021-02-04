@@ -18,7 +18,4 @@ import { ChannelData } from "../../net/common/Types.ts";
 import GuildChannel from "./GuildChannel.ts";
 
 export default class RulesChannel extends GuildChannel {
-	public constructor(client: Client, data: ChannelData) {
-		super(client, data);
-	}
 }
