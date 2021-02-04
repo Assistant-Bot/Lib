@@ -102,7 +102,6 @@ export default class Generic extends Connector {
 		}
 
 		if (packet.event === "CHANNEL_PINS_UPDATE") {
-			console.log(packet.data)
 			const channel: TextChannel = this.#client.dataManager?.channels.get(packet.data.channel_id)
 			if(!channel) return // ???
 			channel.lastPinTimestamp = Date.parse(packet.data.last_pin_timestamp);

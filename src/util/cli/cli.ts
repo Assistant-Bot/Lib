@@ -9,10 +9,10 @@ function blue(s: string) {
 
 
 (async() => {	
-	const args = Deno.args;	
+	const args = Deno.args;
 
 	switch(args[0]) {	
-		case 'gen': {	
+		case 'gen': {
 			const name = Deno.args[1] ?? 'Assistant Bot';	
 			const token = Deno.args[2] ?? 'TOKEN';	
 			await generateDefault(name, token);	
