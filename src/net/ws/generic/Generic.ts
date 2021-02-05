@@ -15,6 +15,7 @@
  */
 import Client from "../../../Client.ts";
 import RuntimeManager from "../../../data/runtime/RuntimeManager.ts";
+import Interaction from "../../../structures/application/Interaction.ts";
 import type GroupChannel from "../../../structures/channel/GroupChannel.ts";
 import type DMChannel from "../../../structures/channel/GroupChannel.ts";
 import UnknownChannel, { makeChannel } from "../../../structures/channel/UnknownChannel.ts";
@@ -81,6 +82,11 @@ export default class Generic extends Connector {
 
 		if(packet.event === 'RESUMED') {
 			this.#client.emit('resume');
+		}
+
+		if(packet.event === 'INTERACTION_CREATE') {
+			const i = new Interaction(this.#client, packet.data);
+			this.#client.emit('interactionCreate', i);
 		}
 
 		if (packet.event === "CHANNEL_CREATE") {

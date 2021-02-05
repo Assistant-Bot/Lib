@@ -59,7 +59,6 @@ export default class GuildChannel extends Channel {
 		return res;
 	}
 
-
 	public async editPosition(pos: number): Promise<boolean> {
 		return await this.guild.editChannelPosition(this, pos);
 	}

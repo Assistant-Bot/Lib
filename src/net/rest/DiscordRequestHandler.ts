@@ -526,9 +526,7 @@ class DiscordRequestHandler extends RequestHandler {
 
 	public async createAppGlobalCommand(id: string, command: ApplicationCommandData): Promise<ApplicationCommandData | false> {
 		const res: Response = await this.makeAndSend(
-			Endpoints.applicationCommand(id),
-			'POST',
-			command
+			Endpoints.applicationCommand(id), 'POST', command, []
 		);
 
 		if (!res.ok) {
@@ -556,10 +554,10 @@ class DiscordRequestHandler extends RequestHandler {
 	): Promise<ApplicationCommandData | false> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.applicationCommandGuild(id, guild),
-			'POST',
+			'POST', 
 			command
-		);
-
+		)
+		
 		if (!res.ok) {
 			return false;
 		}
