@@ -20,11 +20,17 @@ import DMChannel from "./channel/DMChannel.ts";
 import Message, { MessageContent } from "./Message.ts";
 
 export default class User extends Base {
+	/** Whether the user is a bot */
 	public bot!: boolean;
+	/** Username of the user */
 	public username!: string;
+	/** Discriminator of the user */
 	public discriminator!: string;
+	/** Avatar hash of the user */
 	public avatar!: string;
+	/** Whether the user is system */
 	public system!: boolean;
+	/** DMs of the user */
 	#dm?: DMChannel;
 
 	public constructor(client: Client, data: UserData) {
@@ -40,6 +46,10 @@ export default class User extends Base {
 		this.system = !!data.system;
 	}
 
+	/**
+	 * Send a DM to a user
+	 * @param content Message Content
+	 */
 	public async send(content: MessageContent): Promise<Message> {
 		if(this.#dm) {
 			return this.#dm.send(content);
@@ -48,6 +58,9 @@ export default class User extends Base {
 		}
 	}
 
+	/**
+	 * Get the DM Channel of the user
+	 */
 	public async getDMChannel(): Promise<DMChannel> {
 		const data = await this.request.getDMChannel(this.id);
 		const ch = new DMChannel(this.client, data);
@@ -63,7 +76,7 @@ export default class User extends Base {
 	}
 
 	/**
-	 * Mention the user
+	 * Mention string of the user
 	 */
 	public get mention(): string {
 		return `<@${this.id}>`;

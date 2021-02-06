@@ -22,14 +22,23 @@ import Permission, { PermissionBits } from "./permission/Permission.ts";
 import Role from "./Role.ts";
 
 export default class Member extends Base {
+	/** User of the member */
 	public user!: User;
+	/** Whether the member is guild owner */
 	public owner!: boolean;
+	/** IDs of the member's roles */
 	public roles!: string[];
+	/** The time for how long the user has boosted the guild for */
 	public premiumSince?: string;
+	/** Nick of the user */
 	public nick?: string;
+	/** Whether the member is muted */
 	public mute!: boolean;
+	/** When the user joined at */
 	public joinedAt!: string;
+	/** Whether the user if deafened */
 	public deaf!: boolean;
+	/** Guild ID of the member */
 	#guild_id: string
 
 	public constructor(client: Client, data: MemberData) {
@@ -48,10 +57,16 @@ export default class Member extends Base {
 		this.deaf = data.deaf;
 	}
 
+	/** 
+	 * Guild of the member
+	 */
 	public get guild(): Guild {
 		return this.client.dataManager?.guilds.get(this.#guild_id);
 	}
 
+	/**
+	 * Permissions of the member (role based)
+	 */
 	public get permissions(): Permission {
 		if(this.id === this.guild.ownerID) {
 			return new Permission(['administrator']);
@@ -75,14 +90,24 @@ export default class Member extends Base {
 		}
 	}
 
+	/**
+	 * Used to ban the member
+	 */
 	public async ban(): Promise<boolean> {
 		return this.guild.banMember(this);
 	}
 
+	/**
+	 * Used to unban the member
+	 * NOTE: Useless method???
+	 */
 	public async unban(): Promise<boolean> {
 		return this.guild.unbanMember(this)
 	}
 
+	/**
+	 * User to kick the member
+	 */
 	public async kick(): Promise<boolean> {
 		return this.guild.kickMember(this);
 	}

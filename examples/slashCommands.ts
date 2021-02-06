@@ -53,6 +53,7 @@ client.on('ws', (m: Payload) => {
 	//console.log(Deno.inspect(m, { depth: 2 }));
 })
 
+
 await client.connect(JSON.parse(new TextDecoder().decode(Deno.readFileSync('./tests/config.json'))).token);
 
 client.on("interactionCreate", async (interaction: Interaction) => {

@@ -21,9 +21,13 @@ import Invite from "./Invite.ts";
 import Permission from "./permission/Permission.ts";
 
 export default class GuildChannel extends Channel {
+	/** Name of the channel */
 	public name!: string;
+	/** Position of the channel */
 	public position!: number;
-	public permissions!: any;
+	/** Permissions of the channel */
+	public permissions!: Permission[];
+	/** Guild ID of the channel */
 	#guild_id: string;
 
 	public constructor(client: Client, data: ChannelData) {
@@ -36,19 +40,32 @@ export default class GuildChannel extends Channel {
 	public update(data: ChannelData): void {
 		this.name = data.name || '';
 		this.position = data.position || -1;
-		this.permissions = data.permission_overwrites;
+		this.permissions = data.permission_overwrites ? 
+			data.permission_overwrites.map(p => {
+				return Permission.from(p.allow)
+		}) : [];
 	}
 
+	/**
+	 * Guild of the channel
+	 */
 	public get guild(): Guild {
 		return this.client.dataManager?.guilds.get(this.#guild_id);
 	}
 
-	public async edit(o: ChannelEditOption): Promise<this> {
+	/**
+	 * Used edit the channel
+	 * @param o Channel Edit Options
+	 */
+	public async edit(o: ChannelEditOption): Promise<GuildChannel> {
 		const cData = await this.request.editChannel(this.id, o);
 		this.client.dataManager?.channels.update(cData);
 		return this;
 	}
 
+	/**
+	 * Used to delete the channel
+	 */
 	public async delete(): Promise<boolean> {
 		const res: boolean = await this.request.deleteChannel(this.id);
 
@@ -59,23 +76,44 @@ export default class GuildChannel extends Channel {
 		return res;
 	}
 
+	/**
+	 * Used to edit the channel position
+	 * @param pos Position
+	 */
 	public async editPosition(pos: number): Promise<boolean> {
 		return await this.guild.editChannelPosition(this, pos);
 	}
 
+	/**
+	 * Used to edit the channel permission
+	 * @param overwriteID Overwrite ID
+	 * @param o Edit Permission Options
+	 * @returns
+	 */
 	public async editPermission(overwriteID: string, o: {allow: number, deny: number, type: "member" | "role" }): Promise<boolean> {
 		return await this.guild.editChannelPermission(this, overwriteID, o)
 	}
 
+	/**
+	 * Used to delete the channel permission
+	 * @param overwriteID OverwriteID
+	 */
 	public async deletePermission(overwriteID: string): Promise<boolean> {
 		return await this.guild.deleteChannelPermission(this, overwriteID);
 	}
 
+	/**
+	 * Used to create an Invite to the channel
+	 * @param o Invite Create Options
+	 */
 	public async createInvite(o?: InviteCreateOptions): Promise<Invite> {
 		const res: InviteData = await this.request.createChannelInvites(this.id, o);
 		return new Invite(this.client, res);
 	}
 
+	/**
+	 * Used to get invites from the channel
+	 */
 	public async getInvites(): Promise<Invite[]> {
 		const res: InviteData[] = await this.request.getChannelInvites(this.id);
 		return res.map(i => new Invite(this.client, i))

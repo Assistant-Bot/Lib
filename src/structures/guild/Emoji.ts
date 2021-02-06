@@ -18,12 +18,19 @@ import type { EmojiData } from "../../net/common/Types.ts";
 import Base from "../Base.ts";
 
 export default class Emoji extends Base {
+	/** Client instance */
 	private static clientInstance: Client;
+	/** Role IDs of the emoji */
 	public roles?: string[];
+	/** Whether the emoji requires colons */
 	public requireColons?: boolean;
+	/** Name of the emoji */
 	public name!: string | null;
+	/** Whether the emoji is managed */
 	public managed?: boolean;
+	/** Whether the emoji is available */
 	public available?: boolean;
+	/** Whether the emoji is animated */
 	public animated?: boolean;
 
 	public constructor(client: Client, data: EmojiData) {
@@ -41,10 +48,17 @@ export default class Emoji extends Base {
 		this.animated = data.animated ?? false;
 	}
 
+	/**
+	 * Whether the emoji is system
+	*/
 	public get system(): boolean {
 		return /\w/.test(this.name || "") && this.id === null;
 	}
 
+	/**
+	 * Used to parse a string into an emoji
+	 * @param emoji Emoji String
+	 */
 	public static parse(emoji: string): Emoji {
 		const webEncoded: boolean = /%/.test(emoji);
 

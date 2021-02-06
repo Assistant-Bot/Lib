@@ -20,13 +20,21 @@ import type User from "../User.ts";
 import Guild from "./Guild.ts";
 
 export default class Invite extends Base {
+	/** Code of the invite */
 	public code!: string;
+	/** Guild for the invite */
 	public guild?: Partial<Guild> | Partial<GuildData>;
+	/** Channel invite was made */
 	public channel!: PartialChannelData;
+	/** Creator of the invite */
 	public inviter!: Partial<User>;
+	/** Target user of the invite */
 	public targetUser?: Partial<User>;
+	/** Target user type */
 	public targetUserType!: 1;
+	/** Presence count of the invite */
 	public approximatePresenceCount!: number;
+	/** Member count of the invite */
 	public approximateMemberCount!: number;
 
 	public constructor(client: Client, data: InviteData) {

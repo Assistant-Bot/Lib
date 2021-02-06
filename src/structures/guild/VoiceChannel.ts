@@ -18,8 +18,11 @@ import { ChannelData } from "../../net/common/Types.ts";
 import GuildChannel from "./GuildChannel.ts";
 
 export default class VoiceChannel extends GuildChannel {
+	/** Bitrate of the channel */
 	public bitrate?: number;
+	/** User limit of the channel */
 	public userLimit?: number;
+	/** Array of member IDs in the channel */
 	public members: string[];
 
 	public constructor(client: Client, data: ChannelData) {
@@ -39,6 +42,10 @@ export default class VoiceChannel extends GuildChannel {
 		}
 	}
 
+	/**
+	 * Set the bitrate of the channel
+	 * @param bitrate Bitrate
+	 */
 	public async setBitrate(bitrate: number): Promise<boolean> {
 		let updated: GuildChannel = await super.edit({
 			bitrate: bitrate,
@@ -48,6 +55,10 @@ export default class VoiceChannel extends GuildChannel {
 		);
 	}
 
+	/**
+	 * Set the user limit of the channel
+	 * @param userLimit User Limit
+	 */
 	public async setUserLimit(userLimit: number): Promise<boolean> {
 		let updated: GuildChannel = await super.edit({
 			userLimit: userLimit,
@@ -57,6 +68,10 @@ export default class VoiceChannel extends GuildChannel {
 		);
 	}
 
+	/**
+	 * Used to join a channel
+	 * @param opt Join options
+	 */
 	public async join(opt?: Partial<{mute: boolean, deaf: boolean}>) {
 		await this.client.ws.send({op: 4, d: {
 			guild_id: this.guild.id,
@@ -67,6 +82,9 @@ export default class VoiceChannel extends GuildChannel {
 		this.members.push(this.client.user.id)
 	}
 
+	/**
+	 * Used to leave a channel
+	 */
 	public async leave() {
 		await this.client.ws.send({op: 4, d: {
 			guild_id: this.guild.id,
@@ -77,6 +95,10 @@ export default class VoiceChannel extends GuildChannel {
 		this.members.splice(this.members.indexOf(this.client.user.id), -1);
 	}
 
+	/**
+	 * Used to edit the voice state
+	 * @param opt Voice State Options
+	 */
 	public async editVoiceState(opt: Partial<{mute: boolean, deaf: boolean}>) {
 		await this.client.ws.send({op: 4, d: {
 			guild_id: this.guild.id,

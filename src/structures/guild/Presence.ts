@@ -51,10 +51,15 @@ interface Activity {
 }
 
 export default class Presence {
+	/** User of the presence */
 	public user?: User;
+	/** Guild ID of the presence */
 	public guildID?: string
+	/** Status of the presence */
 	public status?: 'idle' | 'dnd' | 'online' | 'offline';
+	/** Activities of the presence */
 	public activities?: Activity[];
+	/** Client status of the presence */
 	public clientStatus?: Partial<{desktop: string, mobile: string, web: string}>;
 
 	public constructor(data: any) { // I'd PresenceData later :((

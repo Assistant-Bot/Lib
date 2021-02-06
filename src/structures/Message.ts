@@ -41,15 +41,25 @@ export type MessageContent = string | {
 }
 
 export default class Message extends Base {
+	/** Channel of the message */
 	public channel!: TextChannel;
+	/** Author/User of the message */
 	public author!: User;
+	/** Content of the message */
 	public content?: string;
+	/** Epoch timestamp of the message */
 	public timestamp!: number;
+	/** [COMMAND UTIL] Prefix of the message */
 	public prefix?: string;
+	/** [COMMAND UTIL] Arguments in the message */
 	public args!: string[];
+	/** Embed in the message */
 	public embed?: EmbedData;
+	/** Embeds in the message */
 	public embeds?: EmbedData[];
+	/** Reactions in the message */
 	public reactions?: ReactionData[];
+	/** Type of message */
 	public type!: MessageType;
 
 	public constructor(client: Client, data: MessageData) {
@@ -86,16 +96,23 @@ export default class Message extends Base {
 	}
 
 	/**
-	 * @todo
+	 * Get member context of the message
 	 */
 	public get member(): Member {
 		return this.channel.guild.members.get(this.author.id)!;
 	}
 
+	/**
+	 * Get guild of the message
+	 */
 	public get guild(): Guild | null {
 		return (this.channel as GuildChannel).guild;
 	}
 
+	/**
+	 * Used to edit an existing message
+	 * @param content New Message Content
+	 */
 	public async edit(content: MessageConstructorData | string): Promise<Message> {
 		if (typeof content === "string") {
 			content = {
@@ -108,6 +125,10 @@ export default class Message extends Base {
 		return m;
 	}
 
+	/**
+	 * Used to reply to a user
+	 * @param content Message Content
+	 */
 	public async reply(content: MessageContent): Promise<Message> {
 		if (typeof content === 'string') {
 			content = {
@@ -128,14 +149,24 @@ export default class Message extends Base {
 		return this.channel.send(content);
 	}
 
+	/**
+	 * Used to delete an existing message
+	 */
 	public async delete(): Promise<boolean> {
 		return await this.request.deleteMessage(this.channel.id, this.id);
 	}
 
+	/**
+	 * Used to pin a message
+	 */
 	public async pin(): Promise<boolean> {
 		return await this.request.pinMessage(this.channel.id, this.id);
 	}
 
+	/**
+	 * Used to react to a message
+	 * @param emoji Emoji or emoji string
+	 */
 	public async react(emoji: Emoji | string): Promise<boolean> {
 		// todo: should this return a reaction object?
 		return await this.request.createReaction(this.channel.id, this.id, emoji);

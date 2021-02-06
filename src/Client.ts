@@ -23,6 +23,7 @@ import RequestHandler, { RequestHandlerOptions } from "./net/rest/RequestHandler
 import type { Connector } from "./net/ws/Connector.ts";
 import Generic from "./net/ws/generic/Generic.ts";
 import type { Payload } from "./net/ws/packet/Packet.ts";
+import AppCommand from "./structures/application/AppCommand.ts";
 import type Interaction from "./structures/application/Interaction.ts";
 import type Channel from "./structures/channel/Channel.ts";
 import type ClientUser from "./structures/ClientUser.ts";
@@ -194,6 +195,8 @@ export default class Client extends EventEmitter {
 	#wsManager!: Connector;
 	#shardMode: ClientShardMode | 'Unknown' = 'Unknown';
 
+	#floatingCommands: AppCommand[];
+
 	public constructor(opts: Partial<ClientOptions> = {}, customStore?: DataManager) {
 		super();
 		const defaults: ClientOptions = {
@@ -226,6 +229,8 @@ export default class Client extends EventEmitter {
 		if (customStore) {
 			this.#dataManager = customStore;
 		}
+
+		this.#floatingCommands = [];
 
 		Collection.MAX_SIZE = this.options.cache.limit ?? Infinity // Add this, IDK why but guild.members doesnt work w/out it
 	}
@@ -272,6 +277,10 @@ export default class Client extends EventEmitter {
 		await this.#wsManager.close();
 	}
 
+	/**
+	 * Edit the bot's presence
+	 * @param opt Presence Options
+	 */
 	public async editStatus(opt: PresenceOptions) {
 		await this.ws.send({
 			op: 3,

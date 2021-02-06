@@ -18,6 +18,7 @@ import { ApplicationCommandData, ApplicationCommandOption, ApplicationData } fro
 import Endpoints from "../../net/rest/Endpoints.ts";
 import Base from "../Base.ts";
 import Application from "../oauth/Application.ts";
+import Interaction from "./Interaction.ts";
 
 export type CommandOptionType =
 	| "SubCommand"
@@ -36,7 +37,7 @@ export default class AppCommand extends Base {
 	public application!: string;
 
 	public constructor(client: Client, data: ApplicationCommandData) {
-		super(client, data.id as string);
+		super(client, data.id!);
 		this.update(data);
 	}
 
@@ -44,8 +45,7 @@ export default class AppCommand extends Base {
 		this.name = data.name;
 		this.description = data.name;
 		this.options = data.options || [];
-		this.application = data.application_id as string;
-		// this.client.commands.set(data.id as string, this);
+		this.application = data.application_id!;
 	}
 
 	public parse(): ApplicationCommandData {

@@ -17,6 +17,9 @@ import Collection from "../../util/Collection.ts";
 import GuildChannel from "./GuildChannel.ts";
 
 export default class CategoryChannel extends GuildChannel {
+	/**
+	 * Children of a category channel
+	 */
 	public get children(): GuildChannel[] { 
 		const children: GuildChannel[] = []
 		const channels = this.guild.channels;

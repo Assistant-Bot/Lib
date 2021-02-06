@@ -18,7 +18,9 @@ import type { AnyStructureData } from "../net/common/Types.ts";
 import DiscordRequestHandler from "../net/rest/DiscordRequestHandler.ts";
 
 export default abstract class Base {
+	/** Client */
 	#client: Client;
+	/** ID given by Discord */
 	public id: string;
 
 	public constructor(client: Client, id: string) {
