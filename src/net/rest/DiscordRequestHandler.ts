@@ -34,7 +34,6 @@ import type {
 	MessageData,
 	RoleEditOptions,
 	RoleData,
-	Snowflake,
 	WebhookData,
 	GuildAuditLog,
 	GuildAuditLogData,
@@ -426,7 +425,7 @@ class DiscordRequestHandler extends RequestHandler {
 	 */
 	public async deleteMessages(
 		channelId: string,
-		messages: Snowflake<18>[]
+		messages: string[]
 	): Promise<boolean> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.channel_messages(channelId) + '/bulk-delete',

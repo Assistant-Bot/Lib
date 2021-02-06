@@ -36,13 +36,6 @@ export type HTTPMethod =
  * Discord types
  */
 
-/**
- * @deprecated
- */
-export type Snowflake<Length> = string & {
-	length: Length;
-};
-
 export type GatewayResponseBot = {
 	url: string;
 	shards: number;
@@ -58,7 +51,7 @@ export type GatewayResponseBot = {
  * Gateway types
  */
 export interface BaseData {
-	id: Snowflake<18>;
+	id: string;
 }
 
 /**

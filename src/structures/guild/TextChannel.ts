@@ -17,8 +17,7 @@ import Client from '../../Client.ts';
 import type {
 	ChannelData,
 	MessageConstructorData,
-	MessageData,
-	Snowflake,
+	MessageData
 } from '../../net/common/Types.ts';
 import Webhook from "../channel/Webhook.ts";
 import Message, { MessageContent } from '../Message.ts';
@@ -89,11 +88,11 @@ export default class TextChannel extends GuildChannel {
 		return this.send('```' + code + '\n' + content + '\n```');
 	}
 
-	public async deleteMessage(id: Snowflake<18>): Promise<boolean> {
+	public async deleteMessage(id: string): Promise<boolean> {
 		return await this.request.deleteMessage(this.id, id);
 	}
 
-	public async deleteMessages(messages: Snowflake<18>[]): Promise<boolean> {
+	public async deleteMessages(messages: string[]): Promise<boolean> {
 		return await this.request.deleteMessages(this.id, messages);
 	}
 

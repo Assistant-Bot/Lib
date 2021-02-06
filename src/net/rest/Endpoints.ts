@@ -13,8 +13,6 @@
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
-import type { Snowflake } from "../common/Types.ts";
-
 export const REST_VERSION: string = 'v8';
 export const GATEWAY: string = '/gateway'
 export const DOMAIN: string = 'https://discord.com';
