@@ -52,7 +52,7 @@ export { default as DataStore } from './src/data/DataStore.ts';
 export { default as RuntimeManager } from './src/data/runtime/RuntimeManager.ts';
 export { default as RuntimeStore } from './src/data/runtime/RuntimeStore.ts';
 export { default as Module } from './src/module/Module.ts';
-export { default as DiscordREquestHandler } from './src/net/rest/DiscordRequestHandler.ts';
+export { default as DiscordRequestHandler } from './src/net/rest/DiscordRequestHandler.ts';
 export {
 	REST_VERSION,
 	GATEWAY,
