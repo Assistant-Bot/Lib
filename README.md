@@ -14,8 +14,6 @@ This framework is currently being developed and will be used for **Assistant Bot
 	- Created with completely type safe code
 - Zero third-party dependencies
 	- Only uses the latest version of Deno standard library
-- Benchmarks with incredible gateway speeds
-	- 250-500 m/s gateway login speeds!
 - Enhanced for speed and memory
 	- Uses 10-15x less memory that Node.JS libraries!
 - Includes multiple developer utilities such as live module reloader and a CLI
@@ -48,7 +46,7 @@ client.on('message', (msg: Message) => {
 			// Asynchronously iterate over
 			// incoming messages!
 			for await (const message of msgs) {
-				console.log("NEW MESSAGE!!", message);
+				console.log("Got a message: " + message.toString());
 			}
 		}
 	}
@@ -58,7 +56,7 @@ client.on('message', (msg: Message) => {
 
 Complete client configuration!
 ```ts
-const CACHE_CAP = 1000;
+const MAX_LIMIT = 1000;
 const client = new Client({
 	sharding: {
 		useDiscord: false,
@@ -73,13 +71,13 @@ const client = new Client({
 		timeout: 1000
 	},
 	intents: Intents.all().parse(),
-	cache: { 
-		limit: CACHE_CAP,
+	cache: {
+		limit: MAX_LIMIT,
 	}
-}, new RuntimeManager(CACHE_CAP));
+}, new RuntimeManager(MAX_LIMIT));
 ```
 
-Use the advanced CLI to create project boilerplates in mere milliseconds 
+Use the advanced CLI to create project boilerplates in mere milliseconds
 ```ps1
 deno install -A -f -n ast https://raw.githubusercontent.com/Assistant-Bot/Lib/dev/src/util/cli.ts
 
@@ -114,7 +112,7 @@ class AdminCommand extends Command {
 }
 
 const commandHandler = new CommandHandler(client, {prefix: "!"});
-commandHandler.registerModule(new Module('Admin', [new AdminCommand()], [new AdminPermission()], true));
+commandHandler.registerCommand(new AdminCommand());
 ```
 
 Secure environment variable storage!
