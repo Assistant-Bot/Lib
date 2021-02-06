@@ -17,11 +17,11 @@ import Collection from "../../util/Collection.ts";
 import GuildChannel from "./GuildChannel.ts";
 
 export default class CategoryChannel extends GuildChannel {
-	public get children(): Collection<string, GuildChannel> { // Might make this an array?
-		const children: Collection<string, GuildChannel> = new Collection();
+	public get children(): GuildChannel[] { 
+		const children: GuildChannel[] = []
 		const channels = this.guild.channels;
 		for(const channel of channels) {
-			children.set(channel.id, channel);
+			children.push(channel);
 		}
 		return children;
 	}

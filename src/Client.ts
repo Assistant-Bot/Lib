@@ -13,10 +13,10 @@
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
-import { EventEmitter, GenericFunction, WrappedFunction } from 'https://deno.land/std@0.78.0/node/events.ts';
+import { EventEmitter, GenericFunction, WrappedFunction } from 'https://deno.land/std@0.85.0/node/events.ts';
 import DataManager from "./data/DataManager.ts";
 import type DataStore from "./data/DataStore.ts";
-import type { GatewayResponseBot, RoleData, VoiceState } from "./net/common/Types.ts";
+import type { GatewayResponseBot, PresenceOptions, RoleData, VoiceState } from "./net/common/Types.ts";
 import DiscordRequestHandler from "./net/rest/DiscordRequestHandler.ts";
 import Endpoints, { GATEWAY_URL } from "./net/rest/Endpoints.ts";
 import RequestHandler, { RequestHandlerOptions } from "./net/rest/RequestHandler.ts";
@@ -30,11 +30,14 @@ import type Emoji from "./structures/guild/Emoji.ts";
 import type Guild from "./structures/guild/Guild.ts";
 import type Invite from "./structures/guild/Invite.ts";
 import type Member from "./structures/guild/Member.ts";
+import Presence from "./structures/guild/Presence.ts";
 import type Role from "./structures/guild/Role.ts";
+import TextChannel from "./structures/guild/TextChannel.ts";
 import type Message from "./structures/Message.ts";
 import Application from "./structures/oauth/Application.ts";
 import type User from "./structures/User.ts";
 import Collection from "./util/Collection.ts";
+import Intents, { IntentTypes } from "./util/Intents.ts";
 
 /**
  * Events emitted when recieved from the websocket.
@@ -95,40 +98,40 @@ export interface ClientOptions {
 		/**
 		 * Whether or not to reconnect if disconnected.
 		 */
-		autoReconnect: boolean;
+		autoReconnect?: boolean;
 
 		/**
 		 * Amount of attempts to reconnect
 		 */
-		maxReconnectTries: number;
+		maxReconnectTries?: number;
 
 		/**
 		 * Amount of attempts to resume the session from discord.
 		 */
-		maxResumeTries: number;
+		maxResumeTries?: number;
 
 		/**
 		 * Whether or not to compress data from discord
 		 */
-		compress: boolean;
+		compress?: boolean;
 
 		/**
 		 * The amount of time until the client auto disconnects;
 		 * If no response to discord is recieved.
 		 */
-		timeout: number;
+		timeout?: number;
 
 		/**
 		 * Whether or not to respect discord response to connecting through the bot gateway.
 		 * This should be "true" if you want to shard, or cluster
 		 */
-		respectDiscordGateway: boolean;
+		respectDiscordGateway?: boolean;
 
 		/**
 		 * Emits the "ws" event (when enabled)
 		 */
-		emitPayloads: boolean;
-	},
+		emitPayloads?: boolean;
+	};
 	cache: {
 		/**
 		 * Should objects be cached in memory?
@@ -156,14 +159,15 @@ export interface ClientOptions {
 		 * IE: Guild#roles, Member#roles, Guild#emojis
 		 */
 		subLimit?: number;
-	},
+	};
 	sharding: {
 		/**
 		 * Whether or not to use discord recommended Sharding and Cluster count.
 		 */
 		useDiscord: boolean;
 	},
-	rest?: RequestHandlerOptions
+	rest?: RequestHandlerOptions;
+	intents?: IntentTypes[] | Number;
 }
 
 /**
@@ -180,6 +184,7 @@ export type ClientShardMode = 'Nodes' | 'Shards' | 'Clusters';
 
 export default class Client extends EventEmitter {
 	public readonly options: ClientOptions;
+	public readonly intents: Intents;
 	public application: Application | null;
 	public requestHandler!: RequestHandler;
 	public discordHandler!: DiscordRequestHandler;
@@ -209,16 +214,20 @@ export default class Client extends EventEmitter {
 			},
 			sharding: {
 				useDiscord: false
-			}
+			},
+			intents: Intents.defaults().parse()
 		}
 
 		this.options = Object.assign(defaults, opts);
 		this.application = null;
+		this.intents = (this.options.intents instanceof Array) ? new Intents(this.options.intents) : Intents.from(this.options.intents as number);
 		Collection.MAX_SIZE = this.options.cache.subLimit || 300;
 
 		if (customStore) {
 			this.#dataManager = customStore;
 		}
+
+		Collection.MAX_SIZE = this.options.cache.limit ?? Infinity // Add this, IDK why but guild.members doesnt work w/out it
 	}
 
 	/**
@@ -251,7 +260,7 @@ export default class Client extends EventEmitter {
 		}
 
 		this.application = await this.resolveApplication();
-		this.#wsManager.connect(token);
+		this.#wsManager.connect(token, this.intents);
 	}
 
 	/**
@@ -261,6 +270,21 @@ export default class Client extends EventEmitter {
 		if (!this.#wsManager) throw new Error('Websocket already closed.');
 
 		await this.#wsManager.close();
+	}
+
+	public async editStatus(opt: PresenceOptions) {
+		await this.ws.send({
+			op: 3,
+			d: {
+				since: opt.since ?? 0,
+				game: {
+					name: opt.game.name,
+					type: opt.game.type,
+				},
+				afk: opt.afk ?? false,
+				status: opt.status
+			}
+		})
 	}
 
 	/**
@@ -337,7 +361,42 @@ export default class Client extends EventEmitter {
 	/**
 	 * Emitted when (bulk) messages are deleted
 	 */
-	public on(event: "messageDeleteBulk", listener: (messages: (Message | string)[]) => any): this
+	public on(event: "messageDeleteBulk", listener: (messages: (Message | string)[]) => any): this;
+
+	/**
+	 * Emitted when a reaction is added
+	 */
+	public on(event: "reactionAdd", listener: (message: Partial<Message> | Message, member: Partial<Member> | Member, emoji: Partial<Emoji> | Emoji) => any): this;
+
+	/**
+	 * Emitted when a reaction is removed
+	 */
+	public on(event: "reactionRemove", listener: (message: Partial<Message> | Message, member: Partial<Member> | Member, emoji: Partial<Emoji> | Emoji) => any): this;
+
+	/**
+	 * Emitted when all reactions are removed
+	 */
+	public on(event: "reactionRemoveAll", listener: (message: Partial<Message> | Message) => any): this;
+
+	/**
+	 * Emitted when a specific emoji reaction is removed
+	 */
+	public on(event: "reactionRemoveEmoji", listener: (message: Partial<Message> | Message, member: Partial<Member> | Member, emoji: Partial<Emoji> | Emoji) => any): this;
+
+	/**
+	 * Emitted when a presence is updated
+	 */
+	public on(event: "presenceUpdate", listener: (presence: Presence) => any): this;
+
+	/**
+	 * Emitted when typing starts
+	 */
+	public on(event: "typingStart", listener: (member: Partial<Member> | Member, channel: TextChannel, timestamp: number) => any): this;
+
+	/**
+	 * Emitted when a user is updated
+	 */
+	public on(event: "userUpdate", listener: (user: User) => any): this;
 
 	/**
 	 * Emitted when a user is banned from a guild
@@ -474,6 +533,10 @@ export default class Client extends EventEmitter {
 	 */
 	public get dataManager(): DataManager | null {
 		return this.#dataManager || null;
+	}
+
+	public get ws(): Connector {
+		return this.#wsManager;
 	}
 
 	/**

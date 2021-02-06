@@ -17,8 +17,7 @@ import Client from '../../Client.ts';
 import type {
 	ChannelData,
 	MessageConstructorData,
-	MessageData,
-	Snowflake,
+	MessageData
 } from '../../net/common/Types.ts';
 import Webhook from "../channel/Webhook.ts";
 import Message, { MessageContent } from '../Message.ts';
@@ -89,11 +88,11 @@ export default class TextChannel extends GuildChannel {
 		return this.send('```' + code + '\n' + content + '\n```');
 	}
 
-	public async deleteMessage(id: Snowflake<18>): Promise<boolean> {
+	public async deleteMessage(id: string): Promise<boolean> {
 		return await this.request.deleteMessage(this.id, id);
 	}
 
-	public async deleteMessages(messages: Snowflake<18>[]): Promise<boolean> {
+	public async deleteMessages(messages: string[]): Promise<boolean> {
 		return await this.request.deleteMessages(this.id, messages);
 	}
 
@@ -162,7 +161,7 @@ export default class TextChannel extends GuildChannel {
 		channelId: string,
 		msgId: string,
 		emoji?: string
-	): Promise<void> {
+	): Promise<boolean> {
 		if (emoji) {
 			return await this.request.deleteAllReactionsEmoji(
 				channelId,
@@ -174,11 +173,11 @@ export default class TextChannel extends GuildChannel {
 		}
 	}
 
-	public async pinMessage(id: string): Promise<void> {
+	public async pinMessage(id: string): Promise<boolean> {
 		return await this.request.addPinChannelMessage(this.id, id);
 	}
 
-	public async unpinMessage(id: string): Promise<void> {
+	public async unpinMessage(id: string): Promise<boolean> {
 		return await this.request.deletePinChannelMessage(this.id, id)
 	}
 

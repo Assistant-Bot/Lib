@@ -16,14 +16,17 @@
 import type Client from "../../Client.ts";
 import type { RoleData, RoleEditOptions } from "../../net/common/Types.ts";
 import Base from "../Base.ts";
+import Guild from "./Guild.ts";
+import Permission from "./permission/Permission.ts";
 
 export default class Role extends Base {
 	public name!: string;
-	public permissions: any;
+	public permissions!: Permission;
 	public position!: number;
 	public color!: number;
 	public hoist!: boolean;
 	public mentionable!: boolean;
+	#guild_id!: string;
 
 	public constructor(client: Client, data: RoleData) {
 		super(client, data.id);
@@ -32,16 +35,23 @@ export default class Role extends Base {
 
 	public update(data: RoleData): void {
 		this.name = data.name;
-		this.permissions = data.permissions;
+		this.#guild_id = data.guild_id;
+		this.permissions = Permission.from(parseInt(data.permissions));
 		this.position = data.position;
 		this.color = data.color;
 		this.hoist = data.hoist;
 		this.mentionable = data.mentionable;
 	}
 
-	public async edit(guildID: string, o: RoleEditOptions): Promise<Role> {
-		const rData: RoleData = await this.request.editRole(guildID, this.id, o);
-		const r = new Role(this.client, rData);
-		return r;
+	public get guild(): Guild {
+		return this.client.dataManager?.guilds.get(this.#guild_id);
+	}
+
+	public async edit(o: RoleEditOptions) {
+		return await this.guild.editRole(this, o);
+	}
+
+	public async delete() {
+		return await this.guild.deleteRole(this);
 	}
 }

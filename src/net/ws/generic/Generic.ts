@@ -15,6 +15,7 @@
  */
 import Client from "../../../Client.ts";
 import RuntimeManager from "../../../data/runtime/RuntimeManager.ts";
+import Interaction from "../../../structures/application/Interaction.ts";
 import type GroupChannel from "../../../structures/channel/GroupChannel.ts";
 import type DMChannel from "../../../structures/channel/GroupChannel.ts";
 import UnknownChannel, { makeChannel } from "../../../structures/channel/UnknownChannel.ts";
@@ -63,7 +64,7 @@ export default class Generic extends Connector {
 
 		if (packet.event === "READY") {
 			this.#client.user = new ClientUser(this.#client, packet.data.user);
-			this.#client.emit('ready');
+			this.#client.emit('ready', payload.d.session_id, payload.d.shard, payload.d.v);
 
 			for (let guild of packet.data.guilds) {
 				if (guild.unavailable === true) {
@@ -81,6 +82,11 @@ export default class Generic extends Connector {
 
 		if(packet.event === 'RESUMED') {
 			this.#client.emit('resume');
+		}
+
+		if(packet.event === 'INTERACTION_CREATE') {
+			const i = new Interaction(this.#client, packet.data);
+			this.#client.emit('interactionCreate', i);
 		}
 
 		if (packet.event === "CHANNEL_CREATE") {
@@ -102,7 +108,6 @@ export default class Generic extends Connector {
 		}
 
 		if (packet.event === "CHANNEL_PINS_UPDATE") {
-			console.log(packet.data)
 			const channel: TextChannel = this.#client.dataManager?.channels.get(packet.data.channel_id)
 			if(!channel) return // ???
 			channel.lastPinTimestamp = Date.parse(packet.data.last_pin_timestamp);
@@ -178,13 +183,22 @@ export default class Generic extends Connector {
 		if(packet.event === 'MESSAGE_REACTION_ADD') {
 			const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
 			const mm: Member = this.#client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.user_id);
-			const e: Partial<Emoji> = new Emoji(this.#client, packet.data)
+			const e: Partial<Emoji> = new Emoji(this.#client, packet.data.emoji)
+			let count: number = m.reactions?.find(e => e.emoji === e)?.count ?? 0
+
+			if(m && m.reactions) {
+				m?.reactions.push({count: count++, emoji: e, me: mm.id === this.#client.user.id })
+			} else {
+				m!.reactions = [];
+				m?.reactions.push({count: count++, emoji: e, me: mm.id === this.#client.user.id })
+			}
 			this.#client.emit('reactionAdd', m, mm, e);
 		}
 
 		if(packet.event === 'MESSAGE_REACTION_REMOVE') {
+			if (!packet.data.member) { return };
 			const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
-			const mm: Member = this.#client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.member.id);
+			const mm: Member = this.#client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.member?.id);
 			const e: Partial<Emoji> = new Emoji(this.#client, packet.data)
 			this.#client.emit('reactionRemove', m, mm, e);
 		}
@@ -207,8 +221,9 @@ export default class Generic extends Connector {
 		}
 
 		if(packet.event === 'TYPINGS_START') {
-			const m: Member = new Member(this.#client, packet.data.member);
 			const ch: TextChannel = this.#client.dataManager?.channels.get(packet.data.channel_id);
+			packet.data.guild_id = ch.guild.id;
+			const m: Member = new Member(this.#client, packet.data.member);
 			this.#client.emit('typingStart', m, ch, packet.data.timestamp as number)
 		}
 
@@ -248,6 +263,7 @@ export default class Generic extends Connector {
 
 		if (packet.event === "GUILD_MEMBER_ADD") {
 			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
+			packet.data.guild_id = guild.id
 			const member: Member = new Member(this.#client, packet.data);
 			guild.members.set(packet.data.id, member);
 			this.#client.emit('memberJoin', member, guild);
@@ -255,7 +271,8 @@ export default class Generic extends Connector {
 
 		if (packet.event === "GUILD_MEMBER_UPDATE") {
 			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
-			const member: Member | undefined = guild.members.get(packet.data.user.id);
+			const member: Member | undefined = guild?.members.get(packet.data.user.id);
+			packet.data.guild_id = guild.id;
 
 			this.#client.emit('memberUpdate', member || new Member(this.#client, packet.data), guild);
 		}
@@ -280,6 +297,7 @@ export default class Generic extends Connector {
 
 		if (packet.event === "GUILD_ROLE_CREATE") {
 			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
+			packet.data.role.guild_id = packet.data.guild_id;
 			const role: Role = new Role(this.#client, packet.data.role);
 			guild.roles.set(packet.data.role.id, role);
 			this.#client.emit('roleCreate', role, guild);
@@ -287,6 +305,7 @@ export default class Generic extends Connector {
 
 		if (packet.event === "GUILD_ROLE_UPDATE") {
 			const guild: Guild = this.#client.dataManager?.guilds.get(packet.data.guild_id);
+			packet.data.role.guild_id = packet.data.guild_id;
 			const role: Role = guild.roles.get(packet.data.role.id) || new Role(this.#client, packet.data.role);
 			role.update(Object.assign(role, packet.data));
 			this.#client.emit('roleUpdate', role, guild);

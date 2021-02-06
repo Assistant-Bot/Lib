@@ -13,8 +13,9 @@
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
+import Client from "../../Client.ts";
+import { ChannelData } from "../../net/common/Types.ts";
 import GuildChannel from "./GuildChannel.ts";
 
 export default class RulesChannel extends GuildChannel {
-	// Does this channel inherit TextChannel?
 }

@@ -16,6 +16,8 @@
 import Member from "../../structures/guild/Member.ts";
 import User from "../../structures/User.ts";
 
+export type Promiseable<T> = T | Promise<T>;
+
 /**
  * HTTP status codes
  */
@@ -33,9 +35,6 @@ export type HTTPMethod =
 /**
  * Discord types
  */
-export type Snowflake<Length> = string & {
-	length: Length;
-};
 
 export type GatewayResponseBot = {
 	url: string;
@@ -52,7 +51,7 @@ export type GatewayResponseBot = {
  * Gateway types
  */
 export interface BaseData {
-	id: Snowflake<18>;
+	id: string;
 }
 
 /**
@@ -313,6 +312,12 @@ export interface GuildAuditLogQueryParams {
 	limit?: number
 }
 
+export interface BanData {
+	reason?: string,
+	user: UserData
+}
+
+
 /** Channels */
 export interface PermissionOverwrites extends BaseData {
 	type: 0 | 1; // 0 (role) or 1 (member)
@@ -363,6 +368,7 @@ export type ChannelCreateOption = ChannelEditOption;
 /** Role */
 export interface RoleData extends BaseData {
 	name: string;
+	guild_id: string;
 	color: number;
 	hoist: boolean;
 	position: number;
@@ -384,6 +390,7 @@ export type RoleCreateOptions = RoleEditOptions;
 /** Member */
 export interface MemberData extends BaseData {
 	user?: UserData;
+	guild_id?: string;
 	nick?: string;
 	roles: string[];
 	joined_at: string;
@@ -482,7 +489,7 @@ export interface MessageData extends BaseData {
 	mention_channels?: ChannelData[];
 	attachments: AttachmentData[];
 	embed?: EmbedData;
-	embeds: EmbedData[];
+	embeds?: EmbedData[];
 	reactions?: ReactionData[];
 	nonce?: number | string;
 	pinned: boolean;
@@ -753,3 +760,51 @@ export type AnyStructureData =
 	| EmojiData
 	| ApplicationCommandData
 	| WebhookData;
+
+export type PresenceOptions = {
+	afk?: boolean,
+	game: {
+		name: string,
+		type: 0 | 1 | 2 | 4 | 5
+	},
+	since?: number,
+	status: "online" | "dnd" | "idle" | "invisible" | "offline",
+}
+
+export const Permissions = {
+    createInstantInvite:  1,
+    kickMembers:          1 << 1,
+    banMembers:           1 << 2,
+    administrator:        1 << 3,
+    manageChannels:       1 << 4,
+    manageGuild:          1 << 5,
+    addReactions:         1 << 6,
+    viewAuditLogs:        1 << 7,
+    voicePrioritySpeaker: 1 << 8,
+    stream:               1 << 9,
+    readMessages:         1 << 10,
+    sendMessages:         1 << 11,
+    sendTTSMessages:      1 << 12,
+    manageMessages:       1 << 13,
+    embedLinks:           1 << 14,
+    attachFiles:          1 << 15,
+    readMessageHistory:   1 << 16,
+    mentionEveryone:      1 << 17,
+    externalEmojis:       1 << 18,
+    viewGuildInsights:    1 << 19,
+    voiceConnect:         1 << 20,
+    voiceSpeak:           1 << 21,
+    voiceMuteMembers:     1 << 22,
+    voiceDeafenMembers:   1 << 23,
+    voiceMoveMembers:     1 << 24,
+    voiceUseVAD:          1 << 25,
+    changeNickname:       1 << 26,
+    manageNicknames:      1 << 27,
+    manageRoles:          1 << 28,
+    manageWebhooks:       1 << 29,
+    manageEmojis:         1 << 30,
+    all:      0b1111111111111111111111111111111,
+    allGuild: 0b1111100000010000000000010111111,
+    allText:  0b0110000000001111111110001010001,
+    allVoice: 0b0110011111100000000001100010001
+};

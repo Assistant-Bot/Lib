@@ -14,9 +14,12 @@
  * of the License, or (at your option) any later version.
  */
 import type Client from "../../Client.ts";
-import type { MemberData, Snowflake } from "../../net/common/Types.ts";
+import { MemberData } from "../../net/common/Types.ts";
 import Base from "../Base.ts";
 import User from "../User.ts";
+import Guild from "./Guild.ts";
+import Permission, { PermissionBits } from "./permission/Permission.ts";
+import Role from "./Role.ts";
 
 export default class Member extends Base {
 	public user!: User;
@@ -27,20 +30,60 @@ export default class Member extends Base {
 	public mute!: boolean;
 	public joinedAt!: string;
 	public deaf!: boolean;
+	#guild_id: string
 
 	public constructor(client: Client, data: MemberData) {
-		super(client, data.id);
+		super(client, data.user!.id);
 		this.update(data);
+		this.#guild_id = data.guild_id as string;
 	}
 
 	public update(data: MemberData): void {
-		this.user = new User(this.client, data.user || { id: '000000000000000000' as Snowflake<18>, username: 'Unavailable', discriminator: '6969' });
-		// Possible solution if this is null?
+		this.user = new User(this.client, data.user!);
 		this.roles = data.roles;
 		this.premiumSince = data.premium_since;
 		this.nick = data.nick;
 		this.mute = data.mute;
 		this.joinedAt = data.joined_at;
 		this.deaf = data.deaf;
+	}
+
+	public get guild(): Guild {
+		return this.client.dataManager?.guilds.get(this.#guild_id);
+	}
+
+	public get permissions(): Permission {
+		if(this.id === this.guild.ownerID) {
+			return new Permission(['administrator']);
+		} else {
+			const roles = this.guild.roles;
+			let permissions = roles.find(r => r.id === this.guild.id)!.permissions.allow.parse();
+			for(let id of this.roles) { 
+				const role = roles.find(r => r.id === id);
+				if(!role) continue;
+
+				const allow = role.permissions.allow.parse();
+
+				if(allow & PermissionBits.ADMINISTRATOR) {
+					permissions = new Permission(['administrator']).parse();
+					break;
+				} else {
+					permissions |= allow;
+				}
+			}
+			return Permission.from(permissions);
+		}
+	}
+
+	public async ban(): Promise<boolean> {
+		return this.guild.banMember(this);
+	}
+
+	public async unban(): Promise<boolean> {
+		return this.guild.unbanMember(this)
+	}
+
+	public async kick(): Promise<boolean> {
+		return this.guild.kickMember(this);
 	}
 }

@@ -14,7 +14,7 @@
  * of the License, or (at your option) any later version.
  */
 import type Client from "../../Client.ts";
-import type { ChannelEditOption, ChannelData, GuildData, GuildEditOptions, RoleEditOptions, RoleData, InviteData, GuildAuditLog, GuildAuditLogEntry, GuildAuditLogActionType } from "../../net/common/Types.ts";
+import type { ChannelEditOption, ChannelData, GuildData, GuildEditOptions, RoleEditOptions, RoleData, InviteData, GuildAuditLog, GuildAuditLogEntry, GuildAuditLogActionType, BanData } from "../../net/common/Types.ts";
 import Collection from "../../util/Collection.ts";
 import Base from "../Base.ts";
 import GuildChannel from "../guild/GuildChannel.ts";
@@ -28,6 +28,7 @@ import TextChannel from "./TextChannel.ts";
 import VoiceChannel from "./VoiceChannel.ts";
 import Invite from './Invite.ts';
 import User from "../User.ts";
+import Permission from "./permission/Permission.ts";
 
 export default class Guild extends Base {
 	public name!: string;
@@ -114,7 +115,7 @@ export default class Guild extends Base {
 			for (let _ of data.channels) {
 				_.guild_id = this.id;
 				let ch: GuildChannel;
-				switch(_.type) {
+				switch (_.type) {
 					case 0:
 						ch = new TextChannel(this.client, _);
 						break;
@@ -148,8 +149,9 @@ export default class Guild extends Base {
 
 		if (data.members) {
 			for (let _ of data.members) {
+				_.guild_id = this.id;
 				const m = new Member(this.client, _);
-				this.members.set(m.id, m)
+				this.members.set(m.user.id, m)
 			}
 		}
 
@@ -214,13 +216,65 @@ export default class Guild extends Base {
 		return arr.filter(c => c !== undefined);
 	}
 
-	public async createChannel(o: ChannelEditOption) {
+	public async createChannel(o: ChannelEditOption): Promise<GuildChannel> {
 		const res: ChannelData = await this.request.createChannel(this.id, o);
 		return new GuildChannel(this.client, res);
 	}
 
-	public async createRole(o: RoleEditOptions) {
-		const res: RoleData  = await this.request.createRole(this.id, o);
+	public async editChannel(id: GuildChannel | string, o: ChannelEditOption): Promise<GuildChannel> {
+		const res: ChannelData = await this.request.editChannel(id instanceof GuildChannel ? id.id: id, o);
+		return new GuildChannel(this.client, res);
+	}
+
+	public async editChannelPosition(id: GuildChannel | string, pos: number): Promise<boolean> {
+		return await this.request.editChannelPosition(this.id, id instanceof GuildChannel ? id.id : id, pos);
+	}
+
+	public async editChannelPermission(id: GuildChannel | string, overwriteID: string, o: {allow: number, deny: number, type: "member" | "role" }) {
+		return await this.request.editChannelPermission(id instanceof GuildChannel ? id.id : id, overwriteID, o)
+	}
+
+	public async deleteChannelPermission(id: GuildChannel | string, overwriteID: string) {
+		return await this.request.deleteChannelPermission(id instanceof GuildChannel ? id.id : id, overwriteID);
+	}
+
+	public async deleteChannel(id: GuildChannel | string): Promise<boolean> {
+		return await this.request.deleteChannel(id instanceof GuildChannel ? id.id : id);
+	}
+
+	public async createRole(o: RoleEditOptions): Promise<Role> {
+		const res: RoleData = await this.request.createRole(this.id, o);
 		return new Role(this.client, res);
+	}
+
+	public async editRole(id: Role | string, o: RoleEditOptions): Promise<Role> {
+		const res: RoleData = await this.request.editRole(this.id, id instanceof Role ? id.id : id, o);
+		return new Role(this.client, res);
+	}
+
+	public async deleteRole(id: Role | string): Promise<boolean> {
+		return await this.request.deleteRole(this.id, id instanceof Role ? id.id : id);
+	}
+
+	public async getBans(filter?: (data: BanData) => Promise<boolean> | boolean): Promise<BanData[]> {
+		let res: BanData[] = await this.request.getGuildBans(this.id);
+		if(filter) {
+			return res.filter(d => filter(d));
+		} else {
+			return res;
+		}
+	}
+
+	public async banMember(id: Member | string, deleteMessagesDays?: number, reason?: string): Promise<boolean> {
+		if(!deleteMessagesDays || (deleteMessagesDays < 0 || deleteMessagesDays > 7)) deleteMessagesDays = 0;
+		return await this.request.banGuildMember(this.id, id instanceof Member ? id.id : id, deleteMessagesDays, reason)
+	}
+
+	public async unbanMember(id: Member | string): Promise<boolean> {
+		return await this.request.unbanGuildMember(this.id, id instanceof Member ? id.id : id);
+	}
+
+	public async kickMember(id: Member | string): Promise<boolean> {
+		return await this.request.kickMember(this.id, id instanceof Member ? id.id : id);
 	}
 }

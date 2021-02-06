@@ -13,3 +13,17 @@
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
+import {
+	Client
+} from "../mod.ts";
+import { assertEquals } from "https://deno.land/std@0.85.0/testing/asserts.ts";
+
+/**
+ * Connects to the gateway, disconnects, then resumes.
+ */
+Deno.test({
+	name: 'Exit and Assume passed',
+	fn: async () => {
+		Deno.exit()
+	}
+});

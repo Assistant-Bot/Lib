@@ -13,17 +13,23 @@
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
-import Client from "../../Client.ts";
-import { ChannelData } from "../../net/common/Types.ts";
-import TextChannel from "./TextChannel.ts";
+import {
+	Embed
+} from "../mod.ts";
+import {
+	assertEquals,
+  } from "https://deno.land/std@0.85.0/testing/asserts.ts";
 
-export default class NewsChannel extends TextChannel {
-
-	public constructor(client: Client, data: ChannelData) {
-		super(client, data);
-	}
-
-	public async crosspostMessage(id: string) {
-		// return this.request.crosspostMessage();
-	}
+const commonOpts = {
+	sanitizeResources: true,
+	sanitizeOps: true
 }
+Deno.test({
+	name: "Embed",
+	fn() {
+		let em: Embed = new Embed();
+		em.setTitle("test");
+		assertEquals(em.embed, { title: "test" });
+	},
+	...commonOpts
+});

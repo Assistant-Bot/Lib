@@ -18,6 +18,7 @@ import type { ChannelData, ChannelEditOption, InviteCreateOptions, InviteData } 
 import Channel from "../channel/Channel.ts";
 import Guild from "./Guild.ts";
 import Invite from "./Invite.ts";
+import Permission from "./permission/Permission.ts";
 
 export default class GuildChannel extends Channel {
 	public name!: string;
@@ -32,14 +33,14 @@ export default class GuildChannel extends Channel {
 		this.update(data);
 	}
 
-	public get guild(): Guild {
-		return this.client.dataManager?.guilds.get(this.#guild_id);
-	}
-
 	public update(data: ChannelData): void {
 		this.name = data.name || '';
 		this.position = data.position || -1;
 		this.permissions = data.permission_overwrites;
+	}
+
+	public get guild(): Guild {
+		return this.client.dataManager?.guilds.get(this.#guild_id);
 	}
 
 	public async edit(o: ChannelEditOption): Promise<this> {
@@ -58,17 +59,16 @@ export default class GuildChannel extends Channel {
 		return res;
 	}
 
-
-	public async editPosition(pos: number): Promise<void> {
-		return await this.request.editChannelPosition(this.guild.id || this.#guild_id, this.id, pos);
+	public async editPosition(pos: number): Promise<boolean> {
+		return await this.guild.editChannelPosition(this, pos);
 	}
 
-	public async editPermission(overwriteID: string, o: {allow: string, deny: string, type: "member" | "role"}): Promise<void> {
-		return await this.request.editChannelPermission(this.id, overwriteID, o)
+	public async editPermission(overwriteID: string, o: {allow: number, deny: number, type: "member" | "role" }): Promise<boolean> {
+		return await this.guild.editChannelPermission(this, overwriteID, o)
 	}
 
-	public async deletePermission(overwriteID: string): Promise<void> {
-		return await this.request.deleteChannelPermission(this.id, overwriteID);
+	public async deletePermission(overwriteID: string): Promise<boolean> {
+		return await this.guild.deleteChannelPermission(this, overwriteID);
 	}
 
 	public async createInvite(o?: InviteCreateOptions): Promise<Invite> {

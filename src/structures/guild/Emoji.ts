@@ -33,12 +33,12 @@ export default class Emoji extends Base {
 	}
 
 	public update(data: EmojiData): void {
-		this.roles = data.roles;
-		this.requireColons = data.require_colons;
+		this.roles = data.roles ?? [];
+		this.requireColons = !!data.require_colons;
 		this.name = data.name;
-		this.managed = data.managed;
-		this.available = data.available;
-		this.animated = data.animated;
+		this.managed = !!data.managed;
+		this.available = data.available ?? true;
+		this.animated = data.animated ?? false;
 	}
 
 	public get system(): boolean {

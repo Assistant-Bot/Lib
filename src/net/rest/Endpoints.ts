@@ -13,8 +13,6 @@
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
-import type { Snowflake } from "../common/Types.ts";
-
 export const REST_VERSION: string = 'v8';
 export const GATEWAY: string = '/gateway'
 export const DOMAIN: string = 'https://discord.com';
@@ -52,7 +50,7 @@ export default class Endpoints {
 	}
 
 	public static channel_invites(id: string): string {
-		return this.channel(id) + '/invites'; 
+		return this.channel(id) + '/invites';
 	}
 
 	public static channel_pins(id: string): string {
@@ -63,7 +61,7 @@ export default class Endpoints {
 		return this.channel_pins(id) + "/" + msgId;
 	}
 
-	public static typing_indicator(id: string): string { 
+	public static typing_indicator(id: string): string {
 		return this.channel(id) + '/typing';
 	}
 
@@ -80,7 +78,7 @@ export default class Endpoints {
 	}
 
 	public static user_reaction(id: string, msgId: string, emojiId: string, userId: string): string {
-		return this.message_reaction(id, msgId, emojiId) + "/" + userId; 
+		return this.message_reaction(id, msgId, emojiId) + "/" + userId;
 	}
 
 	public static guild(id: string): string {
@@ -102,7 +100,7 @@ export default class Endpoints {
   	public static guild_role(guildId: string, roleId: string): string {
     	return this.guild_roles(guildId) + "/" + roleId;
   	}
-	
+
 	public static guild_emojis(id: string): string {
 		return this.guild(id) + '/emojis';
 	}
@@ -137,6 +135,22 @@ export default class Endpoints {
 
 	public static guild_audit_logs(id: string): string {
 		return this.guild(id) + '/audit-logs';
+	}
+
+	public static guild_members(id: string) {
+		return this.guild(id) + "/members"
+	}
+
+	public static guild_member(guildId: string, id: string) {
+		return this.guild_members(guildId) + "/" + id;
+	}
+
+	public static guild_bans(id: string) {
+		return this.guild(id) + '/bans';
+	} 
+
+	public static guild_ban(id: string, userId: string) {
+		return this.guild_bans(id) + "/" + userId;
 	}
 
 	public static invite(code: string) {
@@ -183,7 +197,7 @@ export default class Endpoints {
 		return "/interactions/" + id + "/" + token + "/callback";
 	}
 
-	public static createWehook(id: string): string {
+	public static createWebhook(id: string): string {
 		return "/channels/" + id + "/webhooks";
 	}
 
@@ -193,5 +207,9 @@ export default class Endpoints {
 
 	public static editWebhook(wID: string, token: string, mID: string) {
 		return this.executeWebhook(wID, token) + "/messages/" + mID;
+	}
+
+	public static getDMChannel(id: string) {
+		return this.user(id) + '/channels';
 	}
 }

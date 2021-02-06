@@ -14,13 +14,14 @@
  * of the License, or (at your option) any later version.
  */
 import type Client from "../Client.ts";
-import type { EmbedData, MessageConstructorData, MessageData, MessageType } from "../net/common/Types.ts";
+import type { EmbedData, MessageConstructorData, MessageData, MessageType, ReactionData } from "../net/common/Types.ts";
 import Base from "./Base.ts";
 import TextChannel from "./guild/TextChannel.ts";
 import Guild from "./guild/Guild.ts";
 import GuildChannel from "./guild/GuildChannel.ts";
 import User from "./User.ts";
 import Emoji from "./guild/Emoji.ts";
+import Member from "./guild/Member.ts";
 
 export type MessageContent = string | {
 	embed?: EmbedData[];
@@ -48,6 +49,7 @@ export default class Message extends Base {
 	public args!: string[];
 	public embed?: EmbedData;
 	public embeds?: EmbedData[];
+	public reactions?: ReactionData[];
 	public type!: MessageType;
 
 	public constructor(client: Client, data: MessageData) {
@@ -75,14 +77,19 @@ export default class Message extends Base {
 		if (data.embed) {
 			this.embed = data.embed;
 		}
+
+		if(data.reactions) {
+			this.reactions = data.reactions;
+		}
+
 		this.timestamp = Date.parse(data.timestamp);
 	}
 
 	/**
 	 * @todo
 	 */
-	public get member(): any {
-		return {};
+	public get member(): Member {
+		return this.channel.guild.members.get(this.author.id)!;
 	}
 
 	public get guild(): Guild | null {
@@ -125,7 +132,7 @@ export default class Message extends Base {
 		return await this.request.deleteMessage(this.channel.id, this.id);
 	}
 
-	public async pin(): Promise<void> {
+	public async pin(): Promise<boolean> {
 		return await this.request.pinMessage(this.channel.id, this.id);
 	}
 
