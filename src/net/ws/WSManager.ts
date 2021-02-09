@@ -20,13 +20,17 @@ export default interface WSManager {
 	/**
 	 * Sends a payload to the websocket.
 	 * @param payload
+	 *
+	 * ⚠ Use specifier for identity! (eg guilds)
 	 */
-	send(payload: Payload): any;
+	send(payload: Payload, specifier?: any): any;
 
 	/**
 	 * Sends a packet to the websocket
+	 *
+	 * ⚠ Use specifier for identity! (eg guilds)
 	 */
-	sendPacket(packet: Packet): any;
+	sendPacket(packet: Packet, specifier?: any): any;
 
 	/**
 	 * Disconnects any members and terminates the manager.
