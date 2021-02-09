@@ -17,6 +17,7 @@ import {
 	Client
 } from "../mod.ts";
 import { assertEquals } from "https://deno.land/std@0.85.0/testing/asserts.ts";
+import { Connector } from "../src/net/ws/Connector.ts";
 
 /**
  * Connects to the gateway, disconnects, then resumes.
@@ -26,7 +27,8 @@ Deno.test({
 	fn: async () => {
 		let b: Client = new Client({
 			connection: {
-				autoReconnect: false
+				autoReconnect: false,
+				respectDiscordGateway: false
 			}
 		});
 
@@ -41,7 +43,9 @@ Deno.test({
 				if (iteration === 0) {
 					first = id;
 					b.disconnect();
-					b.ws.reconnect();
+					if (b.ws instanceof Connector) {
+						b.ws.reconnect();
+					}
 					iteration++;
 				} else {
 					b.disconnect();
