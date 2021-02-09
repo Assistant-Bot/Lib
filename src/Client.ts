@@ -166,7 +166,19 @@ export interface ClientOptions {
 		 * Whether or not to use discord recommended Sharding and Cluster count.
 		 */
 		useDiscord: boolean;
-	},
+	};
+	voice?: {
+		/**
+		 * The type of socket to use for connecting.
+		 * @default "ws"
+		 */
+		tls: 'ws' | 'udp';
+
+		/**
+		 * The voice protocol to use. By default, 1 is used.
+		 */
+		protocol: 1 | 4;
+	}
 	rest?: RequestHandlerOptions;
 	intents?: IntentTypes[] | Number;
 }
