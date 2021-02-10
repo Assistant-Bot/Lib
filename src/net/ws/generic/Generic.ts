@@ -181,6 +181,7 @@ export default class Generic extends Connector {
 		}
 
 		if(packet.event === 'MESSAGE_REACTION_ADD') {
+			/**
 			const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
 			const mm: Member = this.#client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.user_id);
 			const e: Partial<Emoji> = new Emoji(this.#client, packet.data.emoji)
@@ -193,26 +194,27 @@ export default class Generic extends Connector {
 				m?.reactions.push({count: count++, emoji: e, me: mm.id === this.#client.user.id })
 			}
 			this.#client.emit('reactionAdd', m, mm, e);
+			**/
 		}
 
 		if(packet.event === 'MESSAGE_REACTION_REMOVE') {
 			if (!packet.data.member) { return };
-			const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
-			const mm: Member = this.#client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.member?.id);
-			const e: Partial<Emoji> = new Emoji(this.#client, packet.data)
-			this.#client.emit('reactionRemove', m, mm, e);
+			//const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
+			//const mm: Member = this.#client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.member?.id);
+			//const e: Partial<Emoji> = new Emoji(this.#client, packet.data)
+			//this.#client.emit('reactionRemove', m, mm, e);
 		}
 
 		if(packet.event === 'MESSAGE_REACTION_REMOVE_ALL') {
-			const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
-			this.#client.emit('reactionRemoveAll', m);
+			//const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
+			//this.#client.emit('reactionRemoveAll', m);
 		}
 
 		if(packet.event === 'MESSAGE_REACTION_REMOVE_EMOJI') {
-			const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
-			const mm: Member = this.#client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.member.id);
-			const e: Partial<Emoji> = new Emoji(this.#client, packet.data)
-			this.#client.emit('reactionRemoveEmoji', m, mm, e);
+			//const m: Message = this.#client.dataManager?.messages.get(packet.data.message_id);
+			//const mm: Member = this.#client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.member.id);
+			//const e: Partial<Emoji> = new Emoji(this.#client, packet.data)
+			//this.#client.emit('reactionRemoveEmoji', m, mm, e);
 		}
 
 		if(packet.event === 'PRESENCE_UPDATE') {

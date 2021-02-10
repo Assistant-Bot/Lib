@@ -39,6 +39,19 @@ export default abstract class Collector<T> implements AsyncIterable<T> {
 	}
 
 	/**
+	 * Collects the messages and returns them when collected.
+	 */
+	public async collect(): Promise<T[]> {
+		let collected: T[] = [];
+
+		for (let i = 0; i < this.limit; i++) {
+			collected.push(await this.listener());
+		}
+
+		return collected;
+	}
+
+	/**
 	 * Listener should auto handle timeouts!
 	 */
 	protected abstract listener(): Promise<T>;
