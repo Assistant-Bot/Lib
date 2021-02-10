@@ -23,6 +23,7 @@ import RequestHandler, { RequestHandlerOptions } from "./net/rest/RequestHandler
 import type { Connector } from "./net/ws/Connector.ts";
 import Generic from "./net/ws/generic/Generic.ts";
 import type { Payload } from "./net/ws/packet/Packet.ts";
+import Shard from "./net/ws/shard/Shard.ts";
 import WSManager from "./net/ws/WSManager.ts";
 import AppCommand from "./structures/application/AppCommand.ts";
 import type Interaction from "./structures/application/Interaction.ts";
@@ -252,13 +253,14 @@ export default class Client extends EventEmitter {
 			const res: GatewayResponseBot = await this.getGatewayInfo();
 			if (res.shards === 1) {
 				this.#shardMode = 'Nodes';
-				this.#wsManager = new Generic(this, GATEWAY_URL);
+				this.#wsManager = new Shard(this, GATEWAY_URL);
 			} else if (res.shards >= 250000) {
 				this.#shardMode = 'Clusters'
 				throw new Error('Clusters are not supported yet.');
 			} else {
 				this.#shardMode = 'Shards'
-				throw new Error('Shards are not supported yet.');
+				this.#wsManager = new Shard(this, GATEWAY_URL);
+				// throw new Error('Shards are not supported yet.');
 			}
 		} else {
 			this.#shardMode = 'Nodes';

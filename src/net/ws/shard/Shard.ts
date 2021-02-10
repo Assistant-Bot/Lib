@@ -19,14 +19,16 @@ import Packet, { Payload } from "../packet/Packet.ts";
 
 export default class Shard extends Connector {
 	#client: Client;
+	#guildShardMap: Map<number, string>;
 
 	public constructor(client: Client, gateway: string) {
 		super(gateway);
 		this.#client = client;
+		this.#guildShardMap = new Map();
 	}
 
 	public async wsPacket(pk: Payload): Promise<void> {
-		// TO-DO
+	
 	}
 
 	public async wsError(ev: Event | ErrorEvent): Promise<void> {
