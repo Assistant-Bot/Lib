@@ -253,7 +253,7 @@ export default class Client extends EventEmitter {
 			const res: GatewayResponseBot = await this.getGatewayInfo();
 			if (res.shards === 1) {
 				this.#shardMode = 'Nodes';
-				this.#wsManager = new Shard(this, GATEWAY_URL);
+				this.#wsManager = new Generic(this, GATEWAY_URL);
 			} else if (res.shards >= 250000) {
 				this.#shardMode = 'Clusters'
 				throw new Error('Clusters are not supported yet.');
