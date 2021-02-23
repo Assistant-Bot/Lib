@@ -50,7 +50,7 @@ export enum IntentCodes {
 	DIRECT_MESSAGE_TYPING = 1 << 14,
 	PRIVILEGED = IntentCodes.PRESENCES + IntentCodes.MEMBERS,
 }
-class Intents {
+export default class Intents {
 	private currentIntents: IntentTypes[];
 
 	public constructor(intents: IntentTypes[] = []) {
@@ -158,4 +158,3 @@ class Intents {
 		return val;
 	}
 }
-export default Intents;

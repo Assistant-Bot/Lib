@@ -98,8 +98,8 @@ export default class Message extends Base {
 	/**
 	 * Get member context of the message
 	 */
-	public get member(): Member {
-		return this.channel.guild.members.get(this.author.id)!;
+	public get member(): Member | undefined {
+		return this.channel.guild.members.get(this.author.id);
 	}
 
 	/**

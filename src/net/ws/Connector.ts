@@ -13,8 +13,11 @@
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
+import Client from "../../Client.ts";
+import ClientUser from "../../structures/ClientUser.ts";
 import Intents from "../../util/Intents.ts";
 import { GATEWAY, BASE_URL } from '../rest/Endpoints.ts';
+import EventAdapter from "./event/EventAdapter.ts";
 import EventPacket from "./packet/EventPacket.ts";
 import HeartBeatPacket from "./packet/HeartbeatPacket.ts";
 import LoginPacket from "./packet/LoginPacket.ts";
@@ -23,10 +26,11 @@ import ResumePacket from "./packet/ResumePacket.ts";
 
 export type ConnectionStates = 'CONNECTED' | 'CONNECTING' | 'DISCONNECTED' | 'INITIALIZED';
 
-export abstract class Connector {
+export abstract class Connector extends EventAdapter {
 	public ws!: WebSocket;
 	public sequence: number;
 	public sessionId?: string;
+	protected client: Client;
 	#gateway: string;
 	#token!: string;
 	#lastSeq: number;
@@ -38,7 +42,9 @@ export abstract class Connector {
 	#intents: Intents;
 	#shard: number;
 
-	public constructor(gateway: string) {
+	public constructor(client: Client, gateway: string) {
+		super();
+		this.client = client;
 		this.#gateway = gateway;
 		this.sequence = 0;
 		this.#lastSeq = 0;
@@ -73,7 +79,6 @@ export abstract class Connector {
 			if (!this.#shouldDisconnect) {
 				await this.connect(token, intents);
 			}
-			Deno.exit(1);
 		}
 	}
 
@@ -129,13 +134,38 @@ export abstract class Connector {
 	 * Called when the websocket recieves a payload from discord.
 	 * @param p
 	 */
-	public abstract wsPacket(p: Payload): any;
+	public wsPacket(_p: Payload): any {};
 
 	/**
 	 * Called when the websocket encounters an error.
 	 * @param error
 	 */
-	public abstract wsError(error: Event | ErrorEvent | Error): any;
+	public wsError(_error: Event | ErrorEvent | Error): any {
+		console.error(_error);
+	};
+
+	private wsPreprocessPacket(p: Payload): any {
+		const packet: EventPacket = EventPacket.from(p);
+		if (packet.event === "READY") {
+			this.client.user = new ClientUser(this.client, packet.data.user);
+			this.client.emit('ready', p.d.session_id, p.d.shard, p.d.v);
+
+			for (let guild of packet.data.guilds) {
+				if (guild.unavailable === true) {
+					this.deadGuilds.add(guild.id);
+				} else {
+					this.wsPacket({
+						t: "GUILD_CREATE",
+						s: -1,
+						op: 0,
+						d: guild
+					});
+				}
+			}
+		}
+
+		this.handleEvent(this.client, p);
+	}
 
 	private wsMessage(ev: MessageEvent): void {
 		const payload: Payload = JSON.parse(ev.data) || false;
@@ -196,6 +226,6 @@ export abstract class Connector {
 				break;
 		}
 
-		this.wsPacket(payload);
+		this.wsPreprocessPacket(payload);
 	}
 }

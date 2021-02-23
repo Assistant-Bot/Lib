@@ -23,7 +23,6 @@ import RequestHandler, { RequestHandlerOptions } from "./net/rest/RequestHandler
 import type { Connector } from "./net/ws/Connector.ts";
 import Generic from "./net/ws/generic/Generic.ts";
 import type { Payload } from "./net/ws/packet/Packet.ts";
-import Shard from "./net/ws/shard/Shard.ts";
 import WSManager from "./net/ws/WSManager.ts";
 import AppCommand from "./structures/application/AppCommand.ts";
 import type Interaction from "./structures/application/Interaction.ts";
@@ -197,8 +196,6 @@ export default class Client extends EventEmitter {
 	#wsManager!: WSManager;
 	#shardMode: ClientShardMode | 'Unknown' = 'Unknown';
 
-	#floatingCommands: AppCommand[];
-
 	public constructor(opts: Partial<ClientOptions> = {}, customStore?: DataManager) {
 		super();
 		const defaults: ClientOptions = {
@@ -232,8 +229,6 @@ export default class Client extends EventEmitter {
 			this.#dataManager = customStore;
 		}
 
-		this.#floatingCommands = [];
-
 		Collection.MAX_SIZE = this.options.cache.limit ?? Infinity // Add this, IDK why but guild.members doesnt work w/out it
 	}
 
@@ -259,8 +254,8 @@ export default class Client extends EventEmitter {
 				throw new Error('Clusters are not supported yet.');
 			} else {
 				this.#shardMode = 'Shards'
-				this.#wsManager = new Shard(this, GATEWAY_URL);
-				// throw new Error('Shards are not supported yet.');
+				//this.#wsManager = new (this, GATEWAY_URL);
+				throw new Error('Shards are not supported yet.');
 			}
 		} else {
 			this.#shardMode = 'Nodes';
