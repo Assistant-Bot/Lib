@@ -44,7 +44,7 @@ export default class MessageCollector extends Collector<Message> {
 			if (this.client.events.luc) {
 				this.#client.events.luc?.('message', lstnr);
 			} else {
-				reject(new Error("Event adapter does not support cancelable listeners."));
+				reject(new Error("Event adapter does not support cancellable listeners."));
 			}
 		});
 	}

@@ -46,7 +46,7 @@ export default class ReactionCollector extends Collector<ReactionData> {
 			if (this.client.events.luc) {
 				this.#client.events.luc?.('reactionAdd', lstnr);
 			} else {
-				reject(new Error("Event adapter does not support cancelable listeners."));
+				reject(new Error("Event adapter does not support cancellable listeners."));
 			}
 		});
 	}
