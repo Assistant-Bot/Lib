@@ -34,11 +34,11 @@ export default class VoiceChannel extends GuildChannel {
 	}
 
 	public update(data: ChannelData) {
-		if(data.bitrate) {
+		if (data.bitrate) {
 			this.bitrate = data.bitrate;
 		}
 
-		if(data.user_limit) {
+		if (data.user_limit) {
 			this.userLimit = data.user_limit;
 		}
 	}
@@ -73,13 +73,15 @@ export default class VoiceChannel extends GuildChannel {
 	 * Used to join a channel
 	 * @param opt Join options
 	 */
-	public async join(opt?: Partial<{mute: boolean, deaf: boolean}>) {
-		await this.client.ws.send({op: 4, d: {
-			guild_id: this.guild.id,
-			channel_id: this.id,
-			self_mute: opt?.mute ?? true,
-			self_deaf: opt?.deaf ?? true
-		}});
+	public async join(opt?: Partial<{ mute: boolean, deaf: boolean }>) {
+		await this.client.ws.send({
+			op: 4, d: {
+				guild_id: this.guild.id,
+				channel_id: this.id,
+				self_mute: opt?.mute ?? true,
+				self_deaf: opt?.deaf ?? true
+			}
+		});
 		this.members.push(this.client.user.id)
 	}
 
@@ -87,12 +89,14 @@ export default class VoiceChannel extends GuildChannel {
 	 * Used to leave a channel
 	 */
 	public async leave() {
-		await this.client.ws.send({op: 4, d: {
-			guild_id: this.guild.id,
-			channel_id: this.id,
-			self_mute: false,
-			self_deaf: false
-		}});
+		await this.client.ws.send({
+			op: 4, d: {
+				guild_id: this.guild.id,
+				channel_id: this.id,
+				self_mute: false,
+				self_deaf: false
+			}
+		});
 		this.members.splice(this.members.indexOf(this.client.user.id), -1);
 	}
 
@@ -100,12 +104,14 @@ export default class VoiceChannel extends GuildChannel {
 	 * Used to edit the voice state
 	 * @param opt Voice State Options
 	 */
-	public async editVoiceState(opt: Partial<{mute: boolean, deaf: boolean}>) {
-		await this.client.ws.send({op: 4, d: {
-			guild_id: this.guild.id,
-			channel_id: this.id,
-			self_mute: opt.mute ?? true,
-			self_deaf: opt.deaf ?? true
-		}});
+	public async editVoiceState(opt: Partial<{ mute: boolean, deaf: boolean }>) {
+		await this.client.ws.send({
+			op: 4, d: {
+				guild_id: this.guild.id,
+				channel_id: this.id,
+				self_mute: opt.mute ?? true,
+				self_deaf: opt.deaf ?? true
+			}
+		});
 	}
 }

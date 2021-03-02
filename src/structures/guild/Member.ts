@@ -69,18 +69,18 @@ export default class Member extends Base {
 	 * Permissions of the member (role based)
 	 */
 	public get permissions(): Permission {
-		if(this.id === this.guild.ownerID) {
+		if (this.id === this.guild.ownerID) {
 			return new Permission(['administrator']);
 		} else {
 			const roles = this.guild.roles;
 			let permissions = roles.find(r => r.id === this.guild.id)!.permissions.allow.parse();
-			for(let id of this.roles) { 
+			for (let id of this.roles) {
 				const role = roles.find(r => r.id === id);
-				if(!role) continue;
+				if (!role) continue;
 
 				const allow = role.permissions.allow.parse();
 
-				if(allow & PermissionBits.ADMINISTRATOR) {
+				if (allow & PermissionBits.ADMINISTRATOR) {
 					permissions = new Permission(['administrator']).parse();
 					break;
 				} else {

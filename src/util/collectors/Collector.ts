@@ -33,7 +33,7 @@ export default abstract class Collector<T> implements AsyncIterable<T> {
 		this.timeout = opts.timeout || 60000;
 	}
 
-	async* [Symbol.asyncIterator](): AsyncGenerator<T> {
+	async*[Symbol.asyncIterator](): AsyncGenerator<T> {
 		for (let i = 0; i < this.limit; i++) {
 			yield this.listener();
 		}

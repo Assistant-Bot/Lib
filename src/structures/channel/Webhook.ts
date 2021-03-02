@@ -73,7 +73,7 @@ export default class Webhook extends Base {
 	public send(msg: MessageConstructorData) {
 		return this.execute({
 			content: (typeof msg === 'string') ? msg : msg.content,
-			embeds: (typeof msg === 'string') ? undefined : msg.embed ? [ msg.embed ] : undefined
+			embeds: (typeof msg === 'string') ? undefined : msg.embed ? [msg.embed] : undefined
 		});
 	}
 

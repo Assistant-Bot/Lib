@@ -24,7 +24,7 @@ export default class ReactionCollector extends Collector<ReactionData> {
 				cancel = true;
 				if (this.#filter) {
 					msg.reactions?.forEach(reaction => {
-						if(this.#filter!(reaction)) {
+						if (this.#filter!(reaction)) {
 							resolve({
 								count: reaction.count,
 								me: reaction.me,

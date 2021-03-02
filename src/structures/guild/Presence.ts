@@ -60,7 +60,7 @@ export default class Presence {
 	/** Activities of the presence */
 	public activities?: Activity[];
 	/** Client status of the presence */
-	public clientStatus?: Partial<{desktop: string, mobile: string, web: string}>;
+	public clientStatus?: Partial<{ desktop: string, mobile: string, web: string }>;
 
 	public constructor(data: any) { // I'd PresenceData later :((
 		this.update(data);

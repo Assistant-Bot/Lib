@@ -90,7 +90,7 @@ export default class AppCommand extends Base {
 	public static async create(client: Client<EventAdapter>, data: ApplicationCommandData & { guildId?: string }): Promise<AppCommand> {
 		let res: ApplicationCommandData | false
 		if (data.guildId) {
-			res = await client.discordHandler.createAppCommand(data.application_id!, data.guildId,  data);
+			res = await client.discordHandler.createAppCommand(data.application_id!, data.guildId, data);
 			delete data.guildId;
 		} else {
 			res = await client.discordHandler.createAppGlobalCommand(data.application_id!, data);

@@ -124,7 +124,7 @@ class DiscordRequestHandler extends RequestHandler {
 	public async editChannelPermission(
 		channelId: string,
 		overwriteId: string,
-		o: {allow: number, deny: number, type: "member" | "role" }
+		o: { allow: number, deny: number, type: "member" | "role" }
 	): Promise<boolean> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.channel_permission(channelId, overwriteId),
@@ -173,12 +173,12 @@ class DiscordRequestHandler extends RequestHandler {
 			Endpoints.channel_invites(channelId),
 			'GET',
 			opts ? {
-					max_age: opts.maxAge,
-					max_uses: opts.maxUses,
-					temporary: opts.temporary,
-					unique: opts.unique,
-					target_user: opts.targetUser,
-					target_user_type: opts.targetUserType,
+				max_age: opts.maxAge,
+				max_uses: opts.maxUses,
+				temporary: opts.temporary,
+				unique: opts.unique,
+				target_user: opts.targetUser,
+				target_user_type: opts.targetUserType,
 			} : {}
 		);
 		return res.json();
@@ -553,10 +553,10 @@ class DiscordRequestHandler extends RequestHandler {
 	): Promise<ApplicationCommandData | false> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.applicationCommandGuild(id, guild),
-			'POST', 
+			'POST',
 			command
 		)
-		
+
 		if (!res.ok) {
 			return false;
 		}
@@ -646,9 +646,9 @@ class DiscordRequestHandler extends RequestHandler {
 	public async getDMChannel(id: string): Promise<ChannelData> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.getDMChannel('@me'), 'POST', {
-				recipients: [id],
-				type: 1
-			}
+			recipients: [id],
+			type: 1
+		}
 		)
 
 		return res.json()
@@ -660,14 +660,14 @@ class DiscordRequestHandler extends RequestHandler {
 		);
 
 		return res.json();
-	} 
+	}
 
 	public async banGuildMember(guildId: string, id: string, deleteMessagesDays?: number, reason?: string): Promise<boolean> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.guild_ban(guildId, id), 'PUT', {
-				reason: reason || 'No Reason Specified',
-				delete_message_days: deleteMessagesDays ?? 0
-			}
+			reason: reason || 'No Reason Specified',
+			delete_message_days: deleteMessagesDays ?? 0
+		}
 		)
 		return res.status === 200;
 	}

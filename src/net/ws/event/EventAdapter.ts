@@ -17,7 +17,7 @@ import Client from "../../../Client.ts";
 import Interaction from "../../../structures/application/Interaction.ts";
 import DMChannel from "../../../structures/channel/DMChannel.ts";
 import GroupChannel from "../../../structures/channel/GroupChannel.ts";
-import UnknownChannel,{ makeChannel } from "../../../structures/channel/UnknownChannel.ts";
+import UnknownChannel, { makeChannel } from "../../../structures/channel/UnknownChannel.ts";
 import ClientUser from "../../../structures/ClientUser.ts";
 import Emoji from "../../../structures/guild/Emoji.ts";
 import Guild from "../../../structures/guild/Guild.ts";
@@ -31,7 +31,7 @@ import TextChannel from "../../../structures/guild/TextChannel.ts";
 import VoiceChannel from "../../../structures/guild/VoiceChannel.ts";
 import Message from "../../../structures/Message.ts";
 import User from "../../../structures/User.ts";
-import type { GuildData,RoleData,VoiceState } from "../../common/Types.ts";
+import type { GuildData, RoleData, VoiceState } from "../../common/Types.ts";
 import EventPacket from "../packet/EventPacket.ts";
 import { Payload } from "../packet/Packet.ts";
 import CEventAdapter from "../../../util/client/EventAdapter.ts";
@@ -51,11 +51,11 @@ export default class EventAdapter implements IEventAdapter {
 			client.events.publish('ws', payload);
 		}
 
-		if(packet.event === 'RESUMED') {
+		if (packet.event === 'RESUMED') {
 			client.events.publish('resume');
 		}
 
-		if(packet.event === 'INTERACTION_CREATE') {
+		if (packet.event === 'INTERACTION_CREATE') {
 			const i = new Interaction(client, packet.data);
 			client.events.publish('interactionCreate', i);
 		}
@@ -80,7 +80,7 @@ export default class EventAdapter implements IEventAdapter {
 
 		if (packet.event === "CHANNEL_PINS_UPDATE") {
 			const channel: TextChannel = client.dataManager?.channels.get(packet.data.channel_id)
-			if(!channel) return // ???
+			if (!channel) return // ???
 			channel.lastPinTimestamp = Date.parse(packet.data.last_pin_timestamp);
 			client.events.publish('pinUpdate', channel, channel.lastPinTimestamp)
 		}
@@ -139,19 +139,19 @@ export default class EventAdapter implements IEventAdapter {
 			client.events.publish('messageUpdate', m, cached || null);
 		}
 
-		if(packet.event === 'MESSAGE_DELETE') {
+		if (packet.event === 'MESSAGE_DELETE') {
 			const m: Message = client.dataManager?.messages.get(packet.data.id);
 			client.dataManager?.messages.delete(packet.data.id)
 			client.events.publish('messageDelete', m)
 		}
 
-		if(packet.event === 'MESSAGE_DELETE_BULK') {
+		if (packet.event === 'MESSAGE_DELETE_BULK') {
 			const m: (Message | string)[] = packet.data.ids.map((id: string) => client.dataManager?.messages.get(id) || id);
 			packet.data.ids.map((id: string) => client.dataManager?.messages.delete(id));
 			client.events.publish('messageDeleteBulk', m); // idk if you'll like this john :^|
 		}
 
-		if(packet.event === 'MESSAGE_REACTION_ADD') {
+		if (packet.event === 'MESSAGE_REACTION_ADD') {
 			/**
 			const m: Message = client.dataManager?.messages.get(packet.data.message_id);
 			const mm: Member = client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.user_id);
@@ -168,7 +168,7 @@ export default class EventAdapter implements IEventAdapter {
 			**/
 		}
 
-		if(packet.event === 'MESSAGE_REACTION_REMOVE') {
+		if (packet.event === 'MESSAGE_REACTION_REMOVE') {
 			if (!packet.data.member) { return };
 			//const m: Message = client.dataManager?.messages.get(packet.data.message_id);
 			//const mm: Member = client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.member?.id);
@@ -176,31 +176,31 @@ export default class EventAdapter implements IEventAdapter {
 			//client.events.publish('reactionRemove', m, mm, e);
 		}
 
-		if(packet.event === 'MESSAGE_REACTION_REMOVE_ALL') {
+		if (packet.event === 'MESSAGE_REACTION_REMOVE_ALL') {
 			//const m: Message = client.dataManager?.messages.get(packet.data.message_id);
 			//client.events.publish('reactionRemoveAll', m);
 		}
 
-		if(packet.event === 'MESSAGE_REACTION_REMOVE_EMOJI') {
+		if (packet.event === 'MESSAGE_REACTION_REMOVE_EMOJI') {
 			//const m: Message = client.dataManager?.messages.get(packet.data.message_id);
 			//const mm: Member = client.dataManager?.guilds.get(packet.data.guild_id).members.get(packet.data.member.id);
 			//const e: Partial<Emoji> = new Emoji(client, packet.data)
 			//client.events.publish('reactionRemoveEmoji', m, mm, e);
 		}
 
-		if(packet.event === 'PRESENCE_UPDATE') {
+		if (packet.event === 'PRESENCE_UPDATE') {
 			const p: Presence = new Presence(packet.data);
 			client.events.publish('presenceUpdate', p);
 		}
 
-		if(packet.event === 'TYPINGS_START') {
+		if (packet.event === 'TYPINGS_START') {
 			const ch: TextChannel = client.dataManager?.channels.get(packet.data.channel_id);
 			packet.data.guild_id = ch.guild.id;
 			const m: Member = new Member(client, packet.data.member);
 			client.events.publish('typingStart', m, ch, packet.data.timestamp as number)
 		}
 
-		if(packet.event === 'USER_UPDATE') {
+		if (packet.event === 'USER_UPDATE') {
 			const user: User = new User(client, packet.data); // Should we fetch???
 			client.events.publish('userUpdate', user);
 		}
@@ -291,26 +291,26 @@ export default class EventAdapter implements IEventAdapter {
 			client.events.publish('roleDelete', role, guild);
 		}
 
-		if(packet.event === 'INVITE_CREATE') {
+		if (packet.event === 'INVITE_CREATE') {
 			client.events.publish('inviteCreate', new Invite(client, packet.data));
 		}
 
-		if(packet.event === 'INVITE_DELETE') {
+		if (packet.event === 'INVITE_DELETE') {
 			client.events.publish('inviteDelete', packet.data.guild_id, packet.data.code);
 		}
 
-		if(packet.event === 'VOICE_STATE_UPDATE') {
+		if (packet.event === 'VOICE_STATE_UPDATE') {
 			const v: VoiceState = packet.data;
 			client.events.publish('voiceStateUpdate', v);
 		}
 
-		if(packet.event === 'VOICE_SERVER_UPDATE') {
- 			const v: {token: string, guild_id: string, endpoint: string} = packet.data;
+		if (packet.event === 'VOICE_SERVER_UPDATE') {
+			const v: { token: string, guild_id: string, endpoint: string } = packet.data;
 			client.events.publish('voiceRegionUpdate', v);
 		}
 
-		if(packet.event === "WEBHOOKS_UPDATE") {
-			const w: {guild_id: string, channel_id: string} = packet.data;
+		if (packet.event === "WEBHOOKS_UPDATE") {
+			const w: { guild_id: string, channel_id: string } = packet.data;
 			client.events.publish('webhookUpdate', w);
 		}
 	}

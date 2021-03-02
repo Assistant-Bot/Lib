@@ -20,98 +20,98 @@ import type Permission from './permission/Permission.ts';
 import type { PermissionResolvable } from './permission/PermissionManager.ts';
 
 export type CommandEvents =
-    | 'execute'
-    | 'error'
-    | 'cooldown'
-    | 'permission'
-    | 'nopermission';
+	| 'execute'
+	| 'error'
+	| 'cooldown'
+	| 'permission'
+	| 'nopermission';
 
 export interface CommandArgOptions {
-    api: 1 | 2 | 3;
-    // Whether or not to match args wrapped in qoutations as a single argument "anything between qoutations"
-    wrap: boolean; // api 2 and 3 only
-    /**
-     * @var matches
-     * @description [API 3] A test to check for arguments, if this is true, the command is allowed.
-     */
-    matches?: RegExp;
-    /**
-     * @var resolve
-     * @description [API 3] Resolve arguments based on custom regex.
-     */
-    resolve?: RegExp;
-    permissions?: [number, PermissionResolvable][]; // api 3 only
+	api: 1 | 2 | 3;
+	// Whether or not to match args wrapped in qoutations as a single argument "anything between qoutations"
+	wrap: boolean; // api 2 and 3 only
+	/**
+	 * @var matches
+	 * @description [API 3] A test to check for arguments, if this is true, the command is allowed.
+	 */
+	matches?: RegExp;
+	/**
+	 * @var resolve
+	 * @description [API 3] Resolve arguments based on custom regex.
+	 */
+	resolve?: RegExp;
+	permissions?: [number, PermissionResolvable][]; // api 3 only
 }
 
 export interface CommandOptions {
-    cooldown: number;
-    disabledEvents: CommandEvents[];
-    argOptions: CommandArgOptions;
+	cooldown: number;
+	disabledEvents: CommandEvents[];
+	argOptions: CommandArgOptions;
 }
 
 abstract class Command {
-    public name: string;
-    public label: string;
-    public description: string;
-    public commandOpts: CommandOptions;
-    public aliases: string[];
-    public usage: string[];
-    public permissions: Array<string | number | Permission>;
-    public module: string;
+	public name: string;
+	public label: string;
+	public description: string;
+	public commandOpts: CommandOptions;
+	public aliases: string[];
+	public usage: string[];
+	public permissions: Array<string | number | Permission>;
+	public module: string;
 
-    public constructor(name: string, label: string, description: string, options: Partial<CommandOptions> = {}) {
-        this.name = name;
-        this.label = label;
-        this.description = description;
-        this.commandOpts = Object.assign({
+	public constructor(name: string, label: string, description: string, options: Partial<CommandOptions> = {}) {
+		this.name = name;
+		this.label = label;
+		this.description = description;
+		this.commandOpts = Object.assign({
 			cooldown: 0,
 			disabledEvents: [],
 			argOptions: {
 				api: 3,
 				wrap: false
-		   }
+			}
 		}, options);
-        this.aliases = [];
-        this.usage = [];
-        this.permissions = [];
-        this.module = 'Generic Module';
-    }
+		this.aliases = [];
+		this.usage = [];
+		this.permissions = [];
+		this.module = 'Generic Module';
+	}
 
-    /**
-     * Called when the command is executed.
-     */
-    public abstract onRun(client: Client<EventAdapter>, msg: Message, args: string[], additional?: any): Promise<void>;
+	/**
+	 * Called when the command is executed.
+	 */
+	public abstract onRun(client: Client<EventAdapter>, msg: Message, args: string[], additional?: any): Promise<void>;
 
-    /**
-     * Called when execution fails
-     *
-     * If this errors, it is supressed, and the command is disabled.
-     */
-    public async onError(error: Error, client: Client<EventAdapter>, msg: Message, additional?: any): Promise<void> { }
+	/**
+	 * Called when execution fails
+	 *
+	 * If this errors, it is supressed, and the command is disabled.
+	 */
+	public async onError(error: Error, client: Client<EventAdapter>, msg: Message, additional?: any): Promise<void> { }
 
-    /**
-     * Called when a user is on cooldown.
-     */
-    public async onCooldown(client: Client<EventAdapter>, msg: Message, timeLeft: number, additional?: any): Promise<void> { }
+	/**
+	 * Called when a user is on cooldown.
+	 */
+	public async onCooldown(client: Client<EventAdapter>, msg: Message, timeLeft: number, additional?: any): Promise<void> { }
 
-    /**
-     * Called if the user is missing permission.
-     */
-    public async onMissingPermission(client: Client<EventAdapter>, msg: Message, permission: Permission, additional?: any): Promise<void> {
-    }
+	/**
+	 * Called if the user is missing permission.
+	 */
+	public async onMissingPermission(client: Client<EventAdapter>, msg: Message, permission: Permission, additional?: any): Promise<void> {
+	}
 
-    /**
-     * Gets the argument api version.
-     */
-    public get argumentApi(): number {
-        return this.commandOpts.argOptions.api;
-    }
+	/**
+	 * Gets the argument api version.
+	 */
+	public get argumentApi(): number {
+		return this.commandOpts.argOptions.api;
+	}
 
-    /**
-     * Gets an array of argument permissions.
-     */
-    public get argPermissions(): [number, PermissionResolvable][] {
-        return this.commandOpts.argOptions.permissions || [];
-    }
+	/**
+	 * Gets an array of argument permissions.
+	 */
+	public get argPermissions(): [number, PermissionResolvable][] {
+		return this.commandOpts.argOptions.permissions || [];
+	}
 }
 export default Command;

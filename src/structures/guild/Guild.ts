@@ -223,7 +223,7 @@ export default class Guild extends Base {
 	}
 
 	public async editChannel(id: GuildChannel | string, o: ChannelEditOption): Promise<GuildChannel> {
-		const res: ChannelData = await this.request.editChannel(id instanceof GuildChannel ? id.id: id, o);
+		const res: ChannelData = await this.request.editChannel(id instanceof GuildChannel ? id.id : id, o);
 		return new GuildChannel(this.client, res);
 	}
 
@@ -231,7 +231,7 @@ export default class Guild extends Base {
 		return await this.request.editChannelPosition(this.id, id instanceof GuildChannel ? id.id : id, pos);
 	}
 
-	public async editChannelPermission(id: GuildChannel | string, overwriteID: string, o: {allow: number, deny: number, type: "member" | "role" }) {
+	public async editChannelPermission(id: GuildChannel | string, overwriteID: string, o: { allow: number, deny: number, type: "member" | "role" }) {
 		return await this.request.editChannelPermission(id instanceof GuildChannel ? id.id : id, overwriteID, o)
 	}
 
@@ -259,7 +259,7 @@ export default class Guild extends Base {
 
 	public async getBans(filter?: (data: BanData) => Promise<boolean> | boolean): Promise<BanData[]> {
 		let res: BanData[] = await this.request.getGuildBans(this.id);
-		if(filter) {
+		if (filter) {
 			return res.filter(d => filter(d));
 		} else {
 			return res;
@@ -267,7 +267,7 @@ export default class Guild extends Base {
 	}
 
 	public async banMember(id: Member | string, deleteMessagesDays?: number, reason?: string): Promise<boolean> {
-		if(!deleteMessagesDays || (deleteMessagesDays < 0 || deleteMessagesDays > 7)) deleteMessagesDays = 0;
+		if (!deleteMessagesDays || (deleteMessagesDays < 0 || deleteMessagesDays > 7)) deleteMessagesDays = 0;
 		return await this.request.banGuildMember(this.id, id instanceof Member ? id.id : id, deleteMessagesDays, reason)
 	}
 

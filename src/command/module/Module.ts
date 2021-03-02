@@ -20,43 +20,43 @@ export type GenericFunction = (...args: any[]) => any;
 export type Event = [string, GenericFunction];
 
 export default class Module {
-    public name: string;
-    public commands: Command[];
-    public permissions: Permission[];
+	public name: string;
+	public commands: Command[];
+	public permissions: Permission[];
 	public enabled: boolean;
 	// to-do Refactor
-    public events: Event[];
+	public events: Event[];
 
-    public constructor(name: string, commands: Command[], permissions: Permission[] = [], enabled: boolean = true) {
-        this.name = name;
-        this.commands = commands;
-        this.permissions = permissions;
-        this.enabled = enabled;
-        this.events = [];
-    }
+	public constructor(name: string, commands: Command[], permissions: Permission[] = [], enabled: boolean = true) {
+		this.name = name;
+		this.commands = commands;
+		this.permissions = permissions;
+		this.enabled = enabled;
+		this.events = [];
+	}
 
-    public registerCommand(command: Command): boolean {
-        if (this.commands.filter(c => c.label === command.label)[0]) return false;
-        // forcefully set the module
-        command.module = this.name;
-        this.commands.push(command);
-        return true;
-    }
+	public registerCommand(command: Command): boolean {
+		if (this.commands.filter(c => c.label === command.label)[0]) return false;
+		// forcefully set the module
+		command.module = this.name;
+		this.commands.push(command);
+		return true;
+	}
 
-    public unregisterCommand(command: Command): boolean {
-        for (let i = 0; i < this.commands.length; i++) {
-            const cmd: Command = this.commands[i];
+	public unregisterCommand(command: Command): boolean {
+		for (let i = 0; i < this.commands.length; i++) {
+			const cmd: Command = this.commands[i];
 
-            if (cmd.label == command.label) {
-                this.commands.splice(i, 1);
-                return true;
-            }
-        }
+			if (cmd.label == command.label) {
+				this.commands.splice(i, 1);
+				return true;
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    public hasCommand(command: Command): boolean {
-        return !!this.commands.filter(c => c.label === command.label)[0];
-    }
+	public hasCommand(command: Command): boolean {
+		return !!this.commands.filter(c => c.label === command.label)[0];
+	}
 }

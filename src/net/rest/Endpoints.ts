@@ -97,9 +97,9 @@ export default class Endpoints {
 		return this.guild(id) + "/roles";
 	}
 
-  	public static guild_role(guildId: string, roleId: string): string {
-    	return this.guild_roles(guildId) + "/" + roleId;
-  	}
+	public static guild_role(guildId: string, roleId: string): string {
+		return this.guild_roles(guildId) + "/" + roleId;
+	}
 
 	public static guild_emojis(id: string): string {
 		return this.guild(id) + '/emojis';
@@ -147,7 +147,7 @@ export default class Endpoints {
 
 	public static guild_bans(id: string) {
 		return this.guild(id) + '/bans';
-	} 
+	}
 
 	public static guild_ban(id: string, userId: string) {
 		return this.guild_bans(id) + "/" + userId;

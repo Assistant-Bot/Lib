@@ -46,7 +46,7 @@ export default class LoginPacket extends Packet {
 				browser: this.#user ? 'Firefox' : 'Assistant-v3',
 				device: this.#user ? '' : 'Assistant-v3'
 			},
-			shards: this.shards ? new Array(this.shards).map((_, i) => [i, this.shards]): undefined
+			shards: this.shards ? new Array(this.shards).map((_, i) => [i, this.shards]) : undefined
 		}
 	}
 }

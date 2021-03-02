@@ -52,7 +52,7 @@ export default class User extends Base {
 	 * @param content Message Content
 	 */
 	public async send(content: MessageContent): Promise<Message> {
-		if(this.#dm) {
+		if (this.#dm) {
 			return this.#dm.send(content);
 		} else {
 			return (await this.getDMChannel()).send(content);

@@ -63,7 +63,7 @@ export default class RuntimeStore<K extends string, V extends Base> extends Data
 	 * Get the structure from the store.
 	 * @param id
 	 */
-	public get(id: K): V | null  {
+	public get(id: K): V | null {
 		return this.#dataSet.get(id) || null;
 	}
 

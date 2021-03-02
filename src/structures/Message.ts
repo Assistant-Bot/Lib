@@ -89,7 +89,7 @@ export default class Message extends Base {
 			this.embed = data.embed;
 		}
 
-		if(data.reactions) {
+		if (data.reactions) {
 			this.reactions = data.reactions;
 		}
 

@@ -96,12 +96,12 @@ export default class RequestHandler {
 		if (body && (body.$params || Object.keys(body.$params ?? {}).length)) {
 			// check instance
 			if (!(body.$params instanceof Object)) {
-				throw  "$params must be an instance of IParams: { [key: string]: string, value: string };";
+				throw "$params must be an instance of IParams: { [key: string]: string, value: string };";
 			}
 
 			for (let param of Object.keys(body.$params)) {
 				const value: any = body.$params[param];
-				if(!value) continue;
+				if (!value) continue;
 				const symbol: '?' | '&' = url.includes('?') ? '&' : '?';
 				url += `${symbol}${param}=${encodeURIComponent(JSON.stringify(value)?.replace(/("|')+/igm, ''))}`;
 			}

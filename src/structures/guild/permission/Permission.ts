@@ -233,7 +233,7 @@ export default class Permission {
 	public get deny(): Permission {
 		let perm = 0;
 		(Object.values(PermissionBits) as PermissionBits[]).map(bit => {
-			if((bit & (this.allow.parse() as number)) !== (bit as number)) {
+			if ((bit & (this.allow.parse() as number)) !== (bit as number)) {
 				perm |= bit
 			}
 		});

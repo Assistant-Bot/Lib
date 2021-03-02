@@ -42,7 +42,7 @@ export default abstract class DataStore<K, V> {
 	/**
 	 * Add the structure from the store
 	 */
-	public abstract add(idOrData: K|Payload): V | Promise<V | null> | null;
+	public abstract add(idOrData: K | Payload): V | Promise<V | null> | null;
 
 	/**
 	 * Whether or not the id exists in the store.

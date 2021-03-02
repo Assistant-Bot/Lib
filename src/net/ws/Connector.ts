@@ -135,7 +135,7 @@ export abstract class Connector extends EventAdapter {
 	 * Called when the websocket recieves a payload from discord.
 	 * @param p
 	 */
-	public wsPacket(_p: Payload): any {};
+	public wsPacket(_p: Payload): any { };
 
 	/**
 	 * Called when the websocket encounters an error.

@@ -201,7 +201,7 @@ export default class TextChannel extends GuildChannel {
 	public async getReactions(
 		limit: number = 25,
 		params?: { around?: number; before?: number; after?: number }
-	) {}
+	) { }
 
 	/**
 	 * Used to delete all reactions from a message

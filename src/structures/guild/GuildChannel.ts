@@ -44,7 +44,7 @@ export default class GuildChannel extends Channel {
 		this.permissions = data.permission_overwrites ?
 			data.permission_overwrites.map(p => {
 				return Permission.from(p.allow)
-		}) : [];
+			}) : [];
 	}
 
 	/**
@@ -91,7 +91,7 @@ export default class GuildChannel extends Channel {
 	 * @param o Edit Permission Options
 	 * @returns
 	 */
-	public async editPermission(overwriteID: string, o: {allow: number, deny: number, type: "member" | "role" }): Promise<boolean> {
+	public async editPermission(overwriteID: string, o: { allow: number, deny: number, type: "member" | "role" }): Promise<boolean> {
 		return await this.guild.editChannelPermission(this, overwriteID, o)
 	}
 
