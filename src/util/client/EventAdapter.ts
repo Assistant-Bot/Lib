@@ -84,4 +84,10 @@ export default interface EventAdapter {
 	 *     }
 	 */
 	publish(name: string, ...data: any[]): any;
+
+	/**
+	 * Listen Until Cancelled
+	 * This is used for Reaction Collectors, however implementation is not required
+	 */
+	luc?: (name: string, listener: (cancel: boolean, ...args: any) => any) => any;
 }

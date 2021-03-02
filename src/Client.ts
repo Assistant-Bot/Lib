@@ -120,6 +120,7 @@ export interface ClientOptions {
 		 */
 		useDiscord: boolean;
 	},
+	events?: EventAdapter;
 	rest?: RequestHandlerOptions;
 	intents?: IntentTypes[] | Number;
 }
@@ -169,12 +170,14 @@ export default class Client<IEvent extends EventAdapter = GenericEventsAdapter> 
 			sharding: {
 				useDiscord: false
 			},
-			intents: Intents.defaults().parse()
+			intents: Intents.defaults().parse(),
+			events: new GenericEventsAdapter()
 		}
 
 		this.options = Object.assign(defaults, opts);
 		this.application = null;
 		this.intents = (this.options.intents instanceof Array) ? new Intents(this.options.intents) : Intents.from(this.options.intents as number);
+		this.events = this.options.events as IEvent || new GenericEventsAdapter();
 		Collection.MAX_SIZE = this.options.cache.subLimit || 300;
 
 		if (customStore) {
