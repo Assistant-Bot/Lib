@@ -1,12 +1,12 @@
 /**
  * Data structure to hold secrets
- * 
+ *
  * Items in the store are hashed so if accidently leaked,
  * they are harder to unhash
  */
 export default class EnvStore extends Map {
 	public salt: number;
-	
+
 	public constructor() {
 		super();
 		this.salt = (Math.random() * 500);

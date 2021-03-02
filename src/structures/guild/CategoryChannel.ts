@@ -20,7 +20,7 @@ export default class CategoryChannel extends GuildChannel {
 	/**
 	 * Children of a category channel
 	 */
-	public get children(): GuildChannel[] { 
+	public get children(): GuildChannel[] {
 		const children: GuildChannel[] = []
 		const channels = this.guild.channels;
 		for(const channel of channels) {

@@ -43,7 +43,7 @@ export default abstract class Base {
 	public abstract update(data: AnyStructureData): any;
 
 	/**
-	 * Gets the object to a string. (should include parents?)
+	 * Gets the object as a string.
 	 */
 	public toString(): string {
 		return Deno.inspect(this, { depth: 3, colors: false });

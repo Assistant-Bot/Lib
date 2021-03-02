@@ -16,6 +16,7 @@
 import { EventEmitter, GenericFunction, WrappedFunction } from 'https://deno.land/std@0.85.0/node/events.ts';
 import DataManager from "./data/DataManager.ts";
 import type DataStore from "./data/DataStore.ts";
+import type RuntimeStore from "./data/runtime/RuntimeStore.ts";
 import type { GatewayResponseBot, PresenceOptions, RoleData, VoiceState } from "./net/common/Types.ts";
 import DiscordRequestHandler from "./net/rest/DiscordRequestHandler.ts";
 import Endpoints, { GATEWAY_URL } from "./net/rest/Endpoints.ts";
@@ -137,6 +138,7 @@ export interface ClientOptions {
 	cache: {
 		/**
 		 * Should objects be cached in memory?
+		 * @deprecated
 		 */
 		memory?: boolean;
 
@@ -153,12 +155,14 @@ export interface ClientOptions {
 
 		/**
 		 * The limit of cached structures in a single store.
+		 * @deprecated - use hard limits instead
 		 */
 		limit?: number;
 
 		/**
 		 * The maximum limit of children structures in a single structure
 		 * IE: Guild#roles, Member#roles, Guild#emojis
+		 * @deprecated
 		 */
 		subLimit?: number;
 	};
@@ -229,7 +233,7 @@ export default class Client extends EventEmitter {
 			this.#dataManager = customStore;
 		}
 
-		Collection.MAX_SIZE = this.options.cache.limit ?? Infinity // Add this, IDK why but guild.members doesnt work w/out it
+		Collection.MAX_SIZE = this.options.cache.limit ?? Infinity;
 	}
 
 	/**

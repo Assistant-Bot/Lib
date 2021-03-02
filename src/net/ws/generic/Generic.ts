@@ -27,7 +27,7 @@ export default class Generic extends Connector {
 		}
 
 		if (!client.dataManager) {
-			client.dataManager = new RuntimeManager(client.options.cache.limit);
+			client.dataManager = new RuntimeManager(client.options.cache?.limit);
 		}
 	}
 }

@@ -25,7 +25,7 @@ This framework is currently being developed and will be used for **Assistant Bot
 	- Create custom REST API Handlers
 	- Create custom structures
 	- Create custom collectors
-	- Create custom caching environments (do I hear Mongo and Redis?)
+	- Create custom caching environments
 
 #### Special Code Examples
 
@@ -76,7 +76,7 @@ const client = new Client({
 	}
 }, new RuntimeManager(MAX_LIMIT));
 ```
-
+<!--
 Use the advanced CLI to create project boilerplates in mere milliseconds
 ```ps1
 deno install -A -f -n ast https://raw.githubusercontent.com/Assistant-Bot/Lib/dev/src/util/cli.ts
@@ -84,7 +84,7 @@ deno install -A -f -n ast https://raw.githubusercontent.com/Assistant-Bot/Lib/de
 # Then use the following to create a boilerplate
 ast gen MyEpicBot TOKEN
 ```
-
+-->
 Use the advanced Command and Module API without writing any command handling code from scratch!
 ```ts
 const client = new Client();
@@ -113,21 +113,4 @@ class AdminCommand extends Command {
 
 const commandHandler = new CommandHandler(client, {prefix: "!"});
 commandHandler.registerCommand(new AdminCommand());
-```
-
-Secure environment variable storage!
-```ts
-const env = new EnvStore();
-env.set("API_KEY", "12345678910");
-// !eval env
-// Oh no! I evalled my env variable!
-// Don't fear it's hashed in a UInt8Array 
-
-// Also!
-const env2 = new EnvStore();
-env2.set("API_KEY", "12345678910");
-console.log(env.get("API_KEY") === env2.get("API_KEY"));
-// Returns false!
-// New salts (numbers used to hash) 
-// are made everyone EnvStore instance!
 ```

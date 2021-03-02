@@ -30,7 +30,7 @@ export default class MessageCollector extends Collector<Message> {
 	}
 
 	protected async listener(): Promise<Message> {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve, _reject) => {
 			let lstnr = (msg: Message) => {
 				if (this.#filter && this.#filter(msg)) {
 					this.#client.removeListener('message', lstnr);

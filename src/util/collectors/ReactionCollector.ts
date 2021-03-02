@@ -9,7 +9,7 @@ export type ReactionFilterType = (msg: ReactionData) => Promise<boolean> | boole
 
 export default class ReactionCollector extends Collector<ReactionData> {
 	#client: Client;
-	#filter?: ReactionFilterType;	
+	#filter?: ReactionFilterType
 
 	public constructor(client: Client, opts?: CollectorOptions, filter?: ReactionFilterType) {
 		super(client, opts || {});
@@ -18,7 +18,7 @@ export default class ReactionCollector extends Collector<ReactionData> {
 	}
 
 	protected async listener(): Promise<ReactionData> {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve, _reject) => {
 			let lstnr = (msg: Message | Partial<Message>, member: Member | Partial<Member>, emoji: Emoji | Partial<Emoji>) => {
 				this.#client.removeListener('reactionAdd', lstnr);
 				if (this.#filter) {
