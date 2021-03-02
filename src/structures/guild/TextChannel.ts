@@ -19,6 +19,7 @@ import type {
 	MessageConstructorData,
 	MessageData
 } from '../../net/common/Types.ts';
+import EventAdapter from "../../util/client/EventAdapter.ts";
 import Webhook from "../channel/Webhook.ts";
 import Message, { MessageContent } from '../Message.ts';
 import GuildChannel from './GuildChannel.ts';
@@ -33,7 +34,7 @@ export default class TextChannel extends GuildChannel {
 	/** Rate limit of the channel */
 	public rateLimitPerUser?: number;
 
-	public constructor(client: Client, data: ChannelData) {
+	public constructor(client: Client<EventAdapter>, data: ChannelData) {
 		super(client, data);
 		super.update(data);
 		this.update(data);

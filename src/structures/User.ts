@@ -15,6 +15,7 @@
  */
 import type Client from "../Client.ts";
 import type { UserData } from "../net/common/Types.ts";
+import EventAdapter from "../util/client/EventAdapter.ts";
 import Base from "./Base.ts";
 import DMChannel from "./channel/DMChannel.ts";
 import Message, { MessageContent } from "./Message.ts";
@@ -33,7 +34,7 @@ export default class User extends Base {
 	/** DMs of the user */
 	#dm?: DMChannel;
 
-	public constructor(client: Client, data: UserData) {
+	public constructor(client: Client<EventAdapter>, data: UserData) {
 		super(client, data.id);
 		this.update(data);
 	}

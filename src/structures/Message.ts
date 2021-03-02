@@ -22,6 +22,7 @@ import GuildChannel from "./guild/GuildChannel.ts";
 import User from "./User.ts";
 import Emoji from "./guild/Emoji.ts";
 import Member from "./guild/Member.ts";
+import EventAdapter from "../util/client/EventAdapter.ts";
 
 export type MessageContent = string | {
 	embed?: EmbedData[];
@@ -62,7 +63,7 @@ export default class Message extends Base {
 	/** Type of message */
 	public type!: MessageType;
 
-	public constructor(client: Client, data: MessageData) {
+	public constructor(client: Client<EventAdapter>, data: MessageData) {
 		super(client, data.id);
 		this.update(data);
 	}

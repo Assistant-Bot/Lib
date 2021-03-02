@@ -13,10 +13,11 @@
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
-import type Module from '../module/Module.ts';
+import type Module from './module/Module.ts';
 import type { CommandArgOptions } from './Command.ts';
 import type Command from './Command.ts';
 import type Permission from './permission/Permission.ts';
+import type EventAdapter from "../util/client/EventAdapter.ts";
 import Message from '../structures/Message.ts';
 import PermissionManager, { PermissionResolvable, PermissionTestResolvable } from './permission/PermissionManager.ts';
 import Client from "../Client.ts";
@@ -37,12 +38,12 @@ export interface CommandHandlerOptions {
  */
 export default class CommandHandler {
 	public prefix: PrefixResolveFunction | string;
-	public client: Client;
+	public client: Client<EventAdapter>;
 	public options: CommandHandlerOptions;
 	#floatingCommands: Command[];
 	#modules: Module[];
 
-	public constructor(client: Client, options: CommandHandlerOptions) {
+	public constructor(client: Client<EventAdapter>, options: CommandHandlerOptions) {
 		const defaults: CommandHandlerOptions = CommandHandler.getDefaults();
 		this.#modules = [];
 		this.#floatingCommands = [];
@@ -144,7 +145,7 @@ export default class CommandHandler {
 		}
 	}
 
-	private async capsulateError(command: Command, error: Error, client: Client, msg: Message) {
+	private async capsulateError(command: Command, error: Error, client: Client<EventAdapter>, msg: Message) {
 		try {
 			await command.onError(error, client, msg);
 		} catch {

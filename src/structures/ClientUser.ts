@@ -15,13 +15,14 @@
  */
 import type Client from "../Client.ts";
 import type { UserData } from "../net/common/Types.ts";
+import type EventAdapter from "../util/client/EventAdapter.ts";
 import User from "./User.ts";
 
 export default class ClientUser extends User {
 	public verified!: boolean;
 	public email!: string;
 
-	public constructor(client: Client, data: UserData) {
+	public constructor(client: Client<EventAdapter>, data: UserData) {
 		super(client, data);
 		super.update(data);
 		this.update(data);

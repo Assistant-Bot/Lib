@@ -29,6 +29,7 @@ import VoiceChannel from "./VoiceChannel.ts";
 import Invite from './Invite.ts';
 import User from "../User.ts";
 import Permission from "./permission/Permission.ts";
+import EventAdapter from "../../util/client/EventAdapter.ts";
 
 export default class Guild extends Base {
 	public name!: string;
@@ -71,7 +72,7 @@ export default class Guild extends Base {
 	// for reference
 	#boundChannels: Set<string>;
 
-	public constructor(client: Client, data: GuildData) {
+	public constructor(client: Client<EventAdapter>, data: GuildData) {
 		super(client, data.id);
 		this.members = new Collection();
 		this.roles = new Collection();

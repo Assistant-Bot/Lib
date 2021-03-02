@@ -15,6 +15,7 @@
  */
 import Client from "../Client.ts";
 import type Message from '../structures/Message.ts';
+import type EventAdapter from "../util/client/EventAdapter.ts";
 import type Permission from './permission/Permission.ts';
 import type { PermissionResolvable } from './permission/PermissionManager.ts';
 
@@ -79,24 +80,24 @@ abstract class Command {
     /**
      * Called when the command is executed.
      */
-    public abstract onRun(client: Client, msg: Message, args: string[], additional?: any): Promise<void>;
+    public abstract onRun(client: Client<EventAdapter>, msg: Message, args: string[], additional?: any): Promise<void>;
 
     /**
      * Called when execution fails
      *
      * If this errors, it is supressed, and the command is disabled.
      */
-    public async onError(error: Error, client: Client, msg: Message, additional?: any): Promise<void> { }
+    public async onError(error: Error, client: Client<EventAdapter>, msg: Message, additional?: any): Promise<void> { }
 
     /**
      * Called when a user is on cooldown.
      */
-    public async onCooldown(client: Client, msg: Message, timeLeft: number, additional?: any): Promise<void> { }
+    public async onCooldown(client: Client<EventAdapter>, msg: Message, timeLeft: number, additional?: any): Promise<void> { }
 
     /**
      * Called if the user is missing permission.
      */
-    public async onMissingPermission(client: Client, msg: Message, permission: Permission, additional?: any): Promise<void> {
+    public async onMissingPermission(client: Client<EventAdapter>, msg: Message, permission: Permission, additional?: any): Promise<void> {
     }
 
     /**

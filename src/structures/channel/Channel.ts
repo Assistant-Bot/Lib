@@ -15,12 +15,13 @@
  */
 import type Client from "../../Client.ts";
 import type { ChannelData, ChannelTypes, ChannelTypesNumeric } from "../../net/common/Types.ts";
+import EventAdapter from "../../util/client/EventAdapter.ts";
 import Base from '../Base.ts';
 
 abstract class Channel extends Base {
 	public typeNumeric!: ChannelTypesNumeric;
 
-	public constructor(client: Client, data: ChannelData) {
+	public constructor(client: Client<EventAdapter>, data: ChannelData) {
 		super(client, data.id);
 		this.update(data);
 	}

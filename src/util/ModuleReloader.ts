@@ -1,13 +1,13 @@
 import Client from "../Client.ts";
 
 export default class ModuleReloader {
-	private client: Client;
+	private client: Client<EventAdapter>;
 	private dir?: string; // Optionally only filter one directory
 	private main: string;
 
 	private static authed: boolean = false;
 
-	public constructor(client: Client, dir: string = Deno.cwd(), main: string) {
+	public constructor(client: Client<EventAdapter>, dir: string = Deno.cwd(), main: string) {
 		this.client = client;
 		this.dir = dir;
 		this.main = main;

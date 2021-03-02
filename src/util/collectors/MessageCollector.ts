@@ -16,31 +16,36 @@
 import Message from "../../structures/Message.ts";
 import Client from "../../Client.ts";
 import Collector, { CollectorOptions } from "./Collector.ts";
+import EventAdapter from "../client/EventAdapter.ts";
 
 export type MessageFilterType = (msg: Message) => Promise<boolean> | boolean;
 
 export default class MessageCollector extends Collector<Message> {
-	#client: Client;
+	#client: Client<EventAdapter>;
 	#filter?: MessageFilterType;
 
-	public constructor(client: Client, opts?: CollectorOptions, filter?: MessageFilterType) {
+	public constructor(client: Client<EventAdapter>, opts?: CollectorOptions, filter?: MessageFilterType) {
 		super(client, opts || {});
 		this.#client = client;
 		this.#filter = filter;
 	}
 
 	protected async listener(): Promise<Message> {
-		return new Promise((resolve, _reject) => {
-			let lstnr = (msg: Message) => {
+		return new Promise((resolve, reject) => {
+			let lstnr = (cancel: boolean, msg: Message) => {
 				if (this.#filter && this.#filter(msg)) {
-					this.#client.removeListener('message', lstnr);
+					cancel = true;
 					resolve(msg);
 				} else if (!this.#filter) {
-					this.#client.removeListener('message', lstnr);
+					cancel = true;
 					resolve(msg);
 				}
 			}
-			this.#client.on('message', lstnr);
+			if (this.client.events.luc) {
+				this.#client.events.luc?.('message', lstnr);
+			} else {
+				reject(new Error("Event adapter does not support cancellable listeners."));
+			}
 		});
 	}
 }

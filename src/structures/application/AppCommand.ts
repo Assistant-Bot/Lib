@@ -36,7 +36,7 @@ export default class AppCommand extends Base {
 	public options!: ApplicationCommandOption[];
 	public application!: string;
 
-	public constructor(client: Client, data: ApplicationCommandData) {
+	public constructor(client: Client<EventAdapter>, data: ApplicationCommandData) {
 		super(client, data.id!);
 		this.update(data);
 	}
@@ -87,7 +87,7 @@ export default class AppCommand extends Base {
 	 * @param client
 	 * @param data
 	 */
-	public static async create(client: Client, data: ApplicationCommandData & { guildId?: string }): Promise<AppCommand> {
+	public static async create(client: Client<EventAdapter>, data: ApplicationCommandData & { guildId?: string }): Promise<AppCommand> {
 		let res: ApplicationCommandData | false
 		if (data.guildId) {
 			res = await client.discordHandler.createAppCommand(data.application_id!, data.guildId,  data);

@@ -13,8 +13,8 @@
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
-import type Command from '../command/Command.ts';
-import type Permission from '../command/permission/Permission.ts';
+import type Command from '../Command.ts';
+import type Permission from '../permission/Permission.ts';
 
 export type GenericFunction = (...args: any[]) => any;
 export type Event = [string, GenericFunction];

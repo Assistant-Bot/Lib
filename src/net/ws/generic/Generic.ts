@@ -13,6 +13,7 @@
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
+import type EventAdapter from "../../../util/client/EventAdapter.ts";
 import Client from "../../../Client.ts";
 import RuntimeManager from "../../../data/runtime/RuntimeManager.ts";
 import { Connector } from "../Connector.ts";
@@ -20,7 +21,7 @@ import { Connector } from "../Connector.ts";
 export default class Generic extends Connector {
 	public sequence: number = 0;
 
-	public constructor(client: Client, gateway: string) {
+	public constructor(client: Client<EventAdapter>, gateway: string) {
 		super(client, gateway);
 		if (client.shardMode !== 'Nodes') {
 			throw new Error('Generic connector does not support any mode other than "Nodes"');
