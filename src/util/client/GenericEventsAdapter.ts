@@ -219,4 +219,16 @@ export default class GenericEventsAdapter extends EventEmitter implements EventA
 	public publish(name: string, ...data: any[]): void {
 		super.emit(name, ...data);
 	}
+
+	public luc(name: string, listener: (cancel: boolean, ...args: any) => any): this {
+		let cancel: boolean = false;
+		let listnr = (...args: any[]) => {
+			listener(cancel, ...args);
+
+			if (cancel) {
+				this.removeListener(name, listnr);
+			}
+		}
+		return super.on(name, listnr);
+	}
 }
