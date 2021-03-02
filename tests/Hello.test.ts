@@ -43,7 +43,7 @@ Deno.test({
 		await bot.connect(Deno.env.get('DISCORD_TOKEN') || "");
 
 		await new Promise((resolve, reject) => {
-			bot.once('ready', async (id: string) => {
+			bot.events.once('ready', async (id: string) => {
 				await bot.disconnect();
 				assertEquals<number>(id.length, 32, "Invalid session id. (Discord might be offline!)")
 				assertEquals(typeof id, "string", "Could not find bot session id.");
