@@ -88,6 +88,15 @@ export default interface EventAdapter {
 	/**
 	 * Listen Until Cancelled
 	 * This is used for Reaction Collectors, however implementation is not required
+	 *
+	 * Usage:
+	 *
+	 *     const adapter: EventAdapter = new Adapter();
+	 *     adapter.luc("message", (cancel: boolean, message: Message) => {
+	 *       if (message.author.id === "123456789009876321") {
+	 *         cancel = true;
+	 *       }
+	 *     });
 	 */
 	luc?: (name: string, listener: (cancel: boolean, ...args: any) => any) => any;
 }
