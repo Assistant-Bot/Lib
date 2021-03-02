@@ -13,7 +13,7 @@
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
-import type Module from '../module/Module.ts';
+import type Module from './module/Module.ts';
 import type { CommandArgOptions } from './Command.ts';
 import type Command from './Command.ts';
 import type Permission from './permission/Permission.ts';

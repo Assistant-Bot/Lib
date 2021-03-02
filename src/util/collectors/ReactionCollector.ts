@@ -20,7 +20,7 @@ export default class ReactionCollector extends Collector<ReactionData> {
 	protected async listener(): Promise<ReactionData> {
 		return new Promise((resolve, _reject) => {
 			let lstnr = (msg: Message | Partial<Message>, member: Member | Partial<Member>, emoji: Emoji | Partial<Emoji>) => {
-				this.#client.removeListener('reactionAdd', lstnr);
+				this.#client.events.removeListener('reactionAdd', lstnr);
 				if (this.#filter) {
 					msg.reactions?.forEach(reaction => {
 						if(this.#filter!(reaction)) {
@@ -32,7 +32,7 @@ export default class ReactionCollector extends Collector<ReactionData> {
 						}
 					});
 				} else if (!this.#filter) {
-					this.#client.removeListener('reactionAdd', lstnr);
+					this.#client.events.removeListener('reactionAdd', lstnr);
 					msg.reactions?.forEach(reaction => {
 						resolve({
 							count: reaction.count,

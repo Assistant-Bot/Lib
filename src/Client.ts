@@ -13,19 +13,16 @@
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
-import { EventEmitter, GenericFunction, WrappedFunction } from 'https://deno.land/std@0.85.0/node/events.ts';
 import DataManager from "./data/DataManager.ts";
 import type DataStore from "./data/DataStore.ts";
-import type RuntimeStore from "./data/runtime/RuntimeStore.ts";
 import type { GatewayResponseBot, PresenceOptions, RoleData, VoiceState } from "./net/common/Types.ts";
+import type { GenericFunction, WrappedFunction } from 'https://deno.land/std@0.85.0/node/events.ts';
 import DiscordRequestHandler from "./net/rest/DiscordRequestHandler.ts";
 import Endpoints, { GATEWAY_URL } from "./net/rest/Endpoints.ts";
 import RequestHandler, { RequestHandlerOptions } from "./net/rest/RequestHandler.ts";
-import type { Connector } from "./net/ws/Connector.ts";
 import Generic from "./net/ws/generic/Generic.ts";
 import type { Payload } from "./net/ws/packet/Packet.ts";
 import WSManager from "./net/ws/WSManager.ts";
-import AppCommand from "./structures/application/AppCommand.ts";
 import type Interaction from "./structures/application/Interaction.ts";
 import type Channel from "./structures/channel/Channel.ts";
 import type ClientUser from "./structures/ClientUser.ts";
@@ -39,59 +36,10 @@ import TextChannel from "./structures/guild/TextChannel.ts";
 import type Message from "./structures/Message.ts";
 import Application from "./structures/oauth/Application.ts";
 import type User from "./structures/User.ts";
+import GenericEventsAdapter from "./util/client/GenericEventsAdapter.ts";
+import EventAdapter, { ClientEvents } from "./util/client/EventAdapter.ts";
 import Collection from "./util/Collection.ts";
 import Intents, { IntentTypes } from "./util/Intents.ts";
-
-/**
- * Events emitted when recieved from the websocket.
- */
-export type ClientEvents =
-	| "ws"
-	| "error"
-	| "unknown"
-	| "ready"
-	| "resume"
-	| "reconnect"
-	| "disconnect"
-	| "channelCreate"
-	| "channelUpdate"
-	| "channelDelete"
-	| "interactionCreate"
-	| "pinUpdate"
-	| "guildAvailable"
-	| "guildUnavailable"
-	| "guildCreate"
-	| "guildUpdate"
-	| "guildDelete"
-	| "banAdd"
-	| "banRemove"
-	| "emojisUpdate"
-	| "integrationsUpdate"
-	| "memberJoin"
-	| "memberRemove"
-	| "memberUpdate"
-	| "membersChunk"
-	| "roleCreate"
-	| "roleUpdate"
-	| "roleDelete"
-	| "inviteCreate"
-	| "inviteDelete"
-	| "message"
-	| "messageCreate"
-	| "messageUpdate"
-	| "messageDelete"
-	| "messageDeleteBulk"
-	| "reactionAdd"
-	| "reactionUpdate"
-	| "reactionRemove"
-	| "reactionRemoveAll"
-	| "reactionRemoveEmoji"
-	| "presenceUpdate"
-	| "typingStart"
-	| "userUpdate"
-	| "voiceStateUpdate"
-	| "voiceRegionUpdate"
-	| "webhookUpdate";
 
 /**
  * Options for the client.
@@ -188,20 +136,20 @@ export type Partial<T> = {
  */
 export type ClientShardMode = 'Nodes' | 'Shards' | 'Clusters';
 
-export default class Client extends EventEmitter {
+export default class Client<IEvent extends EventAdapter = GenericEventsAdapter> {
 	public readonly options: ClientOptions;
 	public readonly intents: Intents;
 	public application: Application | null;
 	public requestHandler!: RequestHandler;
 	public discordHandler!: DiscordRequestHandler;
 	public user!: ClientUser;
+	public events!: IEvent;
 
 	#dataManager?: DataManager;
 	#wsManager!: WSManager;
 	#shardMode: ClientShardMode | 'Unknown' = 'Unknown';
 
 	public constructor(opts: Partial<ClientOptions> = {}, customStore?: DataManager) {
-		super();
 		const defaults: ClientOptions = {
 			connection: {
 				autoReconnect: true,
@@ -311,171 +259,205 @@ export default class Client extends EventEmitter {
 
 	/**
 	 * Emitted when the client is connected to discord.
+	 * @deprecated
 	 */
 	public on(event: "ready", listener: (session_id: string, shard: number[] | null, version: number) => any): this;
 
 	/**
 	 * Emitted when a channel is created.
+	 * @deprecated
 	 */
 	public on(event: "channelCreate", listener: (channel: Channel) => any): this;
 
 	/**
 	 * Emitted when a channel is updated.
+	 * @deprecated
 	 */
 	public on(event: "channelUpdate", listener: (channel: Channel) => any): this;
 
 	/**
 	 * Emitted when a channel is deleted.
+	 * @deprecated
 	 */
 	public on(event: "channelDelete", listener: (channel: Channel | string) => any): this;
 
 	/**
 	 * Emitted when the guild becomes availiable
+	 * @deprecated
 	 */
 	public on(event: "guildAvailable", listener: (guild: Guild) => any): this;
 
 	/**
 	 * Emitted when the guild becomes availiable
+	 * @deprecated
 	 */
 	public on(event: "guildUnavailable", listener: (guild: Guild | Partial<Guild>) => any): this;
 
 	/**
 	 * Emitted when a guild is created
+	 * @deprecated
 	 */
 	public on(event: "guildCreate", listener: (guild: Guild) => any): this;
 
 	/**
 	 * Emitted when a guild is updated
+	 * @deprecated
 	 */
 	public on(event: "guildUpdate", listener: (guild: Guild) => any): this;
 
 	/**
 	 * Emitted when a guild is deleted
+	 * @deprecated
 	 */
 	public on(event: "guildUpdate", listener: (guild: Guild) => any): this;
 
 	/**
 	 * Emitted when the client recieves a message.
+	 * @deprecated
 	 */
 	public on(event: "message" | "messageCreate", listener: (message: Message) => any): this;
 
 	/**
 	 * Emitted when a message is updated somehow.
+	 * @deprecated
 	 */
 	public on(event: "messageUpdate", listener: (newMessage: Message, oldMessage?: Message) => any): this;
 
 	/**
 	 * Emitted when a message is deleted.
+	 * @deprecated
 	 */
 	public on(event: "messageDelete", listener: (message: Partial<Message> | Message) => any): this;
 
 	/**
 	 * Emitted when (bulk) messages are deleted
+	 * @deprecated
 	 */
 	public on(event: "messageDeleteBulk", listener: (messages: (Message | string)[]) => any): this;
 
 	/**
 	 * Emitted when a reaction is added
+	 * @deprecated
 	 */
 	public on(event: "reactionAdd", listener: (message: Partial<Message> | Message, member: Partial<Member> | Member, emoji: Partial<Emoji> | Emoji) => any): this;
 
 	/**
 	 * Emitted when a reaction is removed
+	 * @deprecated
 	 */
 	public on(event: "reactionRemove", listener: (message: Partial<Message> | Message, member: Partial<Member> | Member, emoji: Partial<Emoji> | Emoji) => any): this;
 
 	/**
 	 * Emitted when all reactions are removed
+	 * @deprecated
 	 */
 	public on(event: "reactionRemoveAll", listener: (message: Partial<Message> | Message) => any): this;
 
 	/**
 	 * Emitted when a specific emoji reaction is removed
+	 * @deprecated
 	 */
 	public on(event: "reactionRemoveEmoji", listener: (message: Partial<Message> | Message, member: Partial<Member> | Member, emoji: Partial<Emoji> | Emoji) => any): this;
 
 	/**
 	 * Emitted when a presence is updated
+	 * @deprecated
 	 */
 	public on(event: "presenceUpdate", listener: (presence: Presence) => any): this;
 
 	/**
 	 * Emitted when typing starts
+	 * @deprecated
 	 */
 	public on(event: "typingStart", listener: (member: Partial<Member> | Member, channel: TextChannel, timestamp: number) => any): this;
 
 	/**
 	 * Emitted when a user is updated
+	 * @deprecated
 	 */
 	public on(event: "userUpdate", listener: (user: User) => any): this;
 
 	/**
 	 * Emitted when a user is banned from a guild
+	 * @deprecated
 	 */
 	public on(event: "banAdd", listener: (user: User) => any): this;
 
 	/**
 	 * Emitted when a user is unbanned from a guild
+	 * @deprecated
 	 */
 	public on(event: "banRemove", listener: (user: User) => any): this;
 
 	/**
 	 * Emitted when emojis in a guild are updated
+	 * @deprecated
 	 */
 	public on(event: "emojisUpdate", listener: (Emojis: Emoji[]) => any): this;
 
 	/**
 	 * Emitted when a guild member joins a guild
+	 * @deprecated
 	 */
 	public on(event: "memberJoin", listener: (member: Member, guild: Guild) => any): this;
 
 	/**
 	 * Emitted when a member is updated.
+	 * @deprecated
 	 */
 	public on(event: "memberUpdate", listener: (member: Member, guild: Guild) => any): this;
 
 	/**
 	 * Emitted when a user leaves a guild or is banned.
+	 * @deprecated
 	 */
 	public on(event: "memberRemove", listener: (user: User | Member, guild: Guild) => any): this;
 
 	/**
 	 * Emitted when a role is created
+	 * @deprecated
 	 */
 	public on(event: "roleCreate", listener: (role: Role, guild: Guild) => any): this;
 
 	/**
 	 * Emitted when a role is updated
+	 * @deprecated
 	 */
 	public on(event: "roleUpdate", listener: (role: Role, guild: Guild) => any): this;
 
 	/**
 	 * Emitted when a role is deleted
+	 * @deprecated
 	 */
 	public on(event: "roleDelete", listener: (role: Role | Partial<RoleData>, guild: Guild) => any): this;
 
 	/**
 	 * Emitted when an invite is created
+	 * @deprecated
 	 */
 	public on(event: "inviteCreate", listener: (invite: Invite) => any): this;
 
 	/**
 	 * Emitted when an invite is delete
+	 * @deprecated
 	 */
 	public on(event: "inviteDelete", listener: (guildID: string, code: string) => any): this;
 
 	/**
 	 * Emitted when voice state is updated
+	 * @deprecated
 	 */
 	public on(event: "voiceStateUpdate", listener: (state: VoiceState) => any): this;
 
 	/**
 	 * Emitted when voice region is updated
+	 * @deprecated
 	 */
 	public on(event: "voiceRegionUpdate", listener: (state: {token: string, guild_id: string, endpoint: string}) => any): this;
 
 	/**
 	 * Emitted when an interaction is RECIEVED.
+	 * @deprecated
 	 */
 	public on(event: "interactionCreate", listener: (interaction: Interaction) => any): this;
 
@@ -487,17 +469,15 @@ export default class Client extends EventEmitter {
 
 	/**
 	 * Listen to a gateway event
+	 * @deprecated
 	 */
 	public on(event: ClientEvents, listener: GenericFunction | WrappedFunction): any {
-		return super.on(event, listener);
-	}
-
-	public once(event: ClientEvents, listener: GenericFunction): this {
-		return super.once(event, listener);
-	}
-
-	public emit(event: ClientEvents, ...args: any[]): boolean {
-		return super.emit(event, ...args);
+		if (this.events instanceof GenericEventsAdapter) {
+			// @ts-ignore
+			return this.events.on(event, listener);
+		} else {
+			throw new Error("Events are no longer attached to client. Please use a EventAdapter.")
+		}
 	}
 
 	/**

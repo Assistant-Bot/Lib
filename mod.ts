@@ -14,7 +14,6 @@
  * of the License, or (at your option) any later version.
  */
 export type {
-	ClientEvents,
 	ClientOptions,
 	ClientShardMode
 } from './src/Client.ts';
@@ -51,7 +50,7 @@ export { default as DataManager } from './src/data/DataManager.ts';
 export { default as DataStore } from './src/data/DataStore.ts';
 export { default as RuntimeManager } from './src/data/runtime/RuntimeManager.ts';
 export { default as RuntimeStore } from './src/data/runtime/RuntimeStore.ts';
-export { default as Module } from './src/module/Module.ts';
+export { default as Module } from './src/command/module/Module.ts';
 export { default as DiscordRequestHandler } from './src/net/rest/DiscordRequestHandler.ts';
 export {
 	REST_VERSION,
@@ -93,6 +92,8 @@ export { default as TextChannel } from './src/structures/guild/TextChannel.ts';
 export { default as VoiceChannel } from './src/structures/guild/VoiceChannel.ts';
 export { default as Application } from './src/structures/oauth/Application.ts';
 export * as Async from './src/util/Async.ts';
+export type { default as EventAdapter, ClientEvents } from './src/util/client/EventAdapter.ts';
+export { default as GenericEventsAdapter } from './src/util/client/GenericEventsAdapter.ts';
 export { default as Collection } from './src/util/Collection.ts';
 export { default as Embed } from './src/util/Embed.ts';
 export { default as Intents } from './src/util/Intents.ts';
