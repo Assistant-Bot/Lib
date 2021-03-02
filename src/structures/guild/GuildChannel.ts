@@ -15,6 +15,7 @@
  */
 import type Client from "../../Client.ts";
 import type { ChannelData, ChannelEditOption, InviteCreateOptions, InviteData } from "../../net/common/Types.ts";
+import EventAdapter from "../../util/client/EventAdapter.ts";
 import Channel from "../channel/Channel.ts";
 import Guild from "./Guild.ts";
 import Invite from "./Invite.ts";
@@ -30,7 +31,7 @@ export default class GuildChannel extends Channel {
 	/** Guild ID of the channel */
 	#guild_id: string;
 
-	public constructor(client: Client, data: ChannelData) {
+	public constructor(client: Client<EventAdapter>, data: ChannelData) {
 		super(client, data);
 		super.update(data);
 		this.#guild_id = data.guild_id as string;
@@ -40,7 +41,7 @@ export default class GuildChannel extends Channel {
 	public update(data: ChannelData): void {
 		this.name = data.name || '';
 		this.position = data.position || -1;
-		this.permissions = data.permission_overwrites ? 
+		this.permissions = data.permission_overwrites ?
 			data.permission_overwrites.map(p => {
 				return Permission.from(p.allow)
 		}) : [];

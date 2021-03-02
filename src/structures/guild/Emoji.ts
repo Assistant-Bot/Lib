@@ -15,11 +15,12 @@
  */
 import type Client from "../../Client.ts";
 import type { EmojiData } from "../../net/common/Types.ts";
+import EventAdapter from "../../util/client/EventAdapter.ts";
 import Base from "../Base.ts";
 
 export default class Emoji extends Base {
 	/** Client instance */
-	private static clientInstance: Client;
+	private static clientInstance: Client<EventAdapter>;
 	/** Role IDs of the emoji */
 	public roles?: string[];
 	/** Whether the emoji requires colons */
@@ -33,7 +34,7 @@ export default class Emoji extends Base {
 	/** Whether the emoji is animated */
 	public animated?: boolean;
 
-	public constructor(client: Client, data: EmojiData) {
+	public constructor(client: Client<EventAdapter>, data: EmojiData) {
 		super(client, data.id || '');
 		this.update(data);
 		Emoji.clientInstance = client;

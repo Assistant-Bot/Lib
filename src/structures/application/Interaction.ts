@@ -15,6 +15,7 @@
  */
 import Client from "../../Client.ts";
 import type { ApplicationOptionType, InteractionData, InteractionDataRecieve, InteractionResponse, InteractionResponseType } from "../../net/common/Types.ts";
+import EventAdapter from "../../util/client/EventAdapter.ts";
 import Base from "../Base.ts";
 import Guild from "../guild/Guild.ts";
 import Member from "../guild/Member.ts";
@@ -30,7 +31,7 @@ export default class Interaction extends Base {
 	#channelid!: string;
 	#token!: string;
 
-	public constructor(client: Client, data: InteractionDataRecieve) {
+	public constructor(client: Client<EventAdapter>, data: InteractionDataRecieve) {
 		super(client, data.id);
 		this.update(data);
 	}

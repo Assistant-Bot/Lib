@@ -15,6 +15,7 @@
  */
 import type Client from "../../Client.ts";
 import { MemberData } from "../../net/common/Types.ts";
+import EventAdapter from "../../util/client/EventAdapter.ts";
 import Base from "../Base.ts";
 import User from "../User.ts";
 import Guild from "./Guild.ts";
@@ -41,7 +42,7 @@ export default class Member extends Base {
 	/** Guild ID of the member */
 	#guild_id: string
 
-	public constructor(client: Client, data: MemberData) {
+	public constructor(client: Client<EventAdapter>, data: MemberData) {
 		super(client, data.user!.id);
 		this.update(data);
 		this.#guild_id = data.guild_id as string;

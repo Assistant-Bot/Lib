@@ -16,14 +16,15 @@
 import type Client from "../Client.ts";
 import type { AnyStructureData } from "../net/common/Types.ts";
 import DiscordRequestHandler from "../net/rest/DiscordRequestHandler.ts";
+import EventAdapter from "../util/client/EventAdapter.ts";
 
 export default abstract class Base {
 	/** Client */
-	#client: Client;
+	#client: Client<EventAdapter>;
 	/** ID given by Discord */
 	public id: string;
 
-	public constructor(client: Client, id: string) {
+	public constructor(client: Client<EventAdapter>, id: string) {
 		this.id = id;
 		this.#client = client;
 	}
@@ -60,7 +61,7 @@ export default abstract class Base {
 	 * Protected so it's not accessible outside the class.
 	 * Work around to typescript's "protected" variables.
 	 */
-	protected get client(): Client {
+	protected get client(): Client<EventAdapter> {
 		return this.#client;
 	}
 
@@ -68,7 +69,7 @@ export default abstract class Base {
 	 * Protected so it's not accessible outside the class.
 	 * Work around to typescript's "protected" variables.
 	 */
-	protected set client(client: Client) {
+	protected set client(client: Client<EventAdapter>) {
 		this.#client = client;
 	}
 }

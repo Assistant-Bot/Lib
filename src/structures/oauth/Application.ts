@@ -1,5 +1,6 @@
 import Client from "../../Client.ts";
 import { ApplicationData } from "../../net/common/Types.ts";
+import EventAdapter from "../../util/client/EventAdapter.ts";
 import Base from "../Base.ts";
 import User from "../User.ts";
 
@@ -19,7 +20,7 @@ class Application extends Base {
     public slug?: string;
     public cover_image?: string;
 
-    constructor(client: Client, data: any) {
+    constructor(client: Client<EventAdapter>, data: any) {
 		super(client, data.id || "");
         this.name = data.name;
         this.icon = data.icon;

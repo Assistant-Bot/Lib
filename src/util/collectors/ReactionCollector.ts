@@ -3,15 +3,16 @@ import { ReactionData } from "../../net/common/Types.ts";
 import Emoji from "../../structures/guild/Emoji.ts";
 import Member from "../../structures/guild/Member.ts";
 import Message from "../../structures/Message.ts";
+import EventAdapter from "../client/EventAdapter.ts";
 import Collector, { CollectorOptions } from "./Collector.ts";
 
 export type ReactionFilterType = (msg: ReactionData) => Promise<boolean> | boolean;
 
 export default class ReactionCollector extends Collector<ReactionData> {
-	#client: Client;
+	#client: Client<EventAdapter>;
 	#filter?: ReactionFilterType
 
-	public constructor(client: Client, opts?: CollectorOptions, filter?: ReactionFilterType) {
+	public constructor(client: Client<EventAdapter>, opts?: CollectorOptions, filter?: ReactionFilterType) {
 		super(client, opts || {});
 		this.#client = client;
 		this.#filter = filter;

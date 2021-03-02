@@ -15,6 +15,7 @@
  */
 import Client from "../../Client.ts";
 import { ChannelData } from "../../net/common/Types.ts";
+import EventAdapter from "../../util/client/EventAdapter.ts";
 import GuildChannel from "./GuildChannel.ts";
 
 export default class VoiceChannel extends GuildChannel {
@@ -25,7 +26,7 @@ export default class VoiceChannel extends GuildChannel {
 	/** Array of member IDs in the channel */
 	public members: string[];
 
-	public constructor(client: Client, data: ChannelData) {
+	public constructor(client: Client<EventAdapter>, data: ChannelData) {
 		super(client, data);
 		this.members = [];
 		super.update(data);

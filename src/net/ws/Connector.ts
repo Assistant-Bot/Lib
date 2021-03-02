@@ -15,6 +15,7 @@
  */
 import Client from "../../Client.ts";
 import ClientUser from "../../structures/ClientUser.ts";
+import type CEventAdapter from "../../util/client/EventAdapter.ts";
 import Intents from "../../util/Intents.ts";
 import { GATEWAY, BASE_URL } from '../rest/Endpoints.ts';
 import EventAdapter from "./event/EventAdapter.ts";
@@ -30,7 +31,7 @@ export abstract class Connector extends EventAdapter {
 	public ws!: WebSocket;
 	public sequence: number;
 	public sessionId?: string;
-	protected client: Client;
+	protected client: Client<CEventAdapter>;
 	#gateway: string;
 	#token!: string;
 	#lastSeq: number;
@@ -42,7 +43,7 @@ export abstract class Connector extends EventAdapter {
 	#intents: Intents;
 	#shard: number;
 
-	public constructor(client: Client, gateway: string) {
+	public constructor(client: Client<CEventAdapter>, gateway: string) {
 		super();
 		this.client = client;
 		this.#gateway = gateway;
@@ -148,7 +149,7 @@ export abstract class Connector extends EventAdapter {
 		const packet: EventPacket = EventPacket.from(p);
 		if (packet.event === "READY") {
 			this.client.user = new ClientUser(this.client, packet.data.user);
-			this.client.emit('ready', p.d.session_id, p.d.shard, p.d.v);
+			this.client.events.publish('ready', p.d.session_id, p.d.shard, p.d.v);
 
 			for (let guild of packet.data.guilds) {
 				if (guild.unavailable === true) {

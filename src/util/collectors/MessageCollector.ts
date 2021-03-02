@@ -16,14 +16,15 @@
 import Message from "../../structures/Message.ts";
 import Client from "../../Client.ts";
 import Collector, { CollectorOptions } from "./Collector.ts";
+import EventAdapter from "../client/EventAdapter.ts";
 
 export type MessageFilterType = (msg: Message) => Promise<boolean> | boolean;
 
 export default class MessageCollector extends Collector<Message> {
-	#client: Client;
+	#client: Client<EventAdapter>;
 	#filter?: MessageFilterType;
 
-	public constructor(client: Client, opts?: CollectorOptions, filter?: MessageFilterType) {
+	public constructor(client: Client<EventAdapter>, opts?: CollectorOptions, filter?: MessageFilterType) {
 		super(client, opts || {});
 		this.#client = client;
 		this.#filter = filter;

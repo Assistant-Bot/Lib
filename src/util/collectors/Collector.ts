@@ -15,6 +15,7 @@
  */
 import Client from "../../Client.ts";
 import { Promiseable } from "../../net/common/Types.ts";
+import EventAdapter from "../client/EventAdapter.ts";
 
 export interface CollectorOptions {
 	limit?: number;
@@ -22,11 +23,11 @@ export interface CollectorOptions {
 }
 
 export default abstract class Collector<T> implements AsyncIterable<T> {
-	protected client: Client;
+	protected client: Client<EventAdapter>;
 	protected limit: number;
 	protected timeout: number;
 
-	public constructor(client: Client, opts: CollectorOptions = {}) {
+	public constructor(client: Client<EventAdapter>, opts: CollectorOptions = {}) {
 		this.client = client;
 		this.limit = opts.limit || 10;
 		this.timeout = opts.timeout || 60000;

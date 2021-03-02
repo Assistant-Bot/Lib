@@ -34,6 +34,7 @@ import User from "../../../structures/User.ts";
 import type { GuildData,RoleData,VoiceState } from "../../common/Types.ts";
 import EventPacket from "../packet/EventPacket.ts";
 import { Payload } from "../packet/Packet.ts";
+import CEventAdapter from "../../../util/client/EventAdapter.ts";
 
 export interface IEventAdapter {
 	wsPacket?: (client: Client, payload: Payload) => any;
@@ -43,7 +44,7 @@ export interface IEventAdapter {
 export default class EventAdapter implements IEventAdapter {
 	protected deadGuilds: Set<string> = new Set();
 
-	public async handleEvent(client: Client, payload: Payload) {
+	public async handleEvent(client: Client<CEventAdapter>, payload: Payload) {
 		const packet: EventPacket = EventPacket.from(payload);
 
 		if (client.options.connection.emitPayloads) {

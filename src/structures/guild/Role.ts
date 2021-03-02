@@ -15,6 +15,7 @@
  */
 import type Client from "../../Client.ts";
 import type { RoleData, RoleEditOptions } from "../../net/common/Types.ts";
+import EventAdapter from "../../util/client/EventAdapter.ts";
 import Base from "../Base.ts";
 import Guild from "./Guild.ts";
 import Permission from "./permission/Permission.ts";
@@ -35,7 +36,7 @@ export default class Role extends Base {
 	/** Guild ID of the role */
 	#guild_id!: string;
 
-	public constructor(client: Client, data: RoleData) {
+	public constructor(client: Client<EventAdapter>, data: RoleData) {
 		super(client, data.id);
 		this.update(data)
 	}
