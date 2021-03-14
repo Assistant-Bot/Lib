@@ -238,7 +238,7 @@ export default class EventAdapter implements IEventAdapter {
 			const guild: Guild = client.dataManager?.guilds.get(packet.data.guild_id);
 			packet.data.guild_id = guild.id
 			const member: Member = new Member(client, packet.data);
-			guild.members.set(packet.data.id, member);
+			guild.members.set(packet.data.user.id, member);
 			client.events.publish('memberJoin', member, guild);
 		}
 
