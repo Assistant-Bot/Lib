@@ -374,6 +374,30 @@ class DiscordRequestHandler extends RequestHandler {
 		return res.json();
 	}
 
+	public async addMemberRole(
+		guildId: string,
+		memberId: string,
+		roleId: string,
+	): Promise<boolean> {
+		const res: Response = await this.makeAndSend(
+			Endpoints.guild_member_roles(guildId, memberId, roleId),
+			'PUT'
+		);
+		return res.status === 200;
+	}
+
+	public async removeMemberRole(
+		guildId: string,
+		memberId: string,
+		roleId: string,
+	): Promise<boolean> {
+		const res: Response = await this.makeAndSend(
+			Endpoints.guild_member_roles(guildId, memberId, roleId),
+			'PUT'
+		);
+		return res.status === 200;
+	}
+	
 	public async deleteRole(guildId: string, id: string): Promise<boolean> {
 		const res: Response = await this.makeAndSend(
 			Endpoints.guild_role(guildId, id),

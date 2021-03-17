@@ -145,6 +145,10 @@ export default class Endpoints {
 		return this.guild_members(guildId) + "/" + id;
 	}
 
+	public static guild_member_roles(guildId: string, memberId: string, roleId: string) {
+		return this.guild_member(guildId, memberId) + "/" + roleId;
+	}
+
 	public static guild_bans(id: string) {
 		return this.guild(id) + '/bans';
 	}

@@ -257,6 +257,14 @@ export default class Guild extends Base {
 		return await this.request.deleteRole(this.id, id instanceof Role ? id.id : id);
 	}
 
+	public async addMemberRole(member: Member | string, role: Role | string): Promise<boolean> {
+		return await this.request.addMemberRole(this.id, member instanceof Member ? member.id : member, role instanceof Role ? role.id : role);
+	}
+
+	public async removeMemberRole(member: Member | string, role: Role | string): Promise<boolean> {
+		return await this.request.removeMemberRole(this.id, member instanceof Member ? member.id : member, role instanceof Role ? role.id : role);
+	}
+
 	public async getBans(filter?: (data: BanData) => Promise<boolean> | boolean): Promise<BanData[]> {
 		let res: BanData[] = await this.request.getGuildBans(this.id);
 		if (filter) {
