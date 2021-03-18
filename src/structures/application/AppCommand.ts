@@ -16,6 +16,7 @@
 import Client from "../../Client.ts";
 import { ApplicationCommandData, ApplicationCommandOption, ApplicationData } from "../../net/common/Types.ts";
 import Endpoints from "../../net/rest/Endpoints.ts";
+import EventAdapter from "../../util/client/EventAdapter.ts";
 import Base from "../Base.ts";
 import Application from "../oauth/Application.ts";
 import Interaction from "./Interaction.ts";

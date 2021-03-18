@@ -1,4 +1,5 @@
 import Client from "../Client.ts";
+import EventAdapter from "./client/EventAdapter.ts";
 
 export default class ModuleReloader {
 	private client: Client<EventAdapter>;

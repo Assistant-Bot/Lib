@@ -91,6 +91,14 @@ export default class Member extends Base {
 		}
 	}
 
+	public async addRole(role: Role | string): Promise<boolean> {
+		return this.guild.addMemberRole(this, role);
+	}
+
+	public async removeRole(role: Role | string): Promise<boolean> {
+		return this.guild.removeMemberRole(this, role)
+	}
+
 	/**
 	 * Used to ban the member
 	 */
