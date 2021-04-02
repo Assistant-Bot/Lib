@@ -80,14 +80,21 @@ export enum PermissionBits {
 	MANAGE_EMOJIS = 1 << 30
 }
 
+export type PermissionOverwriteParams = {
+	id: string;
+	type: 0 /** role */ | 1 /** member */
+}
+
 export default class Permission {
 	private current: PermissionTypes[];
+	private overwrite?: PermissionOverwriteParams;
 
-	public constructor(perms: PermissionTypes[] = []) {
+	public constructor(perms: PermissionTypes[] = [], overwrite?: PermissionOverwriteParams) {
 		this.current = perms;
+		this.overwrite = overwrite;
 	}
 
-	public static from(bits: number): Permission {
+	public static from(bits: number, overwrite?: PermissionOverwriteParams): Permission {
 		let current: PermissionTypes[] = [];
 		if ((bits & PermissionBits.CREATE_INSTANT_INVITE) === PermissionBits.CREATE_INSTANT_INVITE) current.push('createInvite');
 		if ((bits & PermissionBits.KICK_MEMBERS) === PermissionBits.KICK_MEMBERS) current.push('kickMembers');
@@ -118,7 +125,7 @@ export default class Permission {
 		if ((bits & PermissionBits.MANAGE_NICKNAMES) === PermissionBits.MANAGE_NICKNAMES) current.push('modifyNicknames');
 		if ((bits & PermissionBits.MANAGE_ROLES) === PermissionBits.MANAGE_ROLES) current.push('modifyRoles');
 		if ((bits & PermissionBits.MANAGE_WEBHOOKS) === PermissionBits.MANAGE_WEBHOOKS) current.push('modifyWebhooks');
-		return new Permission(current);
+		return new Permission(current, overwrite);
 	}
 
 	public parse(): PermissionBits {
@@ -238,5 +245,13 @@ export default class Permission {
 			}
 		});
 		return Permission.from(perm);
+	}
+
+	public get type(): 0 | 1 | null {
+		return this.overwrite?.type ?? null;
+	}
+
+	public get id(): string | null {
+		return this.overwrite?.id ?? null;
 	}
 }

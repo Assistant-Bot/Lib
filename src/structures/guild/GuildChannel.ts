@@ -43,7 +43,7 @@ export default class GuildChannel extends Channel {
 		this.position = data.position || -1;
 		this.permissions = data.permission_overwrites ?
 			data.permission_overwrites.map(p => {
-				return Permission.from(p.allow)
+				return Permission.from(p.allow, { id: p.id, type: p.type})
 			}) : [];
 	}
 
