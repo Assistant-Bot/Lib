@@ -3,15 +3,16 @@ import { ReactionData } from "../../net/common/Types.ts";
 import Emoji from "../../structures/guild/Emoji.ts";
 import Member from "../../structures/guild/Member.ts";
 import Message from "../../structures/Message.ts";
+import EventAdapter from "../client/EventAdapter.ts";
 import Collector, { CollectorOptions } from "./Collector.ts";
 
 export type ReactionFilterType = (msg: ReactionData) => Promise<boolean> | boolean;
 
 export default class ReactionCollector extends Collector<ReactionData> {
-	#client: Client;
-	#filter?: ReactionFilterType;	
+	#client: Client<EventAdapter>;
+	#filter?: ReactionFilterType
 
-	public constructor(client: Client, opts?: CollectorOptions, filter?: ReactionFilterType) {
+	public constructor(client: Client<EventAdapter>, opts?: CollectorOptions, filter?: ReactionFilterType) {
 		super(client, opts || {});
 		this.#client = client;
 		this.#filter = filter;
@@ -19,11 +20,11 @@ export default class ReactionCollector extends Collector<ReactionData> {
 
 	protected async listener(): Promise<ReactionData> {
 		return new Promise((resolve, reject) => {
-			let lstnr = (msg: Message | Partial<Message>, member: Member | Partial<Member>, emoji: Emoji | Partial<Emoji>) => {
-				this.#client.removeListener('reactionAdd', lstnr);
+			let lstnr = (cancel: boolean, msg: Message | Partial<Message>, member: Member | Partial<Member>, emoji: Emoji | Partial<Emoji>) => {
+				cancel = true;
 				if (this.#filter) {
 					msg.reactions?.forEach(reaction => {
-						if(this.#filter!(reaction)) {
+						if (this.#filter!(reaction)) {
 							resolve({
 								count: reaction.count,
 								me: reaction.me,
@@ -32,7 +33,7 @@ export default class ReactionCollector extends Collector<ReactionData> {
 						}
 					});
 				} else if (!this.#filter) {
-					this.#client.removeListener('reactionAdd', lstnr);
+					cancel = true
 					msg.reactions?.forEach(reaction => {
 						resolve({
 							count: reaction.count,
@@ -42,7 +43,11 @@ export default class ReactionCollector extends Collector<ReactionData> {
 					});
 				}
 			}
-			this.#client.on('reactionAdd', lstnr);
+			if (this.client.events.luc) {
+				this.#client.events.luc?.('reactionAdd', lstnr);
+			} else {
+				reject(new Error("Event adapter does not support cancellable listeners."));
+			}
 		});
 	}
 

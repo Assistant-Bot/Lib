@@ -90,18 +90,18 @@ export default class RequestHandler {
 	 * @param body
 	 * @param immediate
 	 */
-	public makeAndSend(url: string, method: HTTPMethod = "GET", body?: any, headers: Header[] = [], immediate: boolean = false): Promise<Response> {
+	public makeAndSend(url: string, method: HTTPMethod = "GET", body?: any, headers: Header[] = [], immediate: boolean = false, form: boolean = false): Promise<Response> {
 		url = BASE_URL + url;
 
 		if (body && (body.$params || Object.keys(body.$params ?? {}).length)) {
 			// check instance
 			if (!(body.$params instanceof Object)) {
-				throw  "$params must be an instance of IParams: { [key: string]: string, value: string };";
+				throw "$params must be an instance of IParams: { [key: string]: string, value: string };";
 			}
 
 			for (let param of Object.keys(body.$params)) {
 				const value: any = body.$params[param];
-				if(!value) continue;
+				if (!value) continue;
 				const symbol: '?' | '&' = url.includes('?') ? '&' : '?';
 				url += `${symbol}${param}=${encodeURIComponent(JSON.stringify(value)?.replace(/("|')+/igm, ''))}`;
 			}
@@ -120,7 +120,7 @@ export default class RequestHandler {
 			request.headers.set(header.name, header.value);
 		}
 
-		return this.request(request, immediate);
+		return this.request(request, immediate, form);
 	}
 
 	/**
@@ -130,7 +130,7 @@ export default class RequestHandler {
 	 * @param immediate
 	 * @throws {ResponseError|Error}
 	 */
-	public request(req: Request, immediate: boolean = false): Promise<Response> {
+	public request(req: Request, immediate: boolean = false, form: boolean = false): Promise<Response> {
 		// queues this promise until it's resolved.
 		return new Promise((resolve, reject) => {
 			try {
@@ -145,7 +145,7 @@ export default class RequestHandler {
 					}
 
 					req.headers.set('User-Agent', this.#options.userAgent);
-					req.headers.set('Content-Type', 'application/json');
+					req.headers.set('Content-Type', form ? 'multipart/form-data' : 'application/json');
 
 					if (immediate) {
 						fetch(req).then(resolve).catch(reject);

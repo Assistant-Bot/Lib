@@ -15,6 +15,7 @@
  */
 import type Client from "../../Client.ts";
 import { MemberData } from "../../net/common/Types.ts";
+import EventAdapter from "../../util/client/EventAdapter.ts";
 import Base from "../Base.ts";
 import User from "../User.ts";
 import Guild from "./Guild.ts";
@@ -22,17 +23,26 @@ import Permission, { PermissionBits } from "./permission/Permission.ts";
 import Role from "./Role.ts";
 
 export default class Member extends Base {
+	/** User of the member */
 	public user!: User;
+	/** Whether the member is guild owner */
 	public owner!: boolean;
+	/** IDs of the member's roles */
 	public roles!: string[];
+	/** The time for how long the user has boosted the guild for */
 	public premiumSince?: string;
+	/** Nick of the user */
 	public nick?: string;
+	/** Whether the member is muted */
 	public mute!: boolean;
+	/** When the user joined at */
 	public joinedAt!: string;
+	/** Whether the user if deafened */
 	public deaf!: boolean;
+	/** Guild ID of the member */
 	#guild_id: string
 
-	public constructor(client: Client, data: MemberData) {
+	public constructor(client: Client<EventAdapter>, data: MemberData) {
 		super(client, data.user!.id);
 		this.update(data);
 		this.#guild_id = data.guild_id as string;
@@ -48,23 +58,29 @@ export default class Member extends Base {
 		this.deaf = data.deaf;
 	}
 
+	/** 
+	 * Guild of the member
+	 */
 	public get guild(): Guild {
 		return this.client.dataManager?.guilds.get(this.#guild_id);
 	}
 
+	/**
+	 * Permissions of the member (role based)
+	 */
 	public get permissions(): Permission {
-		if(this.id === this.guild.ownerID) {
+		if (this.id === this.guild.ownerID) {
 			return new Permission(['administrator']);
 		} else {
 			const roles = this.guild.roles;
 			let permissions = roles.find(r => r.id === this.guild.id)!.permissions.allow.parse();
-			for(let id of this.roles) { 
+			for (let id of this.roles) {
 				const role = roles.find(r => r.id === id);
-				if(!role) continue;
+				if (!role) continue;
 
 				const allow = role.permissions.allow.parse();
 
-				if(allow & PermissionBits.ADMINISTRATOR) {
+				if (allow & PermissionBits.ADMINISTRATOR) {
 					permissions = new Permission(['administrator']).parse();
 					break;
 				} else {
@@ -75,14 +91,32 @@ export default class Member extends Base {
 		}
 	}
 
+	public async addRole(role: Role | string): Promise<boolean> {
+		return this.guild.addMemberRole(this, role);
+	}
+
+	public async removeRole(role: Role | string): Promise<boolean> {
+		return this.guild.removeMemberRole(this, role)
+	}
+
+	/**
+	 * Used to ban the member
+	 */
 	public async ban(): Promise<boolean> {
 		return this.guild.banMember(this);
 	}
 
+	/**
+	 * Used to unban the member
+	 * NOTE: Useless method???
+	 */
 	public async unban(): Promise<boolean> {
 		return this.guild.unbanMember(this)
 	}
 
+	/**
+	 * User to kick the member
+	 */
 	public async kick(): Promise<boolean> {
 		return this.guild.kickMember(this);
 	}

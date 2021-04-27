@@ -15,6 +15,7 @@
  */
 import type Client from "../../Client.ts";
 import type { CreateWebhookData, ExecuteWebhookData, MessageConstructorData, WebhookData } from "../../net/common/Types.ts";
+import EventAdapter from "../../util/client/EventAdapter.ts";
 import Base from "../Base.ts";
 import { MessageContent } from "../Message.ts";
 import User from "../User.ts";
@@ -27,7 +28,7 @@ export default class Webhook extends Base {
 	public token: string;
 	public name: string;
 
-	public constructor(client: Client, data: WebhookData) {
+	public constructor(client: Client<EventAdapter>, data: WebhookData) {
 		super(client, data.id);
 		this.type = data.type;
 		this.guildId = data.guild_id;
@@ -72,7 +73,7 @@ export default class Webhook extends Base {
 	public send(msg: MessageConstructorData) {
 		return this.execute({
 			content: (typeof msg === 'string') ? msg : msg.content,
-			embeds: (typeof msg === 'string') ? undefined : msg.embed ? [ msg.embed ] : undefined
+			embeds: (typeof msg === 'string') ? undefined : msg.embed ? [msg.embed] : undefined
 		});
 	}
 
@@ -84,7 +85,7 @@ export default class Webhook extends Base {
 		return;
 	}
 
-	public static async create(client: Client, opts: CreateWebhookData): Promise<Webhook> {
+	public static async create(client: Client<EventAdapter>, opts: CreateWebhookData): Promise<Webhook> {
 		let instance: Webhook = new this(client, {
 			guild_id: opts.channel_id,
 			channel_id: opts.channel_id,

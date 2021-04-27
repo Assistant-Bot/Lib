@@ -1,12 +1,12 @@
 /**
  * Data structure to hold secrets
- * 
+ *
  * Items in the store are hashed so if accidently leaked,
  * they are harder to unhash
  */
 export default class EnvStore extends Map {
 	public salt: number;
-	
+
 	public constructor() {
 		super();
 		this.salt = (Math.random() * 500);
@@ -32,7 +32,7 @@ export default class EnvStore extends Map {
 		// Subtract: false
 		// Add: true
 		for (let i = 0; i < buffer.length; i++) {
-			if(odd) {
+			if (odd) {
 				buffer[i] = strBuffer[i] + this.salt;
 			} else {
 				buffer[i] = strBuffer[i] - this.salt;
@@ -49,7 +49,7 @@ export default class EnvStore extends Map {
 		// Substract: true
 		// Add: false
 		for (let i = 0; i < v.length; i++) {
-			if(odd) {
+			if (odd) {
 				val[i] = v[i] - this.salt;
 			} else {
 				val[i] = v[i] + this.salt;

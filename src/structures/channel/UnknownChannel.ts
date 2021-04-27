@@ -22,17 +22,18 @@ import StoreChannel from "../guild/StoreChannel.ts";
 import TextChannel from "../guild/TextChannel.ts";
 import VoiceChannel from "../guild/VoiceChannel.ts";
 import DMChannel from "./GroupChannel.ts";
+import EventAdapter from "../../util/client/EventAdapter.ts";
 
 export default class UnknownChannel extends Channel {
 	public readonly data: ChannelData;
-	public constructor(client: Client, data: ChannelData) {
+	public constructor(client: Client<EventAdapter>, data: ChannelData) {
 		super(client, data);
 		super.update(data);
 		this.data = data;
 	}
 }
 
-export function makeChannel(client: Client, data: ChannelData) {
+export function makeChannel(client: Client<EventAdapter>, data: ChannelData) {
 	switch (data.type as ChannelTypesNumeric) {
 		case 0:
 			return new TextChannel(client, data);

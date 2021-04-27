@@ -17,10 +17,13 @@ import Collection from "../../util/Collection.ts";
 import GuildChannel from "./GuildChannel.ts";
 
 export default class CategoryChannel extends GuildChannel {
-	public get children(): GuildChannel[] { 
+	/**
+	 * Children of a category channel
+	 */
+	public get children(): GuildChannel[] {
 		const children: GuildChannel[] = []
 		const channels = this.guild.channels;
-		for(const channel of channels) {
+		for (const channel of channels) {
 			children.push(channel);
 		}
 		return children;

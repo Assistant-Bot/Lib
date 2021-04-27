@@ -1,5 +1,3 @@
-import { GatewayEvent } from "./EventPacket.ts";
-
 /***
  *                    _     _              _
  *      /\           (_)   | |            | |
@@ -15,6 +13,8 @@ import { GatewayEvent } from "./EventPacket.ts";
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
+import type { GatewayEvent } from "./EventPacket.ts";
+
 export enum OPCode {
 	DISPATCH = 0,
 	HEARTBEAT = 1,

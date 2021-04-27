@@ -13,4 +13,4 @@
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
-const table = new WebAssembly.Table({ initial: 7, maximum: 7+0, element: "anyfunc" });
+const table = new WebAssembly.Table({ initial: 7, maximum: 7 + 0, element: "anyfunc" });

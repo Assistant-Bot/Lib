@@ -19,18 +19,20 @@ export default class LoginPacket extends Packet {
 	public token: string;
 	public compress: boolean;
 	public intents: number;
+	public shards: number;
 	#user: boolean;
 
 	public static from(p: Payload, intents: number): LoginPacket {
 		return new this(p.d.token, p.d.compress, intents);
 	}
 
-	public constructor(token: string, compress: boolean = false, intents: number = 0, user: boolean = false) {
+	public constructor(token: string, compress: boolean = false, intents: number = 0, user: boolean = false, shards: number = 0) {
 		super(OPCode.IDENTIFY);
 		this.token = token;
 		this.compress = compress;
 		this.intents = intents;
 		this.#user = user;
+		this.shards = shards;
 	}
 
 	protected encodeData(): void {
@@ -44,6 +46,7 @@ export default class LoginPacket extends Packet {
 				browser: this.#user ? 'Firefox' : 'Assistant-v3',
 				device: this.#user ? '' : 'Assistant-v3'
 			},
+			shards: this.shards ? new Array(this.shards).map((_, i) => [i, this.shards]) : undefined
 		}
 	}
 }

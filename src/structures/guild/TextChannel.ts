@@ -19,17 +19,22 @@ import type {
 	MessageConstructorData,
 	MessageData
 } from '../../net/common/Types.ts';
+import EventAdapter from "../../util/client/EventAdapter.ts";
 import Webhook from "../channel/Webhook.ts";
 import Message, { MessageContent } from '../Message.ts';
 import GuildChannel from './GuildChannel.ts';
 
 export default class TextChannel extends GuildChannel {
+	/** ID of last message sent in the channel */
 	public lastMessageId?: string;
+	/** Last message sent in the channel */
 	public lastMessage?: Message;
+	/** Timestamp of last pinned message */
 	public lastPinTimestamp?: number;
+	/** Rate limit of the channel */
 	public rateLimitPerUser?: number;
 
-	public constructor(client: Client, data: ChannelData) {
+	public constructor(client: Client<EventAdapter>, data: ChannelData) {
 		super(client, data);
 		super.update(data);
 		this.update(data);
@@ -81,21 +86,34 @@ export default class TextChannel extends GuildChannel {
 
 	/**
 	 * Sends a codeblock
-	 * @param code
-	 * @param content
+	 * @param code Language Code
+	 * @param content Message Content
 	 */
 	public async sendBlock(code: string, content: string): Promise<Message> {
 		return this.send('```' + code + '\n' + content + '\n```');
 	}
 
+	/**
+	 * Delete specific message in the channel
+	 * @param id ID of message
+	 */
 	public async deleteMessage(id: string): Promise<boolean> {
 		return await this.request.deleteMessage(this.id, id);
 	}
 
+	/**
+	 * Delete multiple messages (purge) in the channel
+	 * @param messages IDs of messages
+	 */
 	public async deleteMessages(messages: string[]): Promise<boolean> {
 		return await this.request.deleteMessages(this.id, messages);
 	}
 
+	/**
+	 * Used to edit a message in the channel
+	 * @param content Message Content
+	 * @param messageID Message ID
+	 */
 	public async editMessage(
 		content: MessageConstructorData | string,
 		messageID: string
@@ -113,6 +131,10 @@ export default class TextChannel extends GuildChannel {
 		return new Message(this.client, res);
 	}
 
+	/**
+	 * Set the rate limit of the channel
+	 * @param time Limit
+	 */
 	public async setRateLimit(time: number): Promise<boolean> {
 		let updated: GuildChannel = await super.edit({
 			rateLimitPerUser: time,
@@ -122,6 +144,12 @@ export default class TextChannel extends GuildChannel {
 		);
 	}
 
+	/**
+	 * Used to get messages from a channel
+	 * @param limit Limit
+	 * @param params Message Fetch Params
+	 * @returns
+	 */
 	public async getMessages(
 		limit: number = 50,
 		params?: { around?: number; before?: number; after?: number }
@@ -131,10 +159,23 @@ export default class TextChannel extends GuildChannel {
 		return msgs.map((m) => new Message(this.client, m));
 	}
 
+	/**
+	 * Used to add a reaction to a message
+	 * @param id Message ID
+	 * @param emoji Emoji String
+	 * @returns
+	 */
 	public async addReaction(id: string, emoji: string) {
 		return await this.request.createReaction(this.id, id, emoji);
 	}
 
+	/**
+	 * Used to delete a reaction from a message
+	 * @param userId User ID
+	 * @param msgId Message ID
+	 * @param emoji Emoji String
+	 * @returns
+	 */
 	public async deleteReaction(
 		userId: string = '@',
 		msgId: string,
@@ -152,35 +193,57 @@ export default class TextChannel extends GuildChannel {
 		}
 	}
 
+	/**
+	 * Used to get reactions from a message
+	 * @param limit Limit
+	 * @param params Fetch Reactions Params
+	 */
 	public async getReactions(
 		limit: number = 25,
 		params?: { around?: number; before?: number; after?: number }
-	) {}
+	) { }
 
+	/**
+	 * Used to delete all reactions from a message
+	 * @param msgId Message ID
+	 * @param emoji Emoji String
+	 */
 	public async deleteAllReactions(
-		channelId: string,
 		msgId: string,
 		emoji?: string
 	): Promise<boolean> {
 		if (emoji) {
 			return await this.request.deleteAllReactionsEmoji(
-				channelId,
+				this.id,
 				msgId,
 				emoji
 			);
 		} else {
-			return await this.request.deleteAllReactions(channelId, msgId);
+			return await this.request.deleteAllReactions(this.id, msgId);
 		}
 	}
 
+	/**
+	 * Used to pin a message
+	 * @param id Message ID
+	 */
 	public async pinMessage(id: string): Promise<boolean> {
 		return await this.request.addPinChannelMessage(this.id, id);
 	}
 
+	/**
+	 * Used to unpin a message
+	 * @param id Message ID
+	 */
 	public async unpinMessage(id: string): Promise<boolean> {
 		return await this.request.deletePinChannelMessage(this.id, id)
 	}
 
+	/**
+	 * Used to create a webhook in the channel
+	 * @param name Name of webhook
+	 * @param avatar Avatar of webhook
+	 */
 	public async createWebhook(name: string, avatar?: string): Promise<Webhook> {
 		return Webhook.create(this.client, {
 			channel_id: this.id,

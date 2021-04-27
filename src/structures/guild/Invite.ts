@@ -15,21 +15,30 @@
  */
 import type Client from "../../Client.ts";
 import type { GuildData, InviteData, PartialChannelData } from "../../net/common/Types.ts";
+import EventAdapter from "../../util/client/EventAdapter.ts";
 import Base from "../Base.ts";
 import type User from "../User.ts";
 import Guild from "./Guild.ts";
 
 export default class Invite extends Base {
+	/** Code of the invite */
 	public code!: string;
+	/** Guild for the invite */
 	public guild?: Partial<Guild> | Partial<GuildData>;
+	/** Channel invite was made */
 	public channel!: PartialChannelData;
+	/** Creator of the invite */
 	public inviter!: Partial<User>;
+	/** Target user of the invite */
 	public targetUser?: Partial<User>;
+	/** Target user type */
 	public targetUserType!: 1;
+	/** Presence count of the invite */
 	public approximatePresenceCount!: number;
+	/** Member count of the invite */
 	public approximateMemberCount!: number;
 
-	public constructor(client: Client, data: InviteData) {
+	public constructor(client: Client<EventAdapter>, data: InviteData) {
 		super(client, '0');
 		this.update(data);
 	}

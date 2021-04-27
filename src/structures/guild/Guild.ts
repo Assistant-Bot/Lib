@@ -29,6 +29,7 @@ import VoiceChannel from "./VoiceChannel.ts";
 import Invite from './Invite.ts';
 import User from "../User.ts";
 import Permission from "./permission/Permission.ts";
+import EventAdapter from "../../util/client/EventAdapter.ts";
 
 export default class Guild extends Base {
 	public name!: string;
@@ -71,7 +72,7 @@ export default class Guild extends Base {
 	// for reference
 	#boundChannels: Set<string>;
 
-	public constructor(client: Client, data: GuildData) {
+	public constructor(client: Client<EventAdapter>, data: GuildData) {
 		super(client, data.id);
 		this.members = new Collection();
 		this.roles = new Collection();
@@ -222,7 +223,7 @@ export default class Guild extends Base {
 	}
 
 	public async editChannel(id: GuildChannel | string, o: ChannelEditOption): Promise<GuildChannel> {
-		const res: ChannelData = await this.request.editChannel(id instanceof GuildChannel ? id.id: id, o);
+		const res: ChannelData = await this.request.editChannel(id instanceof GuildChannel ? id.id : id, o);
 		return new GuildChannel(this.client, res);
 	}
 
@@ -230,7 +231,7 @@ export default class Guild extends Base {
 		return await this.request.editChannelPosition(this.id, id instanceof GuildChannel ? id.id : id, pos);
 	}
 
-	public async editChannelPermission(id: GuildChannel | string, overwriteID: string, o: {allow: number, deny: number, type: "member" | "role" }) {
+	public async editChannelPermission(id: GuildChannel | string, overwriteID: string, o: { allow: number, deny: number, type: "member" | "role" }) {
 		return await this.request.editChannelPermission(id instanceof GuildChannel ? id.id : id, overwriteID, o)
 	}
 
@@ -256,9 +257,17 @@ export default class Guild extends Base {
 		return await this.request.deleteRole(this.id, id instanceof Role ? id.id : id);
 	}
 
+	public async addMemberRole(member: Member | string, role: Role | string): Promise<boolean> {
+		return await this.request.addMemberRole(this.id, member instanceof Member ? member.id : member, role instanceof Role ? role.id : role);
+	}
+
+	public async removeMemberRole(member: Member | string, role: Role | string): Promise<boolean> {
+		return await this.request.removeMemberRole(this.id, member instanceof Member ? member.id : member, role instanceof Role ? role.id : role);
+	}
+
 	public async getBans(filter?: (data: BanData) => Promise<boolean> | boolean): Promise<BanData[]> {
 		let res: BanData[] = await this.request.getGuildBans(this.id);
-		if(filter) {
+		if (filter) {
 			return res.filter(d => filter(d));
 		} else {
 			return res;
@@ -266,7 +275,7 @@ export default class Guild extends Base {
 	}
 
 	public async banMember(id: Member | string, deleteMessagesDays?: number, reason?: string): Promise<boolean> {
-		if(!deleteMessagesDays || (deleteMessagesDays < 0 || deleteMessagesDays > 7)) deleteMessagesDays = 0;
+		if (!deleteMessagesDays || (deleteMessagesDays < 0 || deleteMessagesDays > 7)) deleteMessagesDays = 0;
 		return await this.request.banGuildMember(this.id, id instanceof Member ? id.id : id, deleteMessagesDays, reason)
 	}
 

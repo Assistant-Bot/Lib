@@ -15,20 +15,28 @@
  */
 import type Client from "../../Client.ts";
 import type { RoleData, RoleEditOptions } from "../../net/common/Types.ts";
+import EventAdapter from "../../util/client/EventAdapter.ts";
 import Base from "../Base.ts";
 import Guild from "./Guild.ts";
 import Permission from "./permission/Permission.ts";
 
 export default class Role extends Base {
+	/** Name of the role */
 	public name!: string;
+	/** Permissions of the role */
 	public permissions!: Permission;
+	/** Position of the role */
 	public position!: number;
+	/** Color hex of the role */
 	public color!: number;
+	/** Whether the role is hoisted */
 	public hoist!: boolean;
+	/** Whether the role in mentionable */
 	public mentionable!: boolean;
+	/** Guild ID of the role */
 	#guild_id!: string;
 
-	public constructor(client: Client, data: RoleData) {
+	public constructor(client: Client<EventAdapter>, data: RoleData) {
 		super(client, data.id);
 		this.update(data)
 	}
@@ -43,15 +51,25 @@ export default class Role extends Base {
 		this.mentionable = data.mentionable;
 	}
 
+	/** 
+	 * Guild of the role
+	 */
 	public get guild(): Guild {
 		return this.client.dataManager?.guilds.get(this.#guild_id);
 	}
 
-	public async edit(o: RoleEditOptions) {
+	/**
+	 * Used to edit the role
+	 * @param o Role Edit Options
+	 */
+	public async edit(o: RoleEditOptions): Promise<Role> {
 		return await this.guild.editRole(this, o);
 	}
 
-	public async delete() {
+	/**
+	 * Used to delete the role
+	 */
+	public async delete(): Promise<boolean> {
 		return await this.guild.deleteRole(this);
 	}
 }

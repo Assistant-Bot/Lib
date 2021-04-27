@@ -15,11 +15,12 @@
  */
 import Client from "../../Client.ts";
 import { ChannelData } from "../../net/common/Types.ts";
+import EventAdapter from "../../util/client/EventAdapter.ts";
 import TextChannel from "./TextChannel.ts";
 
 export default class NewsChannel extends TextChannel {
 
-	public constructor(client: Client, data: ChannelData) {
+	public constructor(client: Client<EventAdapter>, data: ChannelData) {
 		super(client, data);
 	}
 

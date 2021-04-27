@@ -13,11 +13,16 @@
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  */
-import { MessageData } from "../../net/common/Types.ts";
-import Channel from "./Channel.ts";
+import { ChannelData, MessageData } from "../../net/common/Types.ts";
 import Message, { MessageContent } from "../Message.ts";
+import TextChannel from "../guild/TextChannel.ts";
+import Client from "../../Client.ts";
 
-export default class DMChannel extends Channel { // TextChannel? // Just nullify guild
+export default class DMChannel extends TextChannel { // TextChannel? // Just nullify guild
+	/**
+	 * Used to send a message in the channel
+	 * @param content Message Content
+	 */
 	public async send(content: MessageContent): Promise<Message> {
 		if (typeof content === 'string') {
 			content = {
@@ -31,5 +36,10 @@ export default class DMChannel extends Channel { // TextChannel? // Just nullify
 		this.client.dataManager?.messages.set(m.id, m);
 
 		return m;
+	}
+
+	// @ts-ignore
+	public get guild(): undefined {
+		return undefined;
 	}
 }

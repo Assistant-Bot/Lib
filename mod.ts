@@ -1,20 +1,19 @@
-/***
+/**
  *                    _     _              _
  *      /\           (_)   | |            | |
- *     /  \   ___ ___ _ ___| |_ __ _ _ __ | |
+ *     /  \   ___ ___ _ ___| |_ __ _ _ __ | |_
  *    / /\ \ / __/ __| / __| __/ _` | '_ \| __|
- *   / ____ \\__ \__ \ \__ \ || (_| | | | | |
+ *   / ____ \\__ \__ \ \__ \ || (_| | | | | |_
  *  /_/    \_\___/___/_|___/\__\__,_|_| |_|\__|
  *
  * Copyright (C) 2020 Bavfalcon9
  *
- * This is private software, you cannot redistribute and/or modify it in any way
- * unless given explicit permission to do so. If you have not been given explicit
- * permission to view or modify this software you should take the appropriate actions
- * to remove this software from your device immediately.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
  */
 export type {
-	ClientEvents,
 	ClientOptions,
 	ClientShardMode
 } from './src/Client.ts';
@@ -51,8 +50,8 @@ export { default as DataManager } from './src/data/DataManager.ts';
 export { default as DataStore } from './src/data/DataStore.ts';
 export { default as RuntimeManager } from './src/data/runtime/RuntimeManager.ts';
 export { default as RuntimeStore } from './src/data/runtime/RuntimeStore.ts';
-export { default as Module } from './src/module/Module.ts';
-export { default as DiscordREquestHandler } from './src/net/rest/DiscordRequestHandler.ts';
+export { default as Module } from './src/command/module/Module.ts';
+export { default as DiscordRequestHandler } from './src/net/rest/DiscordRequestHandler.ts';
 export {
 	REST_VERSION,
 	GATEWAY,
@@ -93,8 +92,11 @@ export { default as TextChannel } from './src/structures/guild/TextChannel.ts';
 export { default as VoiceChannel } from './src/structures/guild/VoiceChannel.ts';
 export { default as Application } from './src/structures/oauth/Application.ts';
 export * as Async from './src/util/Async.ts';
+export type { default as EventAdapter, ClientEvents } from './src/util/client/EventAdapter.ts';
+export { default as GenericEventsAdapter } from './src/util/client/GenericEventsAdapter.ts';
 export { default as Collection } from './src/util/Collection.ts';
 export { default as Embed } from './src/util/Embed.ts';
 export { default as Intents } from './src/util/Intents.ts';
 export { default as Queue } from './src/util/Queue.ts';
+export { default as EnvStore } from './src/util/EnvStore.ts';
 export { default as MessageCollector } from './src/util/collectors/MessageCollector.ts';

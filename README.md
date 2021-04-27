@@ -14,8 +14,6 @@ This framework is currently being developed and will be used for **Assistant Bot
 	- Created with completely type safe code
 - Zero third-party dependencies
 	- Only uses the latest version of Deno standard library
-- Benchmarks with incredible gateway speeds
-	- 250-500 m/s gateway login speeds!
 - Enhanced for speed and memory
 	- Uses 10-15x less memory that Node.JS libraries!
 - Includes multiple developer utilities such as live module reloader and a CLI
@@ -27,7 +25,7 @@ This framework is currently being developed and will be used for **Assistant Bot
 	- Create custom REST API Handlers
 	- Create custom structures
 	- Create custom collectors
-	- Create custom caching environments (do I hear Mongo and Redis?)
+	- Create custom caching environments
 
 #### Special Code Examples
 
@@ -48,7 +46,7 @@ client.on('message', (msg: Message) => {
 			// Asynchronously iterate over
 			// incoming messages!
 			for await (const message of msgs) {
-				console.log("NEW MESSAGE!!", message);
+				console.log("Got a message: " + message.toString());
 			}
 		}
 	}
@@ -58,7 +56,7 @@ client.on('message', (msg: Message) => {
 
 Complete client configuration!
 ```ts
-const CACHE_CAP = 1000;
+const MAX_LIMIT = 1000;
 const client = new Client({
 	sharding: {
 		useDiscord: false,
@@ -73,20 +71,20 @@ const client = new Client({
 		timeout: 1000
 	},
 	intents: Intents.all().parse(),
-	cache: { 
-		limit: CACHE_CAP,
+	cache: {
+		limit: MAX_LIMIT,
 	}
-}, new RuntimeManager(CACHE_CAP));
+}, new RuntimeManager(MAX_LIMIT));
 ```
-
-Use the advanced CLI to create project boilerplates in mere milliseconds 
+<!--
+Use the advanced CLI to create project boilerplates in mere milliseconds
 ```ps1
 deno install -A -f -n ast https://raw.githubusercontent.com/Assistant-Bot/Lib/dev/src/util/cli.ts
 
 # Then use the following to create a boilerplate
 ast gen MyEpicBot TOKEN
 ```
-
+-->
 Use the advanced Command and Module API without writing any command handling code from scratch!
 ```ts
 const client = new Client();
@@ -114,22 +112,5 @@ class AdminCommand extends Command {
 }
 
 const commandHandler = new CommandHandler(client, {prefix: "!"});
-commandHandler.registerModule(new Module('Admin', [new AdminCommand()], [new AdminPermission()], true));
-```
-
-Secure environment variable storage!
-```ts
-const env = new EnvStore();
-env.set("API_KEY", "12345678910");
-// !eval env
-// Oh no! I evalled my env variable!
-// Don't fear it's hashed in a UInt8Array 
-
-// Also!
-const env2 = new EnvStore();
-env2.set("API_KEY", "12345678910");
-console.log(env.get("API_KEY") === env2.get("API_KEY"));
-// Returns false!
-// New salts (numbers used to hash) 
-// are made everyone EnvStore instance!
+commandHandler.registerCommand(new AdminCommand());
 ```

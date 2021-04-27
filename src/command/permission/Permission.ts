@@ -17,32 +17,32 @@ import { Member } from "../../../mod.ts";
 import type Message from "../../structures/Message.ts";
 
 abstract class Permission {
-    public name: string;
-    public match?: RegExp;
-    #id: number;
+	public name: string;
+	public match?: RegExp;
+	#id: number;
 
-    public constructor(name: string, id: number, match?: RegExp) {
-        this.name = name;
-        this.match = match;
-        this.#id = id;
-    }
+	public constructor(name: string, id: number, match?: RegExp) {
+		this.name = name;
+		this.match = match;
+		this.#id = id;
+	}
 
-    /**
-     * Whether or not the user passes this permission.
-     * You should change this
-     */
-    public abstract can(msg: Message, user: Member): boolean;
+	/**
+	 * Whether or not the user passes this permission.
+	 * You should change this
+	 */
+	public abstract can(msg: Message, user: Member): boolean;
 
-    public resolve(msg: Message, user: Member): boolean {
-        if (this.match) {
-            return this.match.test(user.id);
-        } else {
-            return this.can(msg, user);
-        }
-    }
+	public resolve(msg: Message, user: Member): boolean {
+		if (this.match) {
+			return this.match.test(user.id);
+		} else {
+			return this.can(msg, user);
+		}
+	}
 
-    public get id(): number {
-        return this.#id;
-    }
+	public get id(): number {
+		return this.#id;
+	}
 }
 export default Permission;

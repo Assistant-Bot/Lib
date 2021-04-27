@@ -16,8 +16,10 @@
 import Client from "../../Client.ts";
 import { ApplicationCommandData, ApplicationCommandOption, ApplicationData } from "../../net/common/Types.ts";
 import Endpoints from "../../net/rest/Endpoints.ts";
+import EventAdapter from "../../util/client/EventAdapter.ts";
 import Base from "../Base.ts";
 import Application from "../oauth/Application.ts";
+import Interaction from "./Interaction.ts";
 
 export type CommandOptionType =
 	| "SubCommand"
@@ -35,8 +37,8 @@ export default class AppCommand extends Base {
 	public options!: ApplicationCommandOption[];
 	public application!: string;
 
-	public constructor(client: Client, data: ApplicationCommandData) {
-		super(client, data.id as string);
+	public constructor(client: Client<EventAdapter>, data: ApplicationCommandData) {
+		super(client, data.id!);
 		this.update(data);
 	}
 
@@ -44,8 +46,7 @@ export default class AppCommand extends Base {
 		this.name = data.name;
 		this.description = data.name;
 		this.options = data.options || [];
-		this.application = data.application_id as string;
-		// this.client.commands.set(data.id as string, this);
+		this.application = data.application_id!;
 	}
 
 	public parse(): ApplicationCommandData {
@@ -87,10 +88,10 @@ export default class AppCommand extends Base {
 	 * @param client
 	 * @param data
 	 */
-	public static async create(client: Client, data: ApplicationCommandData & { guildId?: string }): Promise<AppCommand> {
+	public static async create(client: Client<EventAdapter>, data: ApplicationCommandData & { guildId?: string }): Promise<AppCommand> {
 		let res: ApplicationCommandData | false
 		if (data.guildId) {
-			res = await client.discordHandler.createAppCommand(data.application_id!, data.guildId,  data);
+			res = await client.discordHandler.createAppCommand(data.application_id!, data.guildId, data);
 			delete data.guildId;
 		} else {
 			res = await client.discordHandler.createAppGlobalCommand(data.application_id!, data);
