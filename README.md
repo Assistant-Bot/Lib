@@ -113,4 +113,10 @@ class AdminCommand extends Command {
 
 const commandHandler = new CommandHandler(client, {prefix: "!"});
 commandHandler.registerCommand(new AdminCommand());
+
+client.on('messageCreate', async msg => {
+  await commandHandler.processMessage(msg);
+});
+
+await client.connect();
 ```
