@@ -98,9 +98,7 @@ export default class CommandHandler {
 		if (this.options.allowBots === false && msg.author.bot) return;
 
 		const command: Command | undefined = this.commands.find(c => c.label === commandString || c.aliases.includes(commandString as string));
-
 		if (!command) return; // not found :(
-
 		// handle argument api v3
 		if (command.argumentApi === 3) {
 			const argOpts: CommandArgOptions = command.commandOpts.argOptions;
@@ -171,7 +169,7 @@ export default class CommandHandler {
 	}
 
 	public registerCommand(command: Command): boolean {
-		if (!this.commands.filter(c => c.label === command.label)) {
+		if (!this.commands.filter(c => c.label === command.label).length) {
 			this.#floatingCommands.push(command);
 			return true;
 		}
