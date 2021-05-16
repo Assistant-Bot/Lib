@@ -128,7 +128,7 @@ export default class RuntimeStore<K extends string, V extends Base> extends Data
 		return this.#dataSet.size;
 	}
 
-	[Symbol.iterator]: IterableIterator<V>
+	// [Symbol.iterator]: IterableIterator<V>
 	public values(): IterableIterator<V> {
 		return this.#dataSet.values();
 	}

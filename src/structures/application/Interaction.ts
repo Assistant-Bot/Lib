@@ -24,7 +24,6 @@ import TextChannel from "../guild/TextChannel.ts";
 export default class Interaction extends Base {
 	public member!: Member;
 	public type!: ApplicationOptionType;
-	public id!: string;
 	public data!: InteractionData;
 	public guild?: Guild;
 	public channel!: TextChannel | null;
