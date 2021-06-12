@@ -341,36 +341,36 @@ export default class Client<IEvent extends EventAdapter = GenericEventsAdapter> 
 	/**
 	 * Get all channels stored within the store.
 	 */
-	public get channels(): DataStore<string, any> {
-		return this.dataManager?.channels as DataStore<string, any>;
+	public get channels(): DataStore<string, Channel> {
+		return this.dataManager?.channels as DataStore<string, Channel>;
 	}
 
 	/**
 	 * Gets all the emoijs stored within the store.
 	 */
-	public get emoijs(): DataStore<string, any> {
-		return this.dataManager?.emojis as DataStore<string, any>;
+	public get emojis(): DataStore<string, Emoji> {
+		return this.dataManager?.emojis as DataStore<string, Emoji>;
 	}
 
 	/**
 	 * Get all guidls stored within the store.
 	 */
-	public get guilds(): DataStore<string, any> {
-		return this.dataManager?.guilds as DataStore<string, any>;
+	public get guilds(): DataStore<string, Guild> {
+		return this.dataManager?.guilds as DataStore<string, Guild>;
 	}
 
 	/**
 	 * Get all messages stored within the store.
 	 */
-	public get messages(): DataStore<string, any> {
-		return this.dataManager?.messages as DataStore<string, any>;
+	public get messages(): DataStore<string, Message> {
+		return this.dataManager?.messages as DataStore<string, Message>;
 	}
 
 	/**
 	 * Gets all the users stored within the store.
 	 */
-	public get users(): DataStore<string, any> {
-		return this.dataManager?.users as DataStore<string, any>;
+	public get users(): DataStore<string, User> {
+		return this.dataManager?.users as DataStore<string, User>;
 	}
 
 	/**

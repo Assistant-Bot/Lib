@@ -42,8 +42,8 @@ export default class Interaction extends Base {
 		this.data = data.data;
 		this.#token = data.token;
 		this.#channelid = data.channel_id;
-		this.channel = await this.client.channels.get(this.#channelid);
-		this.guild = await this.client.guilds.get(data.guild_id);
+		this.channel = await this.client.channels.get(this.#channelid) as TextChannel | null;
+		this.guild = await this.client.guilds.get(data.guild_id) as Guild | undefined;
 	}
 
 	public async getChannel(): Promise<TextChannel | null> {
@@ -59,9 +59,9 @@ export default class Interaction extends Base {
 			return this.channel;
 		}
 
-		this.channel = chan;
+		this.channel = chan as TextChannel;
 
-		return chan;
+		return chan as TextChannel;
 	}
 
 	public async respond(response: InteractionResponse): Promise<void> {

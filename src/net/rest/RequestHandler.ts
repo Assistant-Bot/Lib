@@ -63,6 +63,15 @@ export interface IParams {
 	$params: { [key: string]: string, value: any };
 }
 
+export interface iFormData {
+	$data: {
+		files?: {
+			name: string;
+			data: Blob | Uint8Array
+		}[]
+	}
+}
+
 export default class RequestHandler {
 	#options: RequestHandlerOptions;
 	#headers: Header[];

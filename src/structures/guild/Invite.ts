@@ -55,7 +55,7 @@ export default class Invite extends Base {
 		if (!await this.client.guilds.has((data.guild as GuildData).id)) {
 			this.guild = data.guild;
 		} else {
-			this.guild = await this.client.guilds.get((data.guild as GuildData).id);
+			this.guild = await this.client.guilds.get((data.guild as GuildData).id) as Guild | undefined;
 		}
 	}
 }
